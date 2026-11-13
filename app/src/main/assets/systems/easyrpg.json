@@ -1,0 +1,52 @@
+{
+  "databaseVersion": 14,
+  "revisionNumber": 2,
+  "platform": {
+    "name": "EasyRPG Game Engine",
+    "uniqueId": "easyrpg",
+    "shortname": "easyrpg",
+    "description": null,
+    "acceptedFilenameRegex": "^(?!\\.)(.*)\\.(?:easyrpg|zip)$",
+    "scraperSourceList": [],
+    "boxArtAspectRatioId": 0,
+    "useCustomBoxArtAspectRatio": false,
+    "customBoxArtAspectRatio": null,
+    "screenAspectRatioId": 1,
+    "useCustomScreenAspectRatio": false,
+    "customScreenAspectRatio": null,
+    "retroAchievementsConsoleIdList": [],
+    "extra": ""
+  },
+  "playerList": [
+    {
+      "name": "RetroArch (64 bits) - EasyRPG",
+      "uniqueId": "esde.easyrpg.392df6a83975",
+      "description": "Supported extensions: easyrpg, zip.",
+      "acceptedFilenameRegex": "^(?!\\.)(.*)\\.(?:easyrpg|zip)$",
+      "amStartArguments": "-n com.retroarch.aarch64/com.retroarch.browser.retroactivity.RetroActivityFuture --es CONFIGFILE /storage/emulated/0/Android/data/com.retroarch.aarch64/files/retroarch.cfg --es LIBRETRO /data/data/com.retroarch.aarch64/cores/easyrpg_libretro_android.so --es ROM {file.path}",
+      "killPackageProcesses": false,
+      "killPackageProcessesWarning": true,
+      "extra": ""
+    },
+    {
+      "name": "RetroArch (32 bits) - EasyRPG",
+      "uniqueId": "esde.easyrpg.5490d5ede724",
+      "description": "Supported extensions: easyrpg, zip.",
+      "acceptedFilenameRegex": "^(?!\\.)(.*)\\.(?:easyrpg|zip)$",
+      "amStartArguments": "-n com.retroarch.ra32/com.retroarch.browser.retroactivity.RetroActivityFuture --es CONFIGFILE /storage/emulated/0/Android/data/com.retroarch.ra32/files/retroarch.cfg --es LIBRETRO /data/data/com.retroarch.ra32/cores/easyrpg_libretro_android.so --es ROM {file.path}",
+      "killPackageProcesses": false,
+      "killPackageProcessesWarning": true,
+      "extra": ""
+    },
+    {
+      "name": "RetroArch - EasyRPG",
+      "uniqueId": "esde.easyrpg.2031644268bc",
+      "description": "Supported extensions: easyrpg, zip.",
+      "acceptedFilenameRegex": "^(?!\\.)(.*)\\.(?:easyrpg|zip)$",
+      "amStartArguments": "-n com.retroarch/com.retroarch.browser.retroactivity.RetroActivityFuture --es CONFIGFILE /storage/emulated/0/Android/data/com.retroarch/files/retroarch.cfg --es LIBRETRO /data/data/com.retroarch/cores/easyrpg_libretro_android.so --es ROM {file.path}",
+      "killPackageProcesses": false,
+      "killPackageProcessesWarning": true,
+      "extra": ""
+    }
+  ]
+}

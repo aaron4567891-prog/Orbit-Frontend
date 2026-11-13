@@ -1,0 +1,17 @@
+Colorful (Simplified) ES-DE test adapter for Orbit
+
+Original theme: Anthony Caccese
+Original Colorful artwork: viking and faeran; additional contributors credited in README.md.
+Source: https://github.com/anthonycaccese/colorful-simplified-es-de
+License: Creative Commons Attribution-NonCommercial-ShareAlike 2.0
+https://creativecommons.org/licenses/by-nc-sa/2.0/
+
+The original theme XML, artwork and fonts are preserved in this directory.
+Orbit's native adaptation supports all nine bundled game-list variants,
+the seven built-in color schemes, Medium/Large fonts and the 16:9 layout.
+Metadata uses locally scraped game information; miximages can be composed
+from locally downloaded images. Missing media falls back to available artwork.
+ES-DE animations, audio, video playback, external add-ons and general theme
+importing are not implemented.
+The theme adaptations in EsDeTheme.kt and ColorfulSystemsView.kt are shared
+under the same CC-BY-NC-SA 2.0 terms. Orbit's navigation bar is retained.

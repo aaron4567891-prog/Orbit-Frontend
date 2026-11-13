@@ -1,0 +1,6 @@
+<themeCapabilities>
+<themeName>Orbit XML Demo</themeName><author>Orbit</author>
+<aspectRatio>16:9</aspectRatio><aspectRatio>4:3</aspectRatio><fontSize>medium</fontSize><fontSize>large</fontSize>
+<variant name="artwork"><label>Artwork</label></variant><variant name="video"><label>Video</label></variant>
+<colorScheme name="midnight"><label>Midnight</label></colorScheme><colorScheme name="ocean"><label>Ocean</label></colorScheme>
+</themeCapabilities>

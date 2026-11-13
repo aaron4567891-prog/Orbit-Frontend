@@ -1,0 +1,21 @@
+{
+  "databaseVersion": 14,
+  "revisionNumber": 2,
+  "platform": {
+    "name": "Microsoft Xbox One",
+    "uniqueId": "xboxone",
+    "shortname": "xboxone",
+    "description": null,
+    "acceptedFilenameRegex": "^(?!\\.)(.*)\\.(?:7z|zip)$",
+    "scraperSourceList": [],
+    "boxArtAspectRatioId": 0,
+    "useCustomBoxArtAspectRatio": false,
+    "customBoxArtAspectRatio": null,
+    "screenAspectRatioId": 1,
+    "useCustomScreenAspectRatio": false,
+    "customScreenAspectRatio": null,
+    "retroAchievementsConsoleIdList": [],
+    "extra": ""
+  },
+  "playerList": []
+}

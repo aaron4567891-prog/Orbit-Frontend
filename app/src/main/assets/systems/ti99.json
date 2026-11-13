@@ -1,0 +1,21 @@
+{
+  "databaseVersion": 14,
+  "revisionNumber": 2,
+  "platform": {
+    "name": "Texas Instruments TI-99",
+    "uniqueId": "ti99",
+    "shortname": "ti99",
+    "description": null,
+    "acceptedFilenameRegex": "^(?!\\.)(.*)\\.(?:7z|rpk|zip)$",
+    "scraperSourceList": [],
+    "boxArtAspectRatioId": 0,
+    "useCustomBoxArtAspectRatio": false,
+    "customBoxArtAspectRatio": null,
+    "screenAspectRatioId": 1,
+    "useCustomScreenAspectRatio": false,
+    "customScreenAspectRatio": null,
+    "retroAchievementsConsoleIdList": [],
+    "extra": ""
+  },
+  "playerList": []
+}

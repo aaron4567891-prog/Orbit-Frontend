@@ -1,0 +1,25 @@
+# System profiles
+
+Add platform `.json` files to the user data `systems/` folder, or use User data → System profiles → Import JSON. Use Reload after file edits. Cocoon and Daijishō `platform` + `playerList` files are supported, alongside Orbit's legacy schema below. Only `systems/` is read for player configuration; `emulators/` is retired. Previously migrated profiles remain in systems. Valid user player IDs override bundled IDs in filename sort order. Duplicate IDs within a single platform file get stable `.variant.<index>` suffixes so URI and legacy players remain separate.
+
+The catalogue covers 195 ES-DE Android system entries. For 121 matching systems, the JSON is copied unchanged from Daijishō commit b117d7e62b36a4704dec3c9e79eed3b6564135bb. Names, descriptions, IDs, regexes and launch arguments match that published source exactly. The 74 systems without a matching upstream file retain shared-format definitions. All definitions use the shared platform/player format. Thirty-five definitions have no converted player; placeholder commands and commands requiring unsupported injection/directory features remain in `system-catalog.json` metadata with reasons. Platform metadata and player arguments remain in imported files. Scrapers, artwork, achievements and process-kill requests are not applied. A compatibility dialog lists parsing problems and process-kill limitations. Imported system files do not create arbitrary new console UI entries beyond this catalogue yet.
+
+ES-DE uses `n3ds`; Orbit maps it to the existing `3ds` library ID so folder assignments are preserved. Original system folder names, extensions and themes are included in system-catalog.json metadata. The legacy saved DuckStation selection resolves to the official URI-based DuckStation entry. Generated players preserve source package/activity alternatives and emulator flags; they are configurations, not proof of device compatibility. RetroArch requires the specified cores and access to its configuration and ROMs. The source snapshots, generator and MIT license are under tools/sources and tools/generate_systems.py; the license also ships in the APK as ES-DE-LICENSE.txt.
+
+Supported launch arguments: `-n`, `-a`, `-d`, `-t`, `-e`/`--es`, `--ez`, `--ei`, `--el`, `--ef`, long component/action/data/type equivalents, clear-task, clear-top, new-task, single-top and read-URI permission. Arguments are tokenized with quotes/escapes and become native Intent fields; no shell is invoked. Unsupported switches or placeholders reject that player, without losing supported players in the same file. JSON imports are limited to 2 MB.
+
+Shared placeholders: `{file.uri}`, `{file.documenturi}`, `{file.path}`, `{file.name}`, `{file.basename}`. URI placeholders receive temporary read grants. Filesystem paths can be resolved only for Android ExternalStorageProvider ROMs (primary storage or SD card); the emulator needs its own file access. Formats needing custom adapters, provider-specific serialization or unsupported extras are reported rather than guessed. Launch-display requests remain subject to Android and emulator behavior; imported files do not enable live screen swapping.
+
+Fixtures used by parser tests: https://github.com/inssekt/CocoonFE/blob/main/platforms/SonyPlayStation.json and https://github.com/TapiocaFox/Daijishou/blob/main/platforms/SonyPlayStation.json (retrieved 2026-10-19).
+
+## Legacy Orbit schema 1
+
+Required fields: `schemaVersion` (1), unique `id`, `name`, `systems` (internal IDs such as `psx`), lowercase `extensions` without dots, `packageName`, fully qualified `activityName`, Android intent `action`, `stringExtras`, and `capabilities`.
+
+`{romUri}` in a string extra expands to the selected game's Storage Access Framework content URI. The launcher attaches that URI as ClipData with temporary read permission. Plain filesystem path conversion, shell commands and non-string extras are not implemented in schema 1. Multi-file CUE/M3U games may additionally require granting the ROM directory inside the emulator; a single-file grant does not grant sibling files.
+
+`capabilities.launchDisplay` allows a display launch request; it does not guarantee an emulator will honor it, particularly for existing tasks. `screenTransfer` currently accepts only `unsupported`; future live transfer requires an implemented Kotlin adapter.
+
+DuckStation's profile targets exported `com.github.stenzek.duckstation.EmulationActivity` and its `bootPath` string extra. Verified against installed Android version `0.1-8969-g611bb8fb4` by inspecting that APK's manifest and activity bytecode. BIOS and emulator setup remain DuckStation's responsibility.
+
+Use the system's Emulator button to select an installed profile. The selection persists. DuckStation is initially assigned to PlayStation if its activity is installed and no assignment exists. Systems without profiles retain Android's generic Open with picker. Malformed profiles are skipped and reported by the selector when no valid profile exists.

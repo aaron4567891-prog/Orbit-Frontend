@@ -1,0 +1,52 @@
+{
+  "databaseVersion": 14,
+  "revisionNumber": 2,
+  "platform": {
+    "name": "LaserDisc Games",
+    "uniqueId": "laserdisc",
+    "shortname": "laserdisc",
+    "description": null,
+    "acceptedFilenameRegex": "^(?!\\.)(.*)\\.(?:7z|dirksimple|ogv|zip)$",
+    "scraperSourceList": [],
+    "boxArtAspectRatioId": 0,
+    "useCustomBoxArtAspectRatio": false,
+    "customBoxArtAspectRatio": null,
+    "screenAspectRatioId": 1,
+    "useCustomScreenAspectRatio": false,
+    "customScreenAspectRatio": null,
+    "retroAchievementsConsoleIdList": [],
+    "extra": ""
+  },
+  "playerList": [
+    {
+      "name": "RetroArch (64 bits) - DirkSimple",
+      "uniqueId": "esde.laserdisc.5665cf218a3c",
+      "description": "Supported extensions: 7z, dirksimple, ogv, zip.",
+      "acceptedFilenameRegex": "^(?!\\.)(.*)\\.(?:7z|dirksimple|ogv|zip)$",
+      "amStartArguments": "-n com.retroarch.aarch64/com.retroarch.browser.retroactivity.RetroActivityFuture --es CONFIGFILE /storage/emulated/0/Android/data/com.retroarch.aarch64/files/retroarch.cfg --es LIBRETRO /data/data/com.retroarch.aarch64/cores/dirksimple_libretro_android.so --es ROM {file.path}",
+      "killPackageProcesses": false,
+      "killPackageProcessesWarning": true,
+      "extra": ""
+    },
+    {
+      "name": "RetroArch (32 bits) - DirkSimple",
+      "uniqueId": "esde.laserdisc.68e6bab3bf88",
+      "description": "Supported extensions: 7z, dirksimple, ogv, zip.",
+      "acceptedFilenameRegex": "^(?!\\.)(.*)\\.(?:7z|dirksimple|ogv|zip)$",
+      "amStartArguments": "-n com.retroarch.ra32/com.retroarch.browser.retroactivity.RetroActivityFuture --es CONFIGFILE /storage/emulated/0/Android/data/com.retroarch.ra32/files/retroarch.cfg --es LIBRETRO /data/data/com.retroarch.ra32/cores/dirksimple_libretro_android.so --es ROM {file.path}",
+      "killPackageProcesses": false,
+      "killPackageProcessesWarning": true,
+      "extra": ""
+    },
+    {
+      "name": "RetroArch - DirkSimple",
+      "uniqueId": "esde.laserdisc.da49954781f6",
+      "description": "Supported extensions: 7z, dirksimple, ogv, zip.",
+      "acceptedFilenameRegex": "^(?!\\.)(.*)\\.(?:7z|dirksimple|ogv|zip)$",
+      "amStartArguments": "-n com.retroarch/com.retroarch.browser.retroactivity.RetroActivityFuture --es CONFIGFILE /storage/emulated/0/Android/data/com.retroarch/files/retroarch.cfg --es LIBRETRO /data/data/com.retroarch/cores/dirksimple_libretro_android.so --es ROM {file.path}",
+      "killPackageProcesses": false,
+      "killPackageProcessesWarning": true,
+      "extra": ""
+    }
+  ]
+}

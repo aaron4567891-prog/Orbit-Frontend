@@ -1,0 +1,21 @@
+{
+  "databaseVersion": 14,
+  "revisionNumber": 2,
+  "platform": {
+    "name": "Tandy Color Computer",
+    "uniqueId": "coco",
+    "shortname": "coco",
+    "description": null,
+    "acceptedFilenameRegex": "^(?!\\.)(.*)\\.(?:cas|ccc|dsk|rom)$",
+    "scraperSourceList": [],
+    "boxArtAspectRatioId": 0,
+    "useCustomBoxArtAspectRatio": false,
+    "customBoxArtAspectRatio": null,
+    "screenAspectRatioId": 1,
+    "useCustomScreenAspectRatio": false,
+    "customScreenAspectRatio": null,
+    "retroAchievementsConsoleIdList": [],
+    "extra": ""
+  },
+  "playerList": []
+}

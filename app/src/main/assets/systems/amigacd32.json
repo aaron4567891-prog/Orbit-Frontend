@@ -1,0 +1,112 @@
+{
+  "databaseVersion": 14,
+  "revisionNumber": 2,
+  "platform": {
+    "name": "Commodore Amiga CD32",
+    "uniqueId": "amigacd32",
+    "shortname": "amigacd32",
+    "description": null,
+    "acceptedFilenameRegex": "^(?!\\.)(.*)\\.(?:7z|adf|adz|ccd|chd|cue|dms|fdi|hdf|hdz|ipf|iso|lha|m3u|mds|nrg|rp9|uae|zip)$",
+    "scraperSourceList": [],
+    "boxArtAspectRatioId": 0,
+    "useCustomBoxArtAspectRatio": false,
+    "customBoxArtAspectRatio": null,
+    "screenAspectRatioId": 1,
+    "useCustomScreenAspectRatio": false,
+    "customScreenAspectRatio": null,
+    "retroAchievementsConsoleIdList": [],
+    "extra": ""
+  },
+  "playerList": [
+    {
+      "name": "RetroArch (64 bits) - PUAE",
+      "uniqueId": "esde.amigacd32.31f962ad19af",
+      "description": "Supported extensions: 7z, adf, adz, ccd, chd, cue, dms, fdi, hdf, hdz, ipf, iso, lha, m3u, mds, nrg, rp9, uae, zip.",
+      "acceptedFilenameRegex": "^(?!\\.)(.*)\\.(?:7z|adf|adz|ccd|chd|cue|dms|fdi|hdf|hdz|ipf|iso|lha|m3u|mds|nrg|rp9|uae|zip)$",
+      "amStartArguments": "-n com.retroarch.aarch64/com.retroarch.browser.retroactivity.RetroActivityFuture --es CONFIGFILE /storage/emulated/0/Android/data/com.retroarch.aarch64/files/retroarch.cfg --es LIBRETRO /data/data/com.retroarch.aarch64/cores/puae_libretro_android.so --es ROM {file.path}",
+      "killPackageProcesses": false,
+      "killPackageProcessesWarning": true,
+      "extra": ""
+    },
+    {
+      "name": "RetroArch (32 bits) - PUAE",
+      "uniqueId": "esde.amigacd32.837f5cc96548",
+      "description": "Supported extensions: 7z, adf, adz, ccd, chd, cue, dms, fdi, hdf, hdz, ipf, iso, lha, m3u, mds, nrg, rp9, uae, zip.",
+      "acceptedFilenameRegex": "^(?!\\.)(.*)\\.(?:7z|adf|adz|ccd|chd|cue|dms|fdi|hdf|hdz|ipf|iso|lha|m3u|mds|nrg|rp9|uae|zip)$",
+      "amStartArguments": "-n com.retroarch.ra32/com.retroarch.browser.retroactivity.RetroActivityFuture --es CONFIGFILE /storage/emulated/0/Android/data/com.retroarch.ra32/files/retroarch.cfg --es LIBRETRO /data/data/com.retroarch.ra32/cores/puae_libretro_android.so --es ROM {file.path}",
+      "killPackageProcesses": false,
+      "killPackageProcessesWarning": true,
+      "extra": ""
+    },
+    {
+      "name": "RetroArch - PUAE",
+      "uniqueId": "esde.amigacd32.10e2a4211e28",
+      "description": "Supported extensions: 7z, adf, adz, ccd, chd, cue, dms, fdi, hdf, hdz, ipf, iso, lha, m3u, mds, nrg, rp9, uae, zip.",
+      "acceptedFilenameRegex": "^(?!\\.)(.*)\\.(?:7z|adf|adz|ccd|chd|cue|dms|fdi|hdf|hdz|ipf|iso|lha|m3u|mds|nrg|rp9|uae|zip)$",
+      "amStartArguments": "-n com.retroarch/com.retroarch.browser.retroactivity.RetroActivityFuture --es CONFIGFILE /storage/emulated/0/Android/data/com.retroarch/files/retroarch.cfg --es LIBRETRO /data/data/com.retroarch/cores/puae_libretro_android.so --es ROM {file.path}",
+      "killPackageProcesses": false,
+      "killPackageProcessesWarning": true,
+      "extra": ""
+    },
+    {
+      "name": "RetroArch (64 bits) - PUAE 2021",
+      "uniqueId": "esde.amigacd32.c3962223832d",
+      "description": "Supported extensions: 7z, adf, adz, ccd, chd, cue, dms, fdi, hdf, hdz, ipf, iso, lha, m3u, mds, nrg, rp9, uae, zip.",
+      "acceptedFilenameRegex": "^(?!\\.)(.*)\\.(?:7z|adf|adz|ccd|chd|cue|dms|fdi|hdf|hdz|ipf|iso|lha|m3u|mds|nrg|rp9|uae|zip)$",
+      "amStartArguments": "-n com.retroarch.aarch64/com.retroarch.browser.retroactivity.RetroActivityFuture --es CONFIGFILE /storage/emulated/0/Android/data/com.retroarch.aarch64/files/retroarch.cfg --es LIBRETRO /data/data/com.retroarch.aarch64/cores/puae2021_libretro_android.so --es ROM {file.path}",
+      "killPackageProcesses": false,
+      "killPackageProcessesWarning": true,
+      "extra": ""
+    },
+    {
+      "name": "RetroArch (32 bits) - PUAE 2021",
+      "uniqueId": "esde.amigacd32.d603afa82e4f",
+      "description": "Supported extensions: 7z, adf, adz, ccd, chd, cue, dms, fdi, hdf, hdz, ipf, iso, lha, m3u, mds, nrg, rp9, uae, zip.",
+      "acceptedFilenameRegex": "^(?!\\.)(.*)\\.(?:7z|adf|adz|ccd|chd|cue|dms|fdi|hdf|hdz|ipf|iso|lha|m3u|mds|nrg|rp9|uae|zip)$",
+      "amStartArguments": "-n com.retroarch.ra32/com.retroarch.browser.retroactivity.RetroActivityFuture --es CONFIGFILE /storage/emulated/0/Android/data/com.retroarch.ra32/files/retroarch.cfg --es LIBRETRO /data/data/com.retroarch.ra32/cores/puae2021_libretro_android.so --es ROM {file.path}",
+      "killPackageProcesses": false,
+      "killPackageProcessesWarning": true,
+      "extra": ""
+    },
+    {
+      "name": "RetroArch - PUAE 2021",
+      "uniqueId": "esde.amigacd32.04aa1063858e",
+      "description": "Supported extensions: 7z, adf, adz, ccd, chd, cue, dms, fdi, hdf, hdz, ipf, iso, lha, m3u, mds, nrg, rp9, uae, zip.",
+      "acceptedFilenameRegex": "^(?!\\.)(.*)\\.(?:7z|adf|adz|ccd|chd|cue|dms|fdi|hdf|hdz|ipf|iso|lha|m3u|mds|nrg|rp9|uae|zip)$",
+      "amStartArguments": "-n com.retroarch/com.retroarch.browser.retroactivity.RetroActivityFuture --es CONFIGFILE /storage/emulated/0/Android/data/com.retroarch/files/retroarch.cfg --es LIBRETRO /data/data/com.retroarch/cores/puae2021_libretro_android.so --es ROM {file.path}",
+      "killPackageProcesses": false,
+      "killPackageProcessesWarning": true,
+      "extra": ""
+    },
+    {
+      "name": "RetroArch (64 bits) - Amiberry",
+      "uniqueId": "esde.amigacd32.f913cdd21628",
+      "description": "Supported extensions: 7z, adf, adz, ccd, chd, cue, dms, fdi, hdf, hdz, ipf, iso, lha, m3u, mds, nrg, rp9, uae, zip.",
+      "acceptedFilenameRegex": "^(?!\\.)(.*)\\.(?:7z|adf|adz|ccd|chd|cue|dms|fdi|hdf|hdz|ipf|iso|lha|m3u|mds|nrg|rp9|uae|zip)$",
+      "amStartArguments": "-n com.retroarch.aarch64/com.retroarch.browser.retroactivity.RetroActivityFuture --es CONFIGFILE /storage/emulated/0/Android/data/com.retroarch.aarch64/files/retroarch.cfg --es LIBRETRO /data/data/com.retroarch.aarch64/cores/amiberry_libretro_android.so --es ROM {file.path}",
+      "killPackageProcesses": false,
+      "killPackageProcessesWarning": true,
+      "extra": ""
+    },
+    {
+      "name": "RetroArch (32 bits) - Amiberry",
+      "uniqueId": "esde.amigacd32.b8796905bcfc",
+      "description": "Supported extensions: 7z, adf, adz, ccd, chd, cue, dms, fdi, hdf, hdz, ipf, iso, lha, m3u, mds, nrg, rp9, uae, zip.",
+      "acceptedFilenameRegex": "^(?!\\.)(.*)\\.(?:7z|adf|adz|ccd|chd|cue|dms|fdi|hdf|hdz|ipf|iso|lha|m3u|mds|nrg|rp9|uae|zip)$",
+      "amStartArguments": "-n com.retroarch.ra32/com.retroarch.browser.retroactivity.RetroActivityFuture --es CONFIGFILE /storage/emulated/0/Android/data/com.retroarch.ra32/files/retroarch.cfg --es LIBRETRO /data/data/com.retroarch.ra32/cores/amiberry_libretro_android.so --es ROM {file.path}",
+      "killPackageProcesses": false,
+      "killPackageProcessesWarning": true,
+      "extra": ""
+    },
+    {
+      "name": "RetroArch - Amiberry",
+      "uniqueId": "esde.amigacd32.d3700bd64243",
+      "description": "Supported extensions: 7z, adf, adz, ccd, chd, cue, dms, fdi, hdf, hdz, ipf, iso, lha, m3u, mds, nrg, rp9, uae, zip.",
+      "acceptedFilenameRegex": "^(?!\\.)(.*)\\.(?:7z|adf|adz|ccd|chd|cue|dms|fdi|hdf|hdz|ipf|iso|lha|m3u|mds|nrg|rp9|uae|zip)$",
+      "amStartArguments": "-n com.retroarch/com.retroarch.browser.retroactivity.RetroActivityFuture --es CONFIGFILE /storage/emulated/0/Android/data/com.retroarch/files/retroarch.cfg --es LIBRETRO /data/data/com.retroarch/cores/amiberry_libretro_android.so --es ROM {file.path}",
+      "killPackageProcesses": false,
+      "killPackageProcessesWarning": true,
+      "extra": ""
+    }
+  ]
+}

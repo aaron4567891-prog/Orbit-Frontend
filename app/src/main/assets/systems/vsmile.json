@@ -1,0 +1,32 @@
+{
+  "databaseVersion": 14,
+  "revisionNumber": 2,
+  "platform": {
+    "name": "VTech V.Smile",
+    "uniqueId": "vsmile",
+    "shortname": "vsmile",
+    "description": null,
+    "acceptedFilenameRegex": "^(?!\\.)(.*)\\.(?:7z|bin|zip)$",
+    "scraperSourceList": [],
+    "boxArtAspectRatioId": 0,
+    "useCustomBoxArtAspectRatio": false,
+    "customBoxArtAspectRatio": null,
+    "screenAspectRatioId": 1,
+    "useCustomScreenAspectRatio": false,
+    "customScreenAspectRatio": null,
+    "retroAchievementsConsoleIdList": [],
+    "extra": ""
+  },
+  "playerList": [
+    {
+      "name": "D.Smile",
+      "uniqueId": "esde.vsmile.871e68132085",
+      "description": "Supported extensions: 7z, bin, zip.",
+      "acceptedFilenameRegex": "^(?!\\.)(.*)\\.(?:7z|bin|zip)$",
+      "amStartArguments": "-n com.dsmile.emulator/.ui.EmuActivity -a android.intent.action.VIEW -d {file.uri}",
+      "killPackageProcesses": false,
+      "killPackageProcessesWarning": true,
+      "extra": ""
+    }
+  ]
+}

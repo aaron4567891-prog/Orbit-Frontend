@@ -1,0 +1,42 @@
+{
+  "databaseVersion": 14,
+  "revisionNumber": 2,
+  "platform": {
+    "name": "MGT SAM Coupé",
+    "uniqueId": "samcoupe",
+    "shortname": "samcoupe",
+    "description": null,
+    "acceptedFilenameRegex": "^(?!\\.)(.*)\\.(?:7z|dsk|mgt|sad|sbt|zip)$",
+    "scraperSourceList": [],
+    "boxArtAspectRatioId": 0,
+    "useCustomBoxArtAspectRatio": false,
+    "customBoxArtAspectRatio": null,
+    "screenAspectRatioId": 1,
+    "useCustomScreenAspectRatio": false,
+    "customScreenAspectRatio": null,
+    "retroAchievementsConsoleIdList": [],
+    "extra": ""
+  },
+  "playerList": [
+    {
+      "name": "Speccy",
+      "uniqueId": "esde.samcoupe.8f1a415c35e5",
+      "description": "Supported extensions: 7z, dsk, mgt, sad, sbt, zip.",
+      "acceptedFilenameRegex": "^(?!\\.)(.*)\\.(?:7z|dsk|mgt|sad|sbt|zip)$",
+      "amStartArguments": "-n com.fms.speccy.deluxe/com.fms.emulib.TVActivity --activity-clear-task --activity-clear-top -a android.intent.action.VIEW -d {file.uri}",
+      "killPackageProcesses": false,
+      "killPackageProcessesWarning": true,
+      "extra": ""
+    },
+    {
+      "name": "Speccy (variant 2)",
+      "uniqueId": "esde.samcoupe.796aedd9f659",
+      "description": "Supported extensions: 7z, dsk, mgt, sad, sbt, zip.",
+      "acceptedFilenameRegex": "^(?!\\.)(.*)\\.(?:7z|dsk|mgt|sad|sbt|zip)$",
+      "amStartArguments": "-n com.fms.speccy/com.fms.emulib.TVActivity --activity-clear-task --activity-clear-top -a android.intent.action.VIEW -d {file.uri}",
+      "killPackageProcesses": false,
+      "killPackageProcessesWarning": true,
+      "extra": ""
+    }
+  ]
+}

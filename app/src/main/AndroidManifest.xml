@@ -1,0 +1,28 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+    <uses-permission android:name="android.permission.INTERNET"/>
+    <queries>
+        <intent><action android:name="android.intent.action.VIEW"/><data android:mimeType="*/*"/></intent>
+        <intent><action android:name="android.intent.action.MAIN"/><category android:name="android.intent.category.LAUNCHER"/></intent>
+    </queries>
+    <uses-feature android:name="android.hardware.gamepad" android:required="false"/>
+    <application android:theme="@android:style/Theme.Material.NoActionBar" android:label="Orbit" android:allowBackup="false" android:supportsRtl="true" android:resizeableActivity="true">
+        <provider android:name=".XboxDiscProvider" android:authorities="${applicationId}.xbox-disc" android:exported="false" android:grantUriPermissions="true"/>
+        <service android:name=".BackToOrbitService" android:label="@string/back_to_orbit_label" android:permission="android.permission.BIND_ACCESSIBILITY_SERVICE" android:exported="true">
+            <intent-filter><action android:name="android.accessibilityservice.AccessibilityService"/></intent-filter>
+            <meta-data android:name="android.accessibilityservice" android:resource="@xml/back_to_orbit_service"/>
+        </service>
+        <activity android:name=".ScraperActivity" android:exported="false"/>
+        <activity android:name=".MediaTransferActivity" android:enableOnBackInvokedCallback="true" android:configChanges="orientation|screenSize|smallestScreenSize|screenLayout|density" android:exported="false"/>
+        <activity android:name=".AppsActivity" android:exported="false"/>
+        <activity android:name=".LibrarySettingsActivity" android:exported="false"/>
+        <activity android:name=".CompanionActivity" android:configChanges="orientation|screenSize|smallestScreenSize|screenLayout|density" android:exported="false" android:launchMode="singleTask" android:taskAffinity="au.orbit.frontend.companion"/>
+        <activity android:name=".MainActivity" android:configChanges="orientation|screenSize|smallestScreenSize|screenLayout|density" android:exported="true" android:launchMode="singleTask">
+            <intent-filter><action android:name="android.intent.action.MAIN"/><category android:name="android.intent.category.LAUNCHER"/></intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"/>
+                <category android:name="android.intent.category.HOME"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+            </intent-filter>
+        </activity>
+    </application>
+</manifest>

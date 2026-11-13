@@ -1,0 +1,42 @@
+{
+  "databaseVersion": 14,
+  "revisionNumber": 2,
+  "platform": {
+    "name": "Coleco Adam",
+    "uniqueId": "adam",
+    "shortname": "adam",
+    "description": null,
+    "acceptedFilenameRegex": "^(?!\\.)(.*)\\.(?:1dd|7z|bin|col|cqi|cqm|d77|d88|ddp|dfi|dsk|hfe|imd|mfi|mfm|rom|td0|wav|zip)$",
+    "scraperSourceList": [],
+    "boxArtAspectRatioId": 0,
+    "useCustomBoxArtAspectRatio": false,
+    "customBoxArtAspectRatio": null,
+    "screenAspectRatioId": 1,
+    "useCustomScreenAspectRatio": false,
+    "customScreenAspectRatio": null,
+    "retroAchievementsConsoleIdList": [],
+    "extra": ""
+  },
+  "playerList": [
+    {
+      "name": "ColEm",
+      "uniqueId": "esde.adam.af5f4b4b2f8c",
+      "description": "Supported extensions: 1dd, 7z, bin, col, cqi, cqm, d77, d88, ddp, dfi, dsk, hfe, imd, mfi, mfm, rom, td0, wav, zip.",
+      "acceptedFilenameRegex": "^(?!\\.)(.*)\\.(?:1dd|7z|bin|col|cqi|cqm|d77|d88|ddp|dfi|dsk|hfe|imd|mfi|mfm|rom|td0|wav|zip)$",
+      "amStartArguments": "-n com.fms.colem.deluxe/com.fms.emulib.TVActivity --activity-clear-task --activity-clear-top -a android.intent.action.VIEW -d {file.uri}",
+      "killPackageProcesses": false,
+      "killPackageProcessesWarning": true,
+      "extra": ""
+    },
+    {
+      "name": "ColEm (variant 2)",
+      "uniqueId": "esde.adam.5f0a5ac02d56",
+      "description": "Supported extensions: 1dd, 7z, bin, col, cqi, cqm, d77, d88, ddp, dfi, dsk, hfe, imd, mfi, mfm, rom, td0, wav, zip.",
+      "acceptedFilenameRegex": "^(?!\\.)(.*)\\.(?:1dd|7z|bin|col|cqi|cqm|d77|d88|ddp|dfi|dsk|hfe|imd|mfi|mfm|rom|td0|wav|zip)$",
+      "amStartArguments": "-n com.fms.colem/com.fms.emulib.TVActivity --activity-clear-task --activity-clear-top -a android.intent.action.VIEW -d {file.uri}",
+      "killPackageProcesses": false,
+      "killPackageProcessesWarning": true,
+      "extra": ""
+    }
+  ]
+}

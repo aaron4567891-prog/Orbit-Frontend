@@ -1,0 +1,21 @@
+<theme>
+<variables><accent>72b6ff</accent><background>081426</background><textSize>0.032</textSize></variables>
+<colorScheme name="ocean"><variables><background>092d4a</background><accent>67e8db</accent></variables></colorScheme>
+<fontSize name="large"><variables><textSize>0.042</textSize></variables></fontSize>
+<include>./layout/common.xml</include>
+<view name="system">
+<text name="eyebrow"><pos>0.065 0.13</pos><size>0.45 0.05</size><text>EXPLORE YOUR COLLECTION</text><fontSize>0.025</fontSize><color>${accent}</color></text>
+<text name="name"><pos>0.065 0.24</pos><size>0.48 0.16</size><systemdata>fullname</systemdata><fontSize>0.065</fontSize><color>ffffff</color></text>
+<text name="count"><pos>0.065 0.43</pos><size>0.4 0.07</size><systemdata>gamecountGames</systemdata><fontSize>${textSize}</fontSize><color>${accent}</color></text>
+<carousel name="systems"><pos>0.58 0.17</pos><size>0.33 0.58</size><defaultImage>./art/controller.svg</defaultImage><type>horizontal</type></carousel>
+<text name="hint"><pos>0.065 0.82</pos><size>0.8 0.07</size><text>Orbit XML Demo · An imported ES-DE theme</text><fontSize>0.025</fontSize><color>9eb7cf</color></text>
+</view>
+<view name="gamelist">
+<text name="title"><pos>0.05 0.045</pos><size>0.88 0.065</size><metadata>systemFullname</metadata><color>${accent}</color><fontSize>0.04</fontSize></text>
+<textlist name="games"><pos>0.045 0.16</pos><size>0.43 0.78</size><fontSize>${textSize}</fontSize><primaryColor>ccd7e6</primaryColor><selectedColor>${accent}</selectedColor></textlist>
+<image name="cover"><pos>0.54 0.17</pos><size>0.39 0.48</size><imageType>cover</imageType></image>
+<text name="gameName"><pos>0.53 0.69</pos><size>0.41 0.1</size><metadata>name</metadata><fontSize>0.035</fontSize><color>ffffff</color></text>
+<text name="description"><pos>0.53 0.80</pos><size>0.41 0.15</size><metadata>description</metadata><fontSize>0.021</fontSize><color>9eb7cf</color></text>
+</view>
+<variant name="video"><view name="gamelist"><video name="preview"><pos>0.54 0.17</pos><size>0.39 0.48</size><imageType>screenshot</imageType><delay>0.5</delay><zIndex>5</zIndex></video></view></variant>
+</theme>

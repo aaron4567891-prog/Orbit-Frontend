@@ -1,0 +1,7 @@
+.gradle/
+.kotlin/
+**/build/
+local.properties
+screenscraper-local.properties
+*.iml
+__pycache__/

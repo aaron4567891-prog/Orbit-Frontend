@@ -1,0 +1,52 @@
+{
+  "databaseVersion": 14,
+  "revisionNumber": 2,
+  "platform": {
+    "name": "Thomson TO8",
+    "uniqueId": "to8",
+    "shortname": "to8",
+    "description": null,
+    "acceptedFilenameRegex": "^(?!\\.)(.*)\\.(?:7z|fd|k7|m5|m7|rom|sap|zip)$",
+    "scraperSourceList": [],
+    "boxArtAspectRatioId": 0,
+    "useCustomBoxArtAspectRatio": false,
+    "customBoxArtAspectRatio": null,
+    "screenAspectRatioId": 1,
+    "useCustomScreenAspectRatio": false,
+    "customScreenAspectRatio": null,
+    "retroAchievementsConsoleIdList": [],
+    "extra": ""
+  },
+  "playerList": [
+    {
+      "name": "RetroArch (64 bits) - Theodore",
+      "uniqueId": "esde.to8.e05f0dc7b6d9",
+      "description": "Supported extensions: 7z, fd, k7, m5, m7, rom, sap, zip.",
+      "acceptedFilenameRegex": "^(?!\\.)(.*)\\.(?:7z|fd|k7|m5|m7|rom|sap|zip)$",
+      "amStartArguments": "-n com.retroarch.aarch64/com.retroarch.browser.retroactivity.RetroActivityFuture --es CONFIGFILE /storage/emulated/0/Android/data/com.retroarch.aarch64/files/retroarch.cfg --es LIBRETRO /data/data/com.retroarch.aarch64/cores/theodore_libretro_android.so --es ROM {file.path}",
+      "killPackageProcesses": false,
+      "killPackageProcessesWarning": true,
+      "extra": ""
+    },
+    {
+      "name": "RetroArch (32 bits) - Theodore",
+      "uniqueId": "esde.to8.990b2281291e",
+      "description": "Supported extensions: 7z, fd, k7, m5, m7, rom, sap, zip.",
+      "acceptedFilenameRegex": "^(?!\\.)(.*)\\.(?:7z|fd|k7|m5|m7|rom|sap|zip)$",
+      "amStartArguments": "-n com.retroarch.ra32/com.retroarch.browser.retroactivity.RetroActivityFuture --es CONFIGFILE /storage/emulated/0/Android/data/com.retroarch.ra32/files/retroarch.cfg --es LIBRETRO /data/data/com.retroarch.ra32/cores/theodore_libretro_android.so --es ROM {file.path}",
+      "killPackageProcesses": false,
+      "killPackageProcessesWarning": true,
+      "extra": ""
+    },
+    {
+      "name": "RetroArch - Theodore",
+      "uniqueId": "esde.to8.ebe8f44aec6c",
+      "description": "Supported extensions: 7z, fd, k7, m5, m7, rom, sap, zip.",
+      "acceptedFilenameRegex": "^(?!\\.)(.*)\\.(?:7z|fd|k7|m5|m7|rom|sap|zip)$",
+      "amStartArguments": "-n com.retroarch/com.retroarch.browser.retroactivity.RetroActivityFuture --es CONFIGFILE /storage/emulated/0/Android/data/com.retroarch/files/retroarch.cfg --es LIBRETRO /data/data/com.retroarch/cores/theodore_libretro_android.so --es ROM {file.path}",
+      "killPackageProcesses": false,
+      "killPackageProcessesWarning": true,
+      "extra": ""
+    }
+  ]
+}

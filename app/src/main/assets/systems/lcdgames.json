@@ -1,0 +1,92 @@
+{
+  "databaseVersion": 14,
+  "revisionNumber": 2,
+  "platform": {
+    "name": "LCD Handheld Games",
+    "uniqueId": "lcdgames",
+    "shortname": "lcdgames",
+    "description": null,
+    "acceptedFilenameRegex": "^(?!\\.)(.*)\\.(?:7z|mgw|zip)$",
+    "scraperSourceList": [],
+    "boxArtAspectRatioId": 0,
+    "useCustomBoxArtAspectRatio": false,
+    "customBoxArtAspectRatio": null,
+    "screenAspectRatioId": 1,
+    "useCustomScreenAspectRatio": false,
+    "customScreenAspectRatio": null,
+    "retroAchievementsConsoleIdList": [],
+    "extra": ""
+  },
+  "playerList": [
+    {
+      "name": "RetroArch (64 bits) - Multi (MESS)",
+      "uniqueId": "esde.lcdgames.d1308cf682a0",
+      "description": "Supported extensions: 7z, mgw, zip.",
+      "acceptedFilenameRegex": "^(?!\\.)(.*)\\.(?:7z|mgw|zip)$",
+      "amStartArguments": "-n com.retroarch.aarch64/com.retroarch.browser.retroactivity.RetroActivityFuture --es CONFIGFILE /storage/emulated/0/Android/data/com.retroarch.aarch64/files/retroarch.cfg --es LIBRETRO /data/data/com.retroarch.aarch64/cores/mamemess_libretro_android.so --es ROM {file.path}",
+      "killPackageProcesses": false,
+      "killPackageProcessesWarning": true,
+      "extra": ""
+    },
+    {
+      "name": "RetroArch (32 bits) - Multi (MESS)",
+      "uniqueId": "esde.lcdgames.70c5cdbc34eb",
+      "description": "Supported extensions: 7z, mgw, zip.",
+      "acceptedFilenameRegex": "^(?!\\.)(.*)\\.(?:7z|mgw|zip)$",
+      "amStartArguments": "-n com.retroarch.ra32/com.retroarch.browser.retroactivity.RetroActivityFuture --es CONFIGFILE /storage/emulated/0/Android/data/com.retroarch.ra32/files/retroarch.cfg --es LIBRETRO /data/data/com.retroarch.ra32/cores/mamemess_libretro_android.so --es ROM {file.path}",
+      "killPackageProcesses": false,
+      "killPackageProcessesWarning": true,
+      "extra": ""
+    },
+    {
+      "name": "RetroArch - Multi (MESS)",
+      "uniqueId": "esde.lcdgames.e6ec118b415a",
+      "description": "Supported extensions: 7z, mgw, zip.",
+      "acceptedFilenameRegex": "^(?!\\.)(.*)\\.(?:7z|mgw|zip)$",
+      "amStartArguments": "-n com.retroarch/com.retroarch.browser.retroactivity.RetroActivityFuture --es CONFIGFILE /storage/emulated/0/Android/data/com.retroarch/files/retroarch.cfg --es LIBRETRO /data/data/com.retroarch/cores/mamemess_libretro_android.so --es ROM {file.path}",
+      "killPackageProcesses": false,
+      "killPackageProcessesWarning": true,
+      "extra": ""
+    },
+    {
+      "name": "MAME4droid Current",
+      "uniqueId": "esde.lcdgames.f440c32d5271",
+      "description": "Supported extensions: 7z, mgw, zip.",
+      "acceptedFilenameRegex": "^(?!\\.)(.*)\\.(?:7z|mgw|zip)$",
+      "amStartArguments": "-n com.seleuco.mame4d2024/com.seleuco.mame4droid.MAME4droid -a android.intent.action.VIEW -d {file.uri}",
+      "killPackageProcesses": false,
+      "killPackageProcessesWarning": true,
+      "extra": ""
+    },
+    {
+      "name": "RetroArch (64 bits) - Handheld Electronic (GW)",
+      "uniqueId": "esde.lcdgames.bc6957a4d6af",
+      "description": "Supported extensions: 7z, mgw, zip.",
+      "acceptedFilenameRegex": "^(?!\\.)(.*)\\.(?:7z|mgw|zip)$",
+      "amStartArguments": "-n com.retroarch.aarch64/com.retroarch.browser.retroactivity.RetroActivityFuture --es CONFIGFILE /storage/emulated/0/Android/data/com.retroarch.aarch64/files/retroarch.cfg --es LIBRETRO /data/data/com.retroarch.aarch64/cores/gw_libretro_android.so --es ROM {file.path}",
+      "killPackageProcesses": false,
+      "killPackageProcessesWarning": true,
+      "extra": ""
+    },
+    {
+      "name": "RetroArch (32 bits) - Handheld Electronic (GW)",
+      "uniqueId": "esde.lcdgames.005f23147a61",
+      "description": "Supported extensions: 7z, mgw, zip.",
+      "acceptedFilenameRegex": "^(?!\\.)(.*)\\.(?:7z|mgw|zip)$",
+      "amStartArguments": "-n com.retroarch.ra32/com.retroarch.browser.retroactivity.RetroActivityFuture --es CONFIGFILE /storage/emulated/0/Android/data/com.retroarch.ra32/files/retroarch.cfg --es LIBRETRO /data/data/com.retroarch.ra32/cores/gw_libretro_android.so --es ROM {file.path}",
+      "killPackageProcesses": false,
+      "killPackageProcessesWarning": true,
+      "extra": ""
+    },
+    {
+      "name": "RetroArch - Handheld Electronic (GW)",
+      "uniqueId": "esde.lcdgames.2f2939f5f3cc",
+      "description": "Supported extensions: 7z, mgw, zip.",
+      "acceptedFilenameRegex": "^(?!\\.)(.*)\\.(?:7z|mgw|zip)$",
+      "amStartArguments": "-n com.retroarch/com.retroarch.browser.retroactivity.RetroActivityFuture --es CONFIGFILE /storage/emulated/0/Android/data/com.retroarch/files/retroarch.cfg --es LIBRETRO /data/data/com.retroarch/cores/gw_libretro_android.so --es ROM {file.path}",
+      "killPackageProcesses": false,
+      "killPackageProcessesWarning": true,
+      "extra": ""
+    }
+  ]
+}

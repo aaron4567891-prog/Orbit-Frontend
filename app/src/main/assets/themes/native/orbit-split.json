@@ -1,0 +1,17 @@
+{
+  "format": "orbit-native",
+  "version": 1,
+  "id": "orbit-split",
+  "name": "3DS",
+  "description": "Aqua Blue styling inspired by the 3DS. Browse rounded console tiles on the bottom screen with full-screen hero artwork on top.",
+  "systemLayout": "cards",
+  "libraryScreen": "bottom",
+  "gameListFraction": 0.54,
+  "colors": {
+    "background": "#092D3D",
+    "surface": "#125465",
+    "accent": "#58D7DA",
+    "text": "#F0FCFF",
+    "muted": "#ADD8DF"
+  }
+}

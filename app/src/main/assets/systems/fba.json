@@ -1,0 +1,172 @@
+{
+  "databaseVersion": 14,
+  "revisionNumber": 2,
+  "platform": {
+    "name": "FinalBurn Alpha",
+    "uniqueId": "fba",
+    "shortname": "fba",
+    "description": null,
+    "acceptedFilenameRegex": "^(?!\\.)(.*)\\.(?:7z|iso|zip)$",
+    "scraperSourceList": [],
+    "boxArtAspectRatioId": 0,
+    "useCustomBoxArtAspectRatio": false,
+    "customBoxArtAspectRatio": null,
+    "screenAspectRatioId": 1,
+    "useCustomScreenAspectRatio": false,
+    "customScreenAspectRatio": null,
+    "retroAchievementsConsoleIdList": [],
+    "extra": ""
+  },
+  "playerList": [
+    {
+      "name": "RetroArch (64 bits) - FB Alpha 2012",
+      "uniqueId": "esde.fba.5695bad39f4a",
+      "description": "Supported extensions: 7z, iso, zip.",
+      "acceptedFilenameRegex": "^(?!\\.)(.*)\\.(?:7z|iso|zip)$",
+      "amStartArguments": "-n com.retroarch.aarch64/com.retroarch.browser.retroactivity.RetroActivityFuture --es CONFIGFILE /storage/emulated/0/Android/data/com.retroarch.aarch64/files/retroarch.cfg --es LIBRETRO /data/data/com.retroarch.aarch64/cores/fbalpha2012_libretro_android.so --es ROM {file.path}",
+      "killPackageProcesses": false,
+      "killPackageProcessesWarning": true,
+      "extra": ""
+    },
+    {
+      "name": "RetroArch (32 bits) - FB Alpha 2012",
+      "uniqueId": "esde.fba.97c18ca23363",
+      "description": "Supported extensions: 7z, iso, zip.",
+      "acceptedFilenameRegex": "^(?!\\.)(.*)\\.(?:7z|iso|zip)$",
+      "amStartArguments": "-n com.retroarch.ra32/com.retroarch.browser.retroactivity.RetroActivityFuture --es CONFIGFILE /storage/emulated/0/Android/data/com.retroarch.ra32/files/retroarch.cfg --es LIBRETRO /data/data/com.retroarch.ra32/cores/fbalpha2012_libretro_android.so --es ROM {file.path}",
+      "killPackageProcesses": false,
+      "killPackageProcessesWarning": true,
+      "extra": ""
+    },
+    {
+      "name": "RetroArch - FB Alpha 2012",
+      "uniqueId": "esde.fba.c68cf3c48c9e",
+      "description": "Supported extensions: 7z, iso, zip.",
+      "acceptedFilenameRegex": "^(?!\\.)(.*)\\.(?:7z|iso|zip)$",
+      "amStartArguments": "-n com.retroarch/com.retroarch.browser.retroactivity.RetroActivityFuture --es CONFIGFILE /storage/emulated/0/Android/data/com.retroarch/files/retroarch.cfg --es LIBRETRO /data/data/com.retroarch/cores/fbalpha2012_libretro_android.so --es ROM {file.path}",
+      "killPackageProcesses": false,
+      "killPackageProcessesWarning": true,
+      "extra": ""
+    },
+    {
+      "name": "RetroArch (64 bits) - FB Alpha 2012 Neo Geo",
+      "uniqueId": "esde.fba.4f78358143f3",
+      "description": "Supported extensions: 7z, iso, zip.",
+      "acceptedFilenameRegex": "^(?!\\.)(.*)\\.(?:7z|iso|zip)$",
+      "amStartArguments": "-n com.retroarch.aarch64/com.retroarch.browser.retroactivity.RetroActivityFuture --es CONFIGFILE /storage/emulated/0/Android/data/com.retroarch.aarch64/files/retroarch.cfg --es LIBRETRO /data/data/com.retroarch.aarch64/cores/fbalpha2012_neogeo_libretro_android.so --es ROM {file.path}",
+      "killPackageProcesses": false,
+      "killPackageProcessesWarning": true,
+      "extra": ""
+    },
+    {
+      "name": "RetroArch (32 bits) - FB Alpha 2012 Neo Geo",
+      "uniqueId": "esde.fba.948adc096baf",
+      "description": "Supported extensions: 7z, iso, zip.",
+      "acceptedFilenameRegex": "^(?!\\.)(.*)\\.(?:7z|iso|zip)$",
+      "amStartArguments": "-n com.retroarch.ra32/com.retroarch.browser.retroactivity.RetroActivityFuture --es CONFIGFILE /storage/emulated/0/Android/data/com.retroarch.ra32/files/retroarch.cfg --es LIBRETRO /data/data/com.retroarch.ra32/cores/fbalpha2012_neogeo_libretro_android.so --es ROM {file.path}",
+      "killPackageProcesses": false,
+      "killPackageProcessesWarning": true,
+      "extra": ""
+    },
+    {
+      "name": "RetroArch - FB Alpha 2012 Neo Geo",
+      "uniqueId": "esde.fba.a9b25a711885",
+      "description": "Supported extensions: 7z, iso, zip.",
+      "acceptedFilenameRegex": "^(?!\\.)(.*)\\.(?:7z|iso|zip)$",
+      "amStartArguments": "-n com.retroarch/com.retroarch.browser.retroactivity.RetroActivityFuture --es CONFIGFILE /storage/emulated/0/Android/data/com.retroarch/files/retroarch.cfg --es LIBRETRO /data/data/com.retroarch/cores/fbalpha2012_neogeo_libretro_android.so --es ROM {file.path}",
+      "killPackageProcesses": false,
+      "killPackageProcessesWarning": true,
+      "extra": ""
+    },
+    {
+      "name": "RetroArch (64 bits) - FB Alpha 2012 CPS-1",
+      "uniqueId": "esde.fba.0c1977484b37",
+      "description": "Supported extensions: 7z, iso, zip.",
+      "acceptedFilenameRegex": "^(?!\\.)(.*)\\.(?:7z|iso|zip)$",
+      "amStartArguments": "-n com.retroarch.aarch64/com.retroarch.browser.retroactivity.RetroActivityFuture --es CONFIGFILE /storage/emulated/0/Android/data/com.retroarch.aarch64/files/retroarch.cfg --es LIBRETRO /data/data/com.retroarch.aarch64/cores/fbalpha2012_cps1_libretro_android.so --es ROM {file.path}",
+      "killPackageProcesses": false,
+      "killPackageProcessesWarning": true,
+      "extra": ""
+    },
+    {
+      "name": "RetroArch (32 bits) - FB Alpha 2012 CPS-1",
+      "uniqueId": "esde.fba.504787990fb9",
+      "description": "Supported extensions: 7z, iso, zip.",
+      "acceptedFilenameRegex": "^(?!\\.)(.*)\\.(?:7z|iso|zip)$",
+      "amStartArguments": "-n com.retroarch.ra32/com.retroarch.browser.retroactivity.RetroActivityFuture --es CONFIGFILE /storage/emulated/0/Android/data/com.retroarch.ra32/files/retroarch.cfg --es LIBRETRO /data/data/com.retroarch.ra32/cores/fbalpha2012_cps1_libretro_android.so --es ROM {file.path}",
+      "killPackageProcesses": false,
+      "killPackageProcessesWarning": true,
+      "extra": ""
+    },
+    {
+      "name": "RetroArch - FB Alpha 2012 CPS-1",
+      "uniqueId": "esde.fba.815b06df0402",
+      "description": "Supported extensions: 7z, iso, zip.",
+      "acceptedFilenameRegex": "^(?!\\.)(.*)\\.(?:7z|iso|zip)$",
+      "amStartArguments": "-n com.retroarch/com.retroarch.browser.retroactivity.RetroActivityFuture --es CONFIGFILE /storage/emulated/0/Android/data/com.retroarch/files/retroarch.cfg --es LIBRETRO /data/data/com.retroarch/cores/fbalpha2012_cps1_libretro_android.so --es ROM {file.path}",
+      "killPackageProcesses": false,
+      "killPackageProcessesWarning": true,
+      "extra": ""
+    },
+    {
+      "name": "RetroArch (64 bits) - FB Alpha 2012 CPS-2",
+      "uniqueId": "esde.fba.ca2b83f16a0a",
+      "description": "Supported extensions: 7z, iso, zip.",
+      "acceptedFilenameRegex": "^(?!\\.)(.*)\\.(?:7z|iso|zip)$",
+      "amStartArguments": "-n com.retroarch.aarch64/com.retroarch.browser.retroactivity.RetroActivityFuture --es CONFIGFILE /storage/emulated/0/Android/data/com.retroarch.aarch64/files/retroarch.cfg --es LIBRETRO /data/data/com.retroarch.aarch64/cores/fbalpha2012_cps2_libretro_android.so --es ROM {file.path}",
+      "killPackageProcesses": false,
+      "killPackageProcessesWarning": true,
+      "extra": ""
+    },
+    {
+      "name": "RetroArch (32 bits) - FB Alpha 2012 CPS-2",
+      "uniqueId": "esde.fba.a2361009c05d",
+      "description": "Supported extensions: 7z, iso, zip.",
+      "acceptedFilenameRegex": "^(?!\\.)(.*)\\.(?:7z|iso|zip)$",
+      "amStartArguments": "-n com.retroarch.ra32/com.retroarch.browser.retroactivity.RetroActivityFuture --es CONFIGFILE /storage/emulated/0/Android/data/com.retroarch.ra32/files/retroarch.cfg --es LIBRETRO /data/data/com.retroarch.ra32/cores/fbalpha2012_cps2_libretro_android.so --es ROM {file.path}",
+      "killPackageProcesses": false,
+      "killPackageProcessesWarning": true,
+      "extra": ""
+    },
+    {
+      "name": "RetroArch - FB Alpha 2012 CPS-2",
+      "uniqueId": "esde.fba.9e6a7d43afc3",
+      "description": "Supported extensions: 7z, iso, zip.",
+      "acceptedFilenameRegex": "^(?!\\.)(.*)\\.(?:7z|iso|zip)$",
+      "amStartArguments": "-n com.retroarch/com.retroarch.browser.retroactivity.RetroActivityFuture --es CONFIGFILE /storage/emulated/0/Android/data/com.retroarch/files/retroarch.cfg --es LIBRETRO /data/data/com.retroarch/cores/fbalpha2012_cps2_libretro_android.so --es ROM {file.path}",
+      "killPackageProcesses": false,
+      "killPackageProcessesWarning": true,
+      "extra": ""
+    },
+    {
+      "name": "RetroArch (64 bits) - FB Alpha 2012 CPS-3",
+      "uniqueId": "esde.fba.f12efd363c63",
+      "description": "Supported extensions: 7z, iso, zip.",
+      "acceptedFilenameRegex": "^(?!\\.)(.*)\\.(?:7z|iso|zip)$",
+      "amStartArguments": "-n com.retroarch.aarch64/com.retroarch.browser.retroactivity.RetroActivityFuture --es CONFIGFILE /storage/emulated/0/Android/data/com.retroarch.aarch64/files/retroarch.cfg --es LIBRETRO /data/data/com.retroarch.aarch64/cores/fbalpha2012_cps3_libretro_android.so --es ROM {file.path}",
+      "killPackageProcesses": false,
+      "killPackageProcessesWarning": true,
+      "extra": ""
+    },
+    {
+      "name": "RetroArch (32 bits) - FB Alpha 2012 CPS-3",
+      "uniqueId": "esde.fba.561390f96790",
+      "description": "Supported extensions: 7z, iso, zip.",
+      "acceptedFilenameRegex": "^(?!\\.)(.*)\\.(?:7z|iso|zip)$",
+      "amStartArguments": "-n com.retroarch.ra32/com.retroarch.browser.retroactivity.RetroActivityFuture --es CONFIGFILE /storage/emulated/0/Android/data/com.retroarch.ra32/files/retroarch.cfg --es LIBRETRO /data/data/com.retroarch.ra32/cores/fbalpha2012_cps3_libretro_android.so --es ROM {file.path}",
+      "killPackageProcesses": false,
+      "killPackageProcessesWarning": true,
+      "extra": ""
+    },
+    {
+      "name": "RetroArch - FB Alpha 2012 CPS-3",
+      "uniqueId": "esde.fba.62465cea75cd",
+      "description": "Supported extensions: 7z, iso, zip.",
+      "acceptedFilenameRegex": "^(?!\\.)(.*)\\.(?:7z|iso|zip)$",
+      "amStartArguments": "-n com.retroarch/com.retroarch.browser.retroactivity.RetroActivityFuture --es CONFIGFILE /storage/emulated/0/Android/data/com.retroarch/files/retroarch.cfg --es LIBRETRO /data/data/com.retroarch/cores/fbalpha2012_cps3_libretro_android.so --es ROM {file.path}",
+      "killPackageProcesses": false,
+      "killPackageProcessesWarning": true,
+      "extra": ""
+    }
+  ]
+}

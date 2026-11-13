@@ -1,0 +1,62 @@
+{
+  "databaseVersion": 14,
+  "revisionNumber": 2,
+  "platform": {
+    "name": "Othello Multivision",
+    "uniqueId": "multivision",
+    "shortname": "multivision",
+    "description": null,
+    "acceptedFilenameRegex": "^(?!\\.)(.*)\\.(?:7z|bin|gg|rom|sg|sms|zip)$",
+    "scraperSourceList": [],
+    "boxArtAspectRatioId": 0,
+    "useCustomBoxArtAspectRatio": false,
+    "customBoxArtAspectRatio": null,
+    "screenAspectRatioId": 1,
+    "useCustomScreenAspectRatio": false,
+    "customScreenAspectRatio": null,
+    "retroAchievementsConsoleIdList": [],
+    "extra": ""
+  },
+  "playerList": [
+    {
+      "name": "RetroArch (64 bits) - Gearsystem",
+      "uniqueId": "esde.multivision.b895c4e0b47e",
+      "description": "Supported extensions: 7z, bin, gg, rom, sg, sms, zip.",
+      "acceptedFilenameRegex": "^(?!\\.)(.*)\\.(?:7z|bin|gg|rom|sg|sms|zip)$",
+      "amStartArguments": "-n com.retroarch.aarch64/com.retroarch.browser.retroactivity.RetroActivityFuture --es CONFIGFILE /storage/emulated/0/Android/data/com.retroarch.aarch64/files/retroarch.cfg --es LIBRETRO /data/data/com.retroarch.aarch64/cores/gearsystem_libretro_android.so --es ROM {file.path}",
+      "killPackageProcesses": false,
+      "killPackageProcessesWarning": true,
+      "extra": ""
+    },
+    {
+      "name": "RetroArch (32 bits) - Gearsystem",
+      "uniqueId": "esde.multivision.44c558b91b93",
+      "description": "Supported extensions: 7z, bin, gg, rom, sg, sms, zip.",
+      "acceptedFilenameRegex": "^(?!\\.)(.*)\\.(?:7z|bin|gg|rom|sg|sms|zip)$",
+      "amStartArguments": "-n com.retroarch.ra32/com.retroarch.browser.retroactivity.RetroActivityFuture --es CONFIGFILE /storage/emulated/0/Android/data/com.retroarch.ra32/files/retroarch.cfg --es LIBRETRO /data/data/com.retroarch.ra32/cores/gearsystem_libretro_android.so --es ROM {file.path}",
+      "killPackageProcesses": false,
+      "killPackageProcessesWarning": true,
+      "extra": ""
+    },
+    {
+      "name": "RetroArch - Gearsystem",
+      "uniqueId": "esde.multivision.25172a476383",
+      "description": "Supported extensions: 7z, bin, gg, rom, sg, sms, zip.",
+      "acceptedFilenameRegex": "^(?!\\.)(.*)\\.(?:7z|bin|gg|rom|sg|sms|zip)$",
+      "amStartArguments": "-n com.retroarch/com.retroarch.browser.retroactivity.RetroActivityFuture --es CONFIGFILE /storage/emulated/0/Android/data/com.retroarch/files/retroarch.cfg --es LIBRETRO /data/data/com.retroarch/cores/gearsystem_libretro_android.so --es ROM {file.path}",
+      "killPackageProcesses": false,
+      "killPackageProcessesWarning": true,
+      "extra": ""
+    },
+    {
+      "name": "MasterGear",
+      "uniqueId": "esde.multivision.a7163736e29c",
+      "description": "Supported extensions: 7z, bin, gg, rom, sg, sms, zip.",
+      "acceptedFilenameRegex": "^(?!\\.)(.*)\\.(?:7z|bin|gg|rom|sg|sms|zip)$",
+      "amStartArguments": "-n com.fms.mg/com.fms.emulib.TVActivity --activity-clear-task --activity-clear-top -a android.intent.action.VIEW -d {file.uri}",
+      "killPackageProcesses": false,
+      "killPackageProcessesWarning": true,
+      "extra": ""
+    }
+  ]
+}

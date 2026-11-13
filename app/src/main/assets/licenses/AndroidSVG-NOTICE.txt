@@ -1,0 +1,4 @@
+AndroidSVG, by Paul LeBeau
+https://bigbadaboom.github.io/androidsvg/
+Licensed under the Apache License, Version 2.0.
+Used for static SVG rendering in imported ES-DE themes.

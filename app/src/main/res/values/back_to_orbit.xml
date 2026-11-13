@@ -1,0 +1,4 @@
+<resources>
+    <string name="back_to_orbit_label">Orbit: Back to frontend</string>
+    <string name="back_to_orbit_description">Returns the companion screen to Orbit when physical Back or B is pressed in another app on that display. Replaces that app’s normal Back action. Orbit checks the active window’s app and display to limit this shortcut to the companion screen. No screen text is saved or sent.</string>
+</resources>

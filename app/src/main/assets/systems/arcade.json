@@ -1,0 +1,432 @@
+{
+  "databaseVersion": 14,
+  "revisionNumber": 2,
+  "platform": {
+    "name": "Arcade",
+    "uniqueId": "arcade",
+    "shortname": "arcade",
+    "description": null,
+    "acceptedFilenameRegex": "^(?!\\.)(.*)\\.(?:7z|cmd|neo|zip)$",
+    "scraperSourceList": [],
+    "boxArtAspectRatioId": 0,
+    "useCustomBoxArtAspectRatio": false,
+    "customBoxArtAspectRatio": null,
+    "screenAspectRatioId": 1,
+    "useCustomScreenAspectRatio": false,
+    "customScreenAspectRatio": null,
+    "retroAchievementsConsoleIdList": [],
+    "extra": ""
+  },
+  "playerList": [
+    {
+      "name": "RetroArch (64 bits) - MAME - Current",
+      "uniqueId": "esde.arcade.db1c9a24377c",
+      "description": "Supported extensions: 7z, cmd, neo, zip.",
+      "acceptedFilenameRegex": "^(?!\\.)(.*)\\.(?:7z|cmd|neo|zip)$",
+      "amStartArguments": "-n com.retroarch.aarch64/com.retroarch.browser.retroactivity.RetroActivityFuture --es CONFIGFILE /storage/emulated/0/Android/data/com.retroarch.aarch64/files/retroarch.cfg --es LIBRETRO /data/data/com.retroarch.aarch64/cores/mamearcade_libretro_android.so --es ROM {file.path}",
+      "killPackageProcesses": false,
+      "killPackageProcessesWarning": true,
+      "extra": ""
+    },
+    {
+      "name": "RetroArch (32 bits) - MAME - Current",
+      "uniqueId": "esde.arcade.a530e8cb2cf9",
+      "description": "Supported extensions: 7z, cmd, neo, zip.",
+      "acceptedFilenameRegex": "^(?!\\.)(.*)\\.(?:7z|cmd|neo|zip)$",
+      "amStartArguments": "-n com.retroarch.ra32/com.retroarch.browser.retroactivity.RetroActivityFuture --es CONFIGFILE /storage/emulated/0/Android/data/com.retroarch.ra32/files/retroarch.cfg --es LIBRETRO /data/data/com.retroarch.ra32/cores/mamearcade_libretro_android.so --es ROM {file.path}",
+      "killPackageProcesses": false,
+      "killPackageProcessesWarning": true,
+      "extra": ""
+    },
+    {
+      "name": "RetroArch - MAME - Current",
+      "uniqueId": "esde.arcade.768aee4c5f22",
+      "description": "Supported extensions: 7z, cmd, neo, zip.",
+      "acceptedFilenameRegex": "^(?!\\.)(.*)\\.(?:7z|cmd|neo|zip)$",
+      "amStartArguments": "-n com.retroarch/com.retroarch.browser.retroactivity.RetroActivityFuture --es CONFIGFILE /storage/emulated/0/Android/data/com.retroarch/files/retroarch.cfg --es LIBRETRO /data/data/com.retroarch/cores/mamearcade_libretro_android.so --es ROM {file.path}",
+      "killPackageProcesses": false,
+      "killPackageProcessesWarning": true,
+      "extra": ""
+    },
+    {
+      "name": "RetroArch (64 bits) - MAME 2010",
+      "uniqueId": "esde.arcade.8f6b1c076e79",
+      "description": "Supported extensions: 7z, cmd, neo, zip.",
+      "acceptedFilenameRegex": "^(?!\\.)(.*)\\.(?:7z|cmd|neo|zip)$",
+      "amStartArguments": "-n com.retroarch.aarch64/com.retroarch.browser.retroactivity.RetroActivityFuture --es CONFIGFILE /storage/emulated/0/Android/data/com.retroarch.aarch64/files/retroarch.cfg --es LIBRETRO /data/data/com.retroarch.aarch64/cores/mame2010_libretro_android.so --es ROM {file.path}",
+      "killPackageProcesses": false,
+      "killPackageProcessesWarning": true,
+      "extra": ""
+    },
+    {
+      "name": "RetroArch (32 bits) - MAME 2010",
+      "uniqueId": "esde.arcade.97ad070febc3",
+      "description": "Supported extensions: 7z, cmd, neo, zip.",
+      "acceptedFilenameRegex": "^(?!\\.)(.*)\\.(?:7z|cmd|neo|zip)$",
+      "amStartArguments": "-n com.retroarch.ra32/com.retroarch.browser.retroactivity.RetroActivityFuture --es CONFIGFILE /storage/emulated/0/Android/data/com.retroarch.ra32/files/retroarch.cfg --es LIBRETRO /data/data/com.retroarch.ra32/cores/mame2010_libretro_android.so --es ROM {file.path}",
+      "killPackageProcesses": false,
+      "killPackageProcessesWarning": true,
+      "extra": ""
+    },
+    {
+      "name": "RetroArch - MAME 2010",
+      "uniqueId": "esde.arcade.624a3a14629e",
+      "description": "Supported extensions: 7z, cmd, neo, zip.",
+      "acceptedFilenameRegex": "^(?!\\.)(.*)\\.(?:7z|cmd|neo|zip)$",
+      "amStartArguments": "-n com.retroarch/com.retroarch.browser.retroactivity.RetroActivityFuture --es CONFIGFILE /storage/emulated/0/Android/data/com.retroarch/files/retroarch.cfg --es LIBRETRO /data/data/com.retroarch/cores/mame2010_libretro_android.so --es ROM {file.path}",
+      "killPackageProcesses": false,
+      "killPackageProcessesWarning": true,
+      "extra": ""
+    },
+    {
+      "name": "RetroArch (64 bits) - MAME 2003-Plus",
+      "uniqueId": "esde.arcade.a5c8b4cd6067",
+      "description": "Supported extensions: 7z, cmd, neo, zip.",
+      "acceptedFilenameRegex": "^(?!\\.)(.*)\\.(?:7z|cmd|neo|zip)$",
+      "amStartArguments": "-n com.retroarch.aarch64/com.retroarch.browser.retroactivity.RetroActivityFuture --es CONFIGFILE /storage/emulated/0/Android/data/com.retroarch.aarch64/files/retroarch.cfg --es LIBRETRO /data/data/com.retroarch.aarch64/cores/mame2003_plus_libretro_android.so --es ROM {file.path}",
+      "killPackageProcesses": false,
+      "killPackageProcessesWarning": true,
+      "extra": ""
+    },
+    {
+      "name": "RetroArch (32 bits) - MAME 2003-Plus",
+      "uniqueId": "esde.arcade.0de51a500c0a",
+      "description": "Supported extensions: 7z, cmd, neo, zip.",
+      "acceptedFilenameRegex": "^(?!\\.)(.*)\\.(?:7z|cmd|neo|zip)$",
+      "amStartArguments": "-n com.retroarch.ra32/com.retroarch.browser.retroactivity.RetroActivityFuture --es CONFIGFILE /storage/emulated/0/Android/data/com.retroarch.ra32/files/retroarch.cfg --es LIBRETRO /data/data/com.retroarch.ra32/cores/mame2003_plus_libretro_android.so --es ROM {file.path}",
+      "killPackageProcesses": false,
+      "killPackageProcessesWarning": true,
+      "extra": ""
+    },
+    {
+      "name": "RetroArch - MAME 2003-Plus",
+      "uniqueId": "esde.arcade.921c0971ffb7",
+      "description": "Supported extensions: 7z, cmd, neo, zip.",
+      "acceptedFilenameRegex": "^(?!\\.)(.*)\\.(?:7z|cmd|neo|zip)$",
+      "amStartArguments": "-n com.retroarch/com.retroarch.browser.retroactivity.RetroActivityFuture --es CONFIGFILE /storage/emulated/0/Android/data/com.retroarch/files/retroarch.cfg --es LIBRETRO /data/data/com.retroarch/cores/mame2003_plus_libretro_android.so --es ROM {file.path}",
+      "killPackageProcesses": false,
+      "killPackageProcessesWarning": true,
+      "extra": ""
+    },
+    {
+      "name": "RetroArch (64 bits) - MAME 2003",
+      "uniqueId": "esde.arcade.8c2a4559b17d",
+      "description": "Supported extensions: 7z, cmd, neo, zip.",
+      "acceptedFilenameRegex": "^(?!\\.)(.*)\\.(?:7z|cmd|neo|zip)$",
+      "amStartArguments": "-n com.retroarch.aarch64/com.retroarch.browser.retroactivity.RetroActivityFuture --es CONFIGFILE /storage/emulated/0/Android/data/com.retroarch.aarch64/files/retroarch.cfg --es LIBRETRO /data/data/com.retroarch.aarch64/cores/mame2003_libretro_android.so --es ROM {file.path}",
+      "killPackageProcesses": false,
+      "killPackageProcessesWarning": true,
+      "extra": ""
+    },
+    {
+      "name": "RetroArch (32 bits) - MAME 2003",
+      "uniqueId": "esde.arcade.82e286790cc8",
+      "description": "Supported extensions: 7z, cmd, neo, zip.",
+      "acceptedFilenameRegex": "^(?!\\.)(.*)\\.(?:7z|cmd|neo|zip)$",
+      "amStartArguments": "-n com.retroarch.ra32/com.retroarch.browser.retroactivity.RetroActivityFuture --es CONFIGFILE /storage/emulated/0/Android/data/com.retroarch.ra32/files/retroarch.cfg --es LIBRETRO /data/data/com.retroarch.ra32/cores/mame2003_libretro_android.so --es ROM {file.path}",
+      "killPackageProcesses": false,
+      "killPackageProcessesWarning": true,
+      "extra": ""
+    },
+    {
+      "name": "RetroArch - MAME 2003",
+      "uniqueId": "esde.arcade.cd317dd4ec7f",
+      "description": "Supported extensions: 7z, cmd, neo, zip.",
+      "acceptedFilenameRegex": "^(?!\\.)(.*)\\.(?:7z|cmd|neo|zip)$",
+      "amStartArguments": "-n com.retroarch/com.retroarch.browser.retroactivity.RetroActivityFuture --es CONFIGFILE /storage/emulated/0/Android/data/com.retroarch/files/retroarch.cfg --es LIBRETRO /data/data/com.retroarch/cores/mame2003_libretro_android.so --es ROM {file.path}",
+      "killPackageProcesses": false,
+      "killPackageProcessesWarning": true,
+      "extra": ""
+    },
+    {
+      "name": "RetroArch (64 bits) - MAME 2000",
+      "uniqueId": "esde.arcade.7d91bf9e4f7d",
+      "description": "Supported extensions: 7z, cmd, neo, zip.",
+      "acceptedFilenameRegex": "^(?!\\.)(.*)\\.(?:7z|cmd|neo|zip)$",
+      "amStartArguments": "-n com.retroarch.aarch64/com.retroarch.browser.retroactivity.RetroActivityFuture --es CONFIGFILE /storage/emulated/0/Android/data/com.retroarch.aarch64/files/retroarch.cfg --es LIBRETRO /data/data/com.retroarch.aarch64/cores/mame2000_libretro_android.so --es ROM {file.path}",
+      "killPackageProcesses": false,
+      "killPackageProcessesWarning": true,
+      "extra": ""
+    },
+    {
+      "name": "RetroArch (32 bits) - MAME 2000",
+      "uniqueId": "esde.arcade.9a35a52711ab",
+      "description": "Supported extensions: 7z, cmd, neo, zip.",
+      "acceptedFilenameRegex": "^(?!\\.)(.*)\\.(?:7z|cmd|neo|zip)$",
+      "amStartArguments": "-n com.retroarch.ra32/com.retroarch.browser.retroactivity.RetroActivityFuture --es CONFIGFILE /storage/emulated/0/Android/data/com.retroarch.ra32/files/retroarch.cfg --es LIBRETRO /data/data/com.retroarch.ra32/cores/mame2000_libretro_android.so --es ROM {file.path}",
+      "killPackageProcesses": false,
+      "killPackageProcessesWarning": true,
+      "extra": ""
+    },
+    {
+      "name": "RetroArch - MAME 2000",
+      "uniqueId": "esde.arcade.9e6d61e649ce",
+      "description": "Supported extensions: 7z, cmd, neo, zip.",
+      "acceptedFilenameRegex": "^(?!\\.)(.*)\\.(?:7z|cmd|neo|zip)$",
+      "amStartArguments": "-n com.retroarch/com.retroarch.browser.retroactivity.RetroActivityFuture --es CONFIGFILE /storage/emulated/0/Android/data/com.retroarch/files/retroarch.cfg --es LIBRETRO /data/data/com.retroarch/cores/mame2000_libretro_android.so --es ROM {file.path}",
+      "killPackageProcesses": false,
+      "killPackageProcessesWarning": true,
+      "extra": ""
+    },
+    {
+      "name": "RetroArch (64 bits) - HBMAME",
+      "uniqueId": "esde.arcade.aff375fed12d",
+      "description": "Supported extensions: 7z, cmd, neo, zip.",
+      "acceptedFilenameRegex": "^(?!\\.)(.*)\\.(?:7z|cmd|neo|zip)$",
+      "amStartArguments": "-n com.retroarch.aarch64/com.retroarch.browser.retroactivity.RetroActivityFuture --es CONFIGFILE /storage/emulated/0/Android/data/com.retroarch.aarch64/files/retroarch.cfg --es LIBRETRO /data/data/com.retroarch.aarch64/cores/hbmame_libretro_android.so --es ROM {file.path}",
+      "killPackageProcesses": false,
+      "killPackageProcessesWarning": true,
+      "extra": ""
+    },
+    {
+      "name": "RetroArch (32 bits) - HBMAME",
+      "uniqueId": "esde.arcade.c87d69ccb49a",
+      "description": "Supported extensions: 7z, cmd, neo, zip.",
+      "acceptedFilenameRegex": "^(?!\\.)(.*)\\.(?:7z|cmd|neo|zip)$",
+      "amStartArguments": "-n com.retroarch.ra32/com.retroarch.browser.retroactivity.RetroActivityFuture --es CONFIGFILE /storage/emulated/0/Android/data/com.retroarch.ra32/files/retroarch.cfg --es LIBRETRO /data/data/com.retroarch.ra32/cores/hbmame_libretro_android.so --es ROM {file.path}",
+      "killPackageProcesses": false,
+      "killPackageProcessesWarning": true,
+      "extra": ""
+    },
+    {
+      "name": "RetroArch - HBMAME",
+      "uniqueId": "esde.arcade.b0a81d39895a",
+      "description": "Supported extensions: 7z, cmd, neo, zip.",
+      "acceptedFilenameRegex": "^(?!\\.)(.*)\\.(?:7z|cmd|neo|zip)$",
+      "amStartArguments": "-n com.retroarch/com.retroarch.browser.retroactivity.RetroActivityFuture --es CONFIGFILE /storage/emulated/0/Android/data/com.retroarch/files/retroarch.cfg --es LIBRETRO /data/data/com.retroarch/cores/hbmame_libretro_android.so --es ROM {file.path}",
+      "killPackageProcesses": false,
+      "killPackageProcessesWarning": true,
+      "extra": ""
+    },
+    {
+      "name": "MAME4droid",
+      "uniqueId": "esde.arcade.240398b3dfd1",
+      "description": "Supported extensions: 7z, cmd, neo, zip.",
+      "acceptedFilenameRegex": "^(?!\\.)(.*)\\.(?:7z|cmd|neo|zip)$",
+      "amStartArguments": "-n com.seleuco.mame4droid/.MAME4droid -a android.intent.action.VIEW -d {file.uri}",
+      "killPackageProcesses": false,
+      "killPackageProcessesWarning": true,
+      "extra": ""
+    },
+    {
+      "name": "NEO.emu",
+      "uniqueId": "esde.arcade.ba973f0b0b8a",
+      "description": "Supported extensions: 7z, cmd, neo, zip.",
+      "acceptedFilenameRegex": "^(?!\\.)(.*)\\.(?:7z|cmd|neo|zip)$",
+      "amStartArguments": "-n com.explusalpha.NeoEmu/com.imagine.BaseActivity -d {file.uri}",
+      "killPackageProcesses": false,
+      "killPackageProcessesWarning": true,
+      "extra": ""
+    },
+    {
+      "name": "RetroArch (64 bits) - FinalBurn Neo",
+      "uniqueId": "esde.arcade.8b778718068d",
+      "description": "Supported extensions: 7z, cmd, neo, zip.",
+      "acceptedFilenameRegex": "^(?!\\.)(.*)\\.(?:7z|cmd|neo|zip)$",
+      "amStartArguments": "-n com.retroarch.aarch64/com.retroarch.browser.retroactivity.RetroActivityFuture --es CONFIGFILE /storage/emulated/0/Android/data/com.retroarch.aarch64/files/retroarch.cfg --es LIBRETRO /data/data/com.retroarch.aarch64/cores/fbneo_libretro_android.so --es ROM {file.path}",
+      "killPackageProcesses": false,
+      "killPackageProcessesWarning": true,
+      "extra": ""
+    },
+    {
+      "name": "RetroArch (32 bits) - FinalBurn Neo",
+      "uniqueId": "esde.arcade.5b859d19c73a",
+      "description": "Supported extensions: 7z, cmd, neo, zip.",
+      "acceptedFilenameRegex": "^(?!\\.)(.*)\\.(?:7z|cmd|neo|zip)$",
+      "amStartArguments": "-n com.retroarch.ra32/com.retroarch.browser.retroactivity.RetroActivityFuture --es CONFIGFILE /storage/emulated/0/Android/data/com.retroarch.ra32/files/retroarch.cfg --es LIBRETRO /data/data/com.retroarch.ra32/cores/fbneo_libretro_android.so --es ROM {file.path}",
+      "killPackageProcesses": false,
+      "killPackageProcessesWarning": true,
+      "extra": ""
+    },
+    {
+      "name": "RetroArch - FinalBurn Neo",
+      "uniqueId": "esde.arcade.d2f76a92ac42",
+      "description": "Supported extensions: 7z, cmd, neo, zip.",
+      "acceptedFilenameRegex": "^(?!\\.)(.*)\\.(?:7z|cmd|neo|zip)$",
+      "amStartArguments": "-n com.retroarch/com.retroarch.browser.retroactivity.RetroActivityFuture --es CONFIGFILE /storage/emulated/0/Android/data/com.retroarch/files/retroarch.cfg --es LIBRETRO /data/data/com.retroarch/cores/fbneo_libretro_android.so --es ROM {file.path}",
+      "killPackageProcesses": false,
+      "killPackageProcessesWarning": true,
+      "extra": ""
+    },
+    {
+      "name": "RetroArch (64 bits) - FB Alpha 2012",
+      "uniqueId": "esde.arcade.5695bad39f4a",
+      "description": "Supported extensions: 7z, cmd, neo, zip.",
+      "acceptedFilenameRegex": "^(?!\\.)(.*)\\.(?:7z|cmd|neo|zip)$",
+      "amStartArguments": "-n com.retroarch.aarch64/com.retroarch.browser.retroactivity.RetroActivityFuture --es CONFIGFILE /storage/emulated/0/Android/data/com.retroarch.aarch64/files/retroarch.cfg --es LIBRETRO /data/data/com.retroarch.aarch64/cores/fbalpha2012_libretro_android.so --es ROM {file.path}",
+      "killPackageProcesses": false,
+      "killPackageProcessesWarning": true,
+      "extra": ""
+    },
+    {
+      "name": "RetroArch (32 bits) - FB Alpha 2012",
+      "uniqueId": "esde.arcade.97c18ca23363",
+      "description": "Supported extensions: 7z, cmd, neo, zip.",
+      "acceptedFilenameRegex": "^(?!\\.)(.*)\\.(?:7z|cmd|neo|zip)$",
+      "amStartArguments": "-n com.retroarch.ra32/com.retroarch.browser.retroactivity.RetroActivityFuture --es CONFIGFILE /storage/emulated/0/Android/data/com.retroarch.ra32/files/retroarch.cfg --es LIBRETRO /data/data/com.retroarch.ra32/cores/fbalpha2012_libretro_android.so --es ROM {file.path}",
+      "killPackageProcesses": false,
+      "killPackageProcessesWarning": true,
+      "extra": ""
+    },
+    {
+      "name": "RetroArch - FB Alpha 2012",
+      "uniqueId": "esde.arcade.c68cf3c48c9e",
+      "description": "Supported extensions: 7z, cmd, neo, zip.",
+      "acceptedFilenameRegex": "^(?!\\.)(.*)\\.(?:7z|cmd|neo|zip)$",
+      "amStartArguments": "-n com.retroarch/com.retroarch.browser.retroactivity.RetroActivityFuture --es CONFIGFILE /storage/emulated/0/Android/data/com.retroarch/files/retroarch.cfg --es LIBRETRO /data/data/com.retroarch/cores/fbalpha2012_libretro_android.so --es ROM {file.path}",
+      "killPackageProcesses": false,
+      "killPackageProcessesWarning": true,
+      "extra": ""
+    },
+    {
+      "name": "RetroArch (64 bits) - Geolith",
+      "uniqueId": "esde.arcade.c50b8e624996",
+      "description": "Supported extensions: 7z, cmd, neo, zip.",
+      "acceptedFilenameRegex": "^(?!\\.)(.*)\\.(?:7z|cmd|neo|zip)$",
+      "amStartArguments": "-n com.retroarch.aarch64/com.retroarch.browser.retroactivity.RetroActivityFuture --es CONFIGFILE /storage/emulated/0/Android/data/com.retroarch.aarch64/files/retroarch.cfg --es LIBRETRO /data/data/com.retroarch.aarch64/cores/geolith_libretro_android.so --es ROM {file.path}",
+      "killPackageProcesses": false,
+      "killPackageProcessesWarning": true,
+      "extra": ""
+    },
+    {
+      "name": "RetroArch (32 bits) - Geolith",
+      "uniqueId": "esde.arcade.fe441f362d89",
+      "description": "Supported extensions: 7z, cmd, neo, zip.",
+      "acceptedFilenameRegex": "^(?!\\.)(.*)\\.(?:7z|cmd|neo|zip)$",
+      "amStartArguments": "-n com.retroarch.ra32/com.retroarch.browser.retroactivity.RetroActivityFuture --es CONFIGFILE /storage/emulated/0/Android/data/com.retroarch.ra32/files/retroarch.cfg --es LIBRETRO /data/data/com.retroarch.ra32/cores/geolith_libretro_android.so --es ROM {file.path}",
+      "killPackageProcesses": false,
+      "killPackageProcessesWarning": true,
+      "extra": ""
+    },
+    {
+      "name": "RetroArch - Geolith",
+      "uniqueId": "esde.arcade.db31961c702c",
+      "description": "Supported extensions: 7z, cmd, neo, zip.",
+      "acceptedFilenameRegex": "^(?!\\.)(.*)\\.(?:7z|cmd|neo|zip)$",
+      "amStartArguments": "-n com.retroarch/com.retroarch.browser.retroactivity.RetroActivityFuture --es CONFIGFILE /storage/emulated/0/Android/data/com.retroarch/files/retroarch.cfg --es LIBRETRO /data/data/com.retroarch/cores/geolith_libretro_android.so --es ROM {file.path}",
+      "killPackageProcesses": false,
+      "killPackageProcessesWarning": true,
+      "extra": ""
+    },
+    {
+      "name": "RetroArch (64 bits) - Flycast",
+      "uniqueId": "esde.arcade.f053d1f6681a",
+      "description": "Supported extensions: 7z, cmd, neo, zip.",
+      "acceptedFilenameRegex": "^(?!\\.)(.*)\\.(?:7z|cmd|neo|zip)$",
+      "amStartArguments": "-n com.retroarch.aarch64/com.retroarch.browser.retroactivity.RetroActivityFuture --es CONFIGFILE /storage/emulated/0/Android/data/com.retroarch.aarch64/files/retroarch.cfg --es LIBRETRO /data/data/com.retroarch.aarch64/cores/flycast_libretro_android.so --es ROM {file.path}",
+      "killPackageProcesses": false,
+      "killPackageProcessesWarning": true,
+      "extra": ""
+    },
+    {
+      "name": "RetroArch (32 bits) - Flycast",
+      "uniqueId": "esde.arcade.464dab1d4226",
+      "description": "Supported extensions: 7z, cmd, neo, zip.",
+      "acceptedFilenameRegex": "^(?!\\.)(.*)\\.(?:7z|cmd|neo|zip)$",
+      "amStartArguments": "-n com.retroarch.ra32/com.retroarch.browser.retroactivity.RetroActivityFuture --es CONFIGFILE /storage/emulated/0/Android/data/com.retroarch.ra32/files/retroarch.cfg --es LIBRETRO /data/data/com.retroarch.ra32/cores/flycast_libretro_android.so --es ROM {file.path}",
+      "killPackageProcesses": false,
+      "killPackageProcessesWarning": true,
+      "extra": ""
+    },
+    {
+      "name": "RetroArch - Flycast",
+      "uniqueId": "esde.arcade.fe447fc15641",
+      "description": "Supported extensions: 7z, cmd, neo, zip.",
+      "acceptedFilenameRegex": "^(?!\\.)(.*)\\.(?:7z|cmd|neo|zip)$",
+      "amStartArguments": "-n com.retroarch/com.retroarch.browser.retroactivity.RetroActivityFuture --es CONFIGFILE /storage/emulated/0/Android/data/com.retroarch/files/retroarch.cfg --es LIBRETRO /data/data/com.retroarch/cores/flycast_libretro_android.so --es ROM {file.path}",
+      "killPackageProcesses": false,
+      "killPackageProcessesWarning": true,
+      "extra": ""
+    },
+    {
+      "name": "Flycast",
+      "uniqueId": "esde.arcade.773bda088f8a",
+      "description": "Supported extensions: 7z, cmd, neo, zip.",
+      "acceptedFilenameRegex": "^(?!\\.)(.*)\\.(?:7z|cmd|neo|zip)$",
+      "amStartArguments": "-n com.flycast.emulator/com.flycast.emulator.MainActivity -a android.intent.action.VIEW -d {file.uri}",
+      "killPackageProcesses": false,
+      "killPackageProcessesWarning": true,
+      "extra": ""
+    },
+    {
+      "name": "Flycast (variant 2)",
+      "uniqueId": "esde.arcade.b15699c42a0c",
+      "description": "Supported extensions: 7z, cmd, neo, zip.",
+      "acceptedFilenameRegex": "^(?!\\.)(.*)\\.(?:7z|cmd|neo|zip)$",
+      "amStartArguments": "-n com.flycast.emulator/com.reicast.emulator.MainActivity -a android.intent.action.VIEW -d {file.uri}",
+      "killPackageProcesses": false,
+      "killPackageProcessesWarning": true,
+      "extra": ""
+    },
+    {
+      "name": "RetroArch (64 bits) - DICE",
+      "uniqueId": "esde.arcade.bbab026b22eb",
+      "description": "Supported extensions: 7z, cmd, neo, zip.",
+      "acceptedFilenameRegex": "^(?!\\.)(.*)\\.(?:7z|cmd|neo|zip)$",
+      "amStartArguments": "-n com.retroarch.aarch64/com.retroarch.browser.retroactivity.RetroActivityFuture --es CONFIGFILE /storage/emulated/0/Android/data/com.retroarch.aarch64/files/retroarch.cfg --es LIBRETRO /data/data/com.retroarch.aarch64/cores/dice_libretro_android.so --es ROM {file.path}",
+      "killPackageProcesses": false,
+      "killPackageProcessesWarning": true,
+      "extra": ""
+    },
+    {
+      "name": "RetroArch (32 bits) - DICE",
+      "uniqueId": "esde.arcade.0c7e87e1fe8c",
+      "description": "Supported extensions: 7z, cmd, neo, zip.",
+      "acceptedFilenameRegex": "^(?!\\.)(.*)\\.(?:7z|cmd|neo|zip)$",
+      "amStartArguments": "-n com.retroarch.ra32/com.retroarch.browser.retroactivity.RetroActivityFuture --es CONFIGFILE /storage/emulated/0/Android/data/com.retroarch.ra32/files/retroarch.cfg --es LIBRETRO /data/data/com.retroarch.ra32/cores/dice_libretro_android.so --es ROM {file.path}",
+      "killPackageProcesses": false,
+      "killPackageProcessesWarning": true,
+      "extra": ""
+    },
+    {
+      "name": "RetroArch - DICE",
+      "uniqueId": "esde.arcade.542172ac1b98",
+      "description": "Supported extensions: 7z, cmd, neo, zip.",
+      "acceptedFilenameRegex": "^(?!\\.)(.*)\\.(?:7z|cmd|neo|zip)$",
+      "amStartArguments": "-n com.retroarch/com.retroarch.browser.retroactivity.RetroActivityFuture --es CONFIGFILE /storage/emulated/0/Android/data/com.retroarch/files/retroarch.cfg --es LIBRETRO /data/data/com.retroarch/cores/dice_libretro_android.so --es ROM {file.path}",
+      "killPackageProcesses": false,
+      "killPackageProcessesWarning": true,
+      "extra": ""
+    },
+    {
+      "name": "RetroArch (64 bits) - Supermodel",
+      "uniqueId": "esde.arcade.bc84c589ad2e",
+      "description": "Supported extensions: 7z, cmd, neo, zip.",
+      "acceptedFilenameRegex": "^(?!\\.)(.*)\\.(?:7z|cmd|neo|zip)$",
+      "amStartArguments": "-n com.retroarch.aarch64/com.retroarch.browser.retroactivity.RetroActivityFuture --es CONFIGFILE /storage/emulated/0/Android/data/com.retroarch.aarch64/files/retroarch.cfg --es LIBRETRO /data/data/com.retroarch.aarch64/cores/supermodel_libretro_android.so --es ROM {file.path}",
+      "killPackageProcesses": false,
+      "killPackageProcessesWarning": true,
+      "extra": ""
+    },
+    {
+      "name": "RetroArch (32 bits) - Supermodel",
+      "uniqueId": "esde.arcade.8841c201bcb3",
+      "description": "Supported extensions: 7z, cmd, neo, zip.",
+      "acceptedFilenameRegex": "^(?!\\.)(.*)\\.(?:7z|cmd|neo|zip)$",
+      "amStartArguments": "-n com.retroarch.ra32/com.retroarch.browser.retroactivity.RetroActivityFuture --es CONFIGFILE /storage/emulated/0/Android/data/com.retroarch.ra32/files/retroarch.cfg --es LIBRETRO /data/data/com.retroarch.ra32/cores/supermodel_libretro_android.so --es ROM {file.path}",
+      "killPackageProcesses": false,
+      "killPackageProcessesWarning": true,
+      "extra": ""
+    },
+    {
+      "name": "RetroArch - Supermodel",
+      "uniqueId": "esde.arcade.b0faa534f6e5",
+      "description": "Supported extensions: 7z, cmd, neo, zip.",
+      "acceptedFilenameRegex": "^(?!\\.)(.*)\\.(?:7z|cmd|neo|zip)$",
+      "amStartArguments": "-n com.retroarch/com.retroarch.browser.retroactivity.RetroActivityFuture --es CONFIGFILE /storage/emulated/0/Android/data/com.retroarch/files/retroarch.cfg --es LIBRETRO /data/data/com.retroarch/cores/supermodel_libretro_android.so --es ROM {file.path}",
+      "killPackageProcesses": false,
+      "killPackageProcessesWarning": true,
+      "extra": ""
+    },
+    {
+      "name": "SUPER3",
+      "uniqueId": "esde.arcade.d40ae9671c3f",
+      "description": "Supported extensions: 7z, cmd, neo, zip.",
+      "acceptedFilenameRegex": "^(?!\\.)(.*)\\.(?:7z|cmd|neo|zip)$",
+      "amStartArguments": "-n com.izzy2lost.super3/com.izzy2lost.super3.MainActivity -a android.intent.action.VIEW -d {file.uri}",
+      "killPackageProcesses": false,
+      "killPackageProcessesWarning": true,
+      "extra": ""
+    }
+  ]
+}

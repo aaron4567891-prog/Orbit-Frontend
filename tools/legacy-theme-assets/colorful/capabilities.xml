@@ -1,0 +1,118 @@
+<themeCapabilities>
+   
+   <themeName>Colorful (Simplified)</themeName>
+
+   <!--
+   ///
+   Aspect Ratios
+   ///
+   -->
+   <aspectRatio>16:9</aspectRatio>
+   <aspectRatio>16:10</aspectRatio>
+   <aspectRatio>4:3</aspectRatio>
+   <aspectRatio>1:1</aspectRatio>
+
+   <!--
+   ///
+   Font Size
+   ///
+   -->
+   <fontSize>medium</fontSize>
+   <fontSize>large</fontSize>
+
+   <!--
+   ///
+   Color Schemes
+   ///
+   -->
+   <colorScheme name="colorful">
+      <label>Colorful</label>
+   </colorScheme>
+   <colorScheme name="colorful-dark">
+      <label>Colorful (Dark)</label>
+   </colorScheme>
+   <colorScheme name="oled">
+      <label>OLED</label>
+   </colorScheme>
+   <colorScheme name="dark">
+      <label>Dark</label>
+   </colorScheme>
+   <colorScheme name="light">
+      <label>Light</label>
+   </colorScheme>
+   <colorScheme name="retro-bright">
+      <label>Retro Bright</label>
+   </colorScheme>
+   <colorScheme name="dmg">
+      <label>DMG</label>
+   </colorScheme>
+   <colorScheme name="add-on">
+      <label>Add-on (See Readme)</label>
+   </colorScheme>
+
+   <!--
+   ///
+   Transitions
+   ///
+   -->
+   <transitions name="transitions">
+      <label>transitions</label>
+      <selectable>false</selectable>
+      <systemToSystem>instant</systemToSystem>
+      <systemToGamelist>instant</systemToGamelist>
+      <gamelistToGamelist>instant</gamelistToGamelist>
+      <gamelistToSystem>instant</gamelistToSystem>
+      <startupToSystem>fade</startupToSystem>
+      <startupToGamelist>fade</startupToGamelist>
+   </transitions>
+   <suppressTransitionProfiles>
+      <entry>builtin-instant</entry>
+      <entry>builtin-slide</entry>
+      <entry>builtin-fade</entry>
+   </suppressTransitionProfiles>
+
+   <!--
+   ///
+   Variants
+   ///
+   -->
+   <!-- Gamelist List -->
+   <variant name="gamelist-list-cover">
+      <label>List: Boxart</label>
+      <selectable>true</selectable>
+   </variant>
+   <variant name="gamelist-list-screenshot">
+      <label>List: Screenshot</label>
+      <selectable>true</selectable>
+   </variant>
+   <variant name="gamelist-list-screenshot-marquee">
+      <label>List: Screenshot + Marquee</label>
+      <selectable>true</selectable>
+   </variant>
+   <variant name="gamelist-list-titlescreen">
+      <label>List: Title Screen</label>
+      <selectable>true</selectable>
+   </variant>
+   <variant name="gamelist-list-physicalmedia">
+      <label>List: Physical Media</label>
+      <selectable>true</selectable>
+   </variant>
+   <variant name="gamelist-list-miximage">
+      <label>List: Miximage</label>
+      <selectable>true</selectable>
+   </variant>
+   <!-- Gamelist List w/ Metadata -->
+   <variant name="gamelist-list-metadata-screenshot-cover">
+      <label>List: Metadata &amp; Screenshot + Boxart</label>
+      <selectable>true</selectable>
+   </variant>
+   <variant name="gamelist-list-metadata-screenshot-marquee">
+      <label>List: Metadata &amp; Screenshot + Marquee</label>
+      <selectable>true</selectable>
+   </variant>
+   <variant name="gamelist-list-metadata-screenshot-physicalmedia">
+      <label>List: Metadata &amp; Screenshot + Physical Media</label>
+      <selectable>true</selectable>
+   </variant>
+
+</themeCapabilities>

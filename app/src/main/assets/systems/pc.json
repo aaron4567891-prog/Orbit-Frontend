@@ -1,0 +1,142 @@
+{
+  "databaseVersion": 14,
+  "revisionNumber": 2,
+  "platform": {
+    "name": "IBM PC",
+    "uniqueId": "pc",
+    "shortname": "pc",
+    "description": null,
+    "acceptedFilenameRegex": "^(?!\\.)(.*)\\.(?:7z|bat|com|conf|cue|dosz|exe|img|iso|zip)$",
+    "scraperSourceList": [],
+    "boxArtAspectRatioId": 0,
+    "useCustomBoxArtAspectRatio": false,
+    "customBoxArtAspectRatio": null,
+    "screenAspectRatioId": 1,
+    "useCustomScreenAspectRatio": false,
+    "customScreenAspectRatio": null,
+    "retroAchievementsConsoleIdList": [],
+    "extra": ""
+  },
+  "playerList": [
+    {
+      "name": "RetroArch (64 bits) - DOSBox-Pure",
+      "uniqueId": "esde.pc.d68617d1b62b",
+      "description": "Supported extensions: 7z, bat, com, conf, cue, dosz, exe, img, iso, zip.",
+      "acceptedFilenameRegex": "^(?!\\.)(.*)\\.(?:7z|bat|com|conf|cue|dosz|exe|img|iso|zip)$",
+      "amStartArguments": "-n com.retroarch.aarch64/com.retroarch.browser.retroactivity.RetroActivityFuture --es CONFIGFILE /storage/emulated/0/Android/data/com.retroarch.aarch64/files/retroarch.cfg --es LIBRETRO /data/data/com.retroarch.aarch64/cores/dosbox_pure_libretro_android.so --es ROM {file.path}",
+      "killPackageProcesses": false,
+      "killPackageProcessesWarning": true,
+      "extra": ""
+    },
+    {
+      "name": "RetroArch (32 bits) - DOSBox-Pure",
+      "uniqueId": "esde.pc.89b9a4530f63",
+      "description": "Supported extensions: 7z, bat, com, conf, cue, dosz, exe, img, iso, zip.",
+      "acceptedFilenameRegex": "^(?!\\.)(.*)\\.(?:7z|bat|com|conf|cue|dosz|exe|img|iso|zip)$",
+      "amStartArguments": "-n com.retroarch.ra32/com.retroarch.browser.retroactivity.RetroActivityFuture --es CONFIGFILE /storage/emulated/0/Android/data/com.retroarch.ra32/files/retroarch.cfg --es LIBRETRO /data/data/com.retroarch.ra32/cores/dosbox_pure_libretro_android.so --es ROM {file.path}",
+      "killPackageProcesses": false,
+      "killPackageProcessesWarning": true,
+      "extra": ""
+    },
+    {
+      "name": "RetroArch - DOSBox-Pure",
+      "uniqueId": "esde.pc.f333f34e5546",
+      "description": "Supported extensions: 7z, bat, com, conf, cue, dosz, exe, img, iso, zip.",
+      "acceptedFilenameRegex": "^(?!\\.)(.*)\\.(?:7z|bat|com|conf|cue|dosz|exe|img|iso|zip)$",
+      "amStartArguments": "-n com.retroarch/com.retroarch.browser.retroactivity.RetroActivityFuture --es CONFIGFILE /storage/emulated/0/Android/data/com.retroarch/files/retroarch.cfg --es LIBRETRO /data/data/com.retroarch/cores/dosbox_pure_libretro_android.so --es ROM {file.path}",
+      "killPackageProcesses": false,
+      "killPackageProcessesWarning": true,
+      "extra": ""
+    },
+    {
+      "name": "RetroArch (64 bits) - DOSBox-Core",
+      "uniqueId": "esde.pc.2fd6da19822d",
+      "description": "Supported extensions: 7z, bat, com, conf, cue, dosz, exe, img, iso, zip.",
+      "acceptedFilenameRegex": "^(?!\\.)(.*)\\.(?:7z|bat|com|conf|cue|dosz|exe|img|iso|zip)$",
+      "amStartArguments": "-n com.retroarch.aarch64/com.retroarch.browser.retroactivity.RetroActivityFuture --es CONFIGFILE /storage/emulated/0/Android/data/com.retroarch.aarch64/files/retroarch.cfg --es LIBRETRO /data/data/com.retroarch.aarch64/cores/dosbox_core_libretro_android.so --es ROM {file.path}",
+      "killPackageProcesses": false,
+      "killPackageProcessesWarning": true,
+      "extra": ""
+    },
+    {
+      "name": "RetroArch (32 bits) - DOSBox-Core",
+      "uniqueId": "esde.pc.bdcd8a448d7e",
+      "description": "Supported extensions: 7z, bat, com, conf, cue, dosz, exe, img, iso, zip.",
+      "acceptedFilenameRegex": "^(?!\\.)(.*)\\.(?:7z|bat|com|conf|cue|dosz|exe|img|iso|zip)$",
+      "amStartArguments": "-n com.retroarch.ra32/com.retroarch.browser.retroactivity.RetroActivityFuture --es CONFIGFILE /storage/emulated/0/Android/data/com.retroarch.ra32/files/retroarch.cfg --es LIBRETRO /data/data/com.retroarch.ra32/cores/dosbox_core_libretro_android.so --es ROM {file.path}",
+      "killPackageProcesses": false,
+      "killPackageProcessesWarning": true,
+      "extra": ""
+    },
+    {
+      "name": "RetroArch - DOSBox-Core",
+      "uniqueId": "esde.pc.7ede87569720",
+      "description": "Supported extensions: 7z, bat, com, conf, cue, dosz, exe, img, iso, zip.",
+      "acceptedFilenameRegex": "^(?!\\.)(.*)\\.(?:7z|bat|com|conf|cue|dosz|exe|img|iso|zip)$",
+      "amStartArguments": "-n com.retroarch/com.retroarch.browser.retroactivity.RetroActivityFuture --es CONFIGFILE /storage/emulated/0/Android/data/com.retroarch/files/retroarch.cfg --es LIBRETRO /data/data/com.retroarch/cores/dosbox_core_libretro_android.so --es ROM {file.path}",
+      "killPackageProcesses": false,
+      "killPackageProcessesWarning": true,
+      "extra": ""
+    },
+    {
+      "name": "RetroArch (64 bits) - DOSBox-SVN",
+      "uniqueId": "esde.pc.75ab80b75717",
+      "description": "Supported extensions: 7z, bat, com, conf, cue, dosz, exe, img, iso, zip.",
+      "acceptedFilenameRegex": "^(?!\\.)(.*)\\.(?:7z|bat|com|conf|cue|dosz|exe|img|iso|zip)$",
+      "amStartArguments": "-n com.retroarch.aarch64/com.retroarch.browser.retroactivity.RetroActivityFuture --es CONFIGFILE /storage/emulated/0/Android/data/com.retroarch.aarch64/files/retroarch.cfg --es LIBRETRO /data/data/com.retroarch.aarch64/cores/dosbox_svn_libretro_android.so --es ROM {file.path}",
+      "killPackageProcesses": false,
+      "killPackageProcessesWarning": true,
+      "extra": ""
+    },
+    {
+      "name": "RetroArch (32 bits) - DOSBox-SVN",
+      "uniqueId": "esde.pc.16c2ab5de8c3",
+      "description": "Supported extensions: 7z, bat, com, conf, cue, dosz, exe, img, iso, zip.",
+      "acceptedFilenameRegex": "^(?!\\.)(.*)\\.(?:7z|bat|com|conf|cue|dosz|exe|img|iso|zip)$",
+      "amStartArguments": "-n com.retroarch.ra32/com.retroarch.browser.retroactivity.RetroActivityFuture --es CONFIGFILE /storage/emulated/0/Android/data/com.retroarch.ra32/files/retroarch.cfg --es LIBRETRO /data/data/com.retroarch.ra32/cores/dosbox_svn_libretro_android.so --es ROM {file.path}",
+      "killPackageProcesses": false,
+      "killPackageProcessesWarning": true,
+      "extra": ""
+    },
+    {
+      "name": "RetroArch - DOSBox-SVN",
+      "uniqueId": "esde.pc.5d26201d7136",
+      "description": "Supported extensions: 7z, bat, com, conf, cue, dosz, exe, img, iso, zip.",
+      "acceptedFilenameRegex": "^(?!\\.)(.*)\\.(?:7z|bat|com|conf|cue|dosz|exe|img|iso|zip)$",
+      "amStartArguments": "-n com.retroarch/com.retroarch.browser.retroactivity.RetroActivityFuture --es CONFIGFILE /storage/emulated/0/Android/data/com.retroarch/files/retroarch.cfg --es LIBRETRO /data/data/com.retroarch/cores/dosbox_svn_libretro_android.so --es ROM {file.path}",
+      "killPackageProcesses": false,
+      "killPackageProcessesWarning": true,
+      "extra": ""
+    },
+    {
+      "name": "RetroArch (64 bits) - VirtualXT",
+      "uniqueId": "esde.pc.dda5995ff32a",
+      "description": "Supported extensions: 7z, bat, com, conf, cue, dosz, exe, img, iso, zip.",
+      "acceptedFilenameRegex": "^(?!\\.)(.*)\\.(?:7z|bat|com|conf|cue|dosz|exe|img|iso|zip)$",
+      "amStartArguments": "-n com.retroarch.aarch64/com.retroarch.browser.retroactivity.RetroActivityFuture --es CONFIGFILE /storage/emulated/0/Android/data/com.retroarch.aarch64/files/retroarch.cfg --es LIBRETRO /data/data/com.retroarch.aarch64/cores/virtualxt_libretro_android.so --es ROM {file.path}",
+      "killPackageProcesses": false,
+      "killPackageProcessesWarning": true,
+      "extra": ""
+    },
+    {
+      "name": "RetroArch (32 bits) - VirtualXT",
+      "uniqueId": "esde.pc.872a9b8ad57d",
+      "description": "Supported extensions: 7z, bat, com, conf, cue, dosz, exe, img, iso, zip.",
+      "acceptedFilenameRegex": "^(?!\\.)(.*)\\.(?:7z|bat|com|conf|cue|dosz|exe|img|iso|zip)$",
+      "amStartArguments": "-n com.retroarch.ra32/com.retroarch.browser.retroactivity.RetroActivityFuture --es CONFIGFILE /storage/emulated/0/Android/data/com.retroarch.ra32/files/retroarch.cfg --es LIBRETRO /data/data/com.retroarch.ra32/cores/virtualxt_libretro_android.so --es ROM {file.path}",
+      "killPackageProcesses": false,
+      "killPackageProcessesWarning": true,
+      "extra": ""
+    },
+    {
+      "name": "RetroArch - VirtualXT",
+      "uniqueId": "esde.pc.9252c18cc990",
+      "description": "Supported extensions: 7z, bat, com, conf, cue, dosz, exe, img, iso, zip.",
+      "acceptedFilenameRegex": "^(?!\\.)(.*)\\.(?:7z|bat|com|conf|cue|dosz|exe|img|iso|zip)$",
+      "amStartArguments": "-n com.retroarch/com.retroarch.browser.retroactivity.RetroActivityFuture --es CONFIGFILE /storage/emulated/0/Android/data/com.retroarch/files/retroarch.cfg --es LIBRETRO /data/data/com.retroarch/cores/virtualxt_libretro_android.so --es ROM {file.path}",
+      "killPackageProcesses": false,
+      "killPackageProcessesWarning": true,
+      "extra": ""
+    }
+  ]
+}

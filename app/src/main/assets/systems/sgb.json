@@ -1,0 +1,142 @@
+{
+  "databaseVersion": 14,
+  "revisionNumber": 2,
+  "platform": {
+    "name": "Nintendo Super Game Boy",
+    "uniqueId": "sgb",
+    "shortname": "sgb",
+    "description": null,
+    "acceptedFilenameRegex": "^(?!\\.)(.*)\\.(?:7z|gb|gbc|sgb|zip)$",
+    "scraperSourceList": [],
+    "boxArtAspectRatioId": 0,
+    "useCustomBoxArtAspectRatio": false,
+    "customBoxArtAspectRatio": null,
+    "screenAspectRatioId": 1,
+    "useCustomScreenAspectRatio": false,
+    "customScreenAspectRatio": null,
+    "retroAchievementsConsoleIdList": [],
+    "extra": ""
+  },
+  "playerList": [
+    {
+      "name": "RetroArch (64 bits) - Mesen-S",
+      "uniqueId": "esde.sgb.3857e85b38d9",
+      "description": "Supported extensions: 7z, gb, gbc, sgb, zip.",
+      "acceptedFilenameRegex": "^(?!\\.)(.*)\\.(?:7z|gb|gbc|sgb|zip)$",
+      "amStartArguments": "-n com.retroarch.aarch64/com.retroarch.browser.retroactivity.RetroActivityFuture --es CONFIGFILE /storage/emulated/0/Android/data/com.retroarch.aarch64/files/retroarch.cfg --es LIBRETRO /data/data/com.retroarch.aarch64/cores/mesen-s_libretro_android.so --es ROM {file.path}",
+      "killPackageProcesses": false,
+      "killPackageProcessesWarning": true,
+      "extra": ""
+    },
+    {
+      "name": "RetroArch (32 bits) - Mesen-S",
+      "uniqueId": "esde.sgb.3b0dd4eef96a",
+      "description": "Supported extensions: 7z, gb, gbc, sgb, zip.",
+      "acceptedFilenameRegex": "^(?!\\.)(.*)\\.(?:7z|gb|gbc|sgb|zip)$",
+      "amStartArguments": "-n com.retroarch.ra32/com.retroarch.browser.retroactivity.RetroActivityFuture --es CONFIGFILE /storage/emulated/0/Android/data/com.retroarch.ra32/files/retroarch.cfg --es LIBRETRO /data/data/com.retroarch.ra32/cores/mesen-s_libretro_android.so --es ROM {file.path}",
+      "killPackageProcesses": false,
+      "killPackageProcessesWarning": true,
+      "extra": ""
+    },
+    {
+      "name": "RetroArch - Mesen-S",
+      "uniqueId": "esde.sgb.9fd2c23e79b3",
+      "description": "Supported extensions: 7z, gb, gbc, sgb, zip.",
+      "acceptedFilenameRegex": "^(?!\\.)(.*)\\.(?:7z|gb|gbc|sgb|zip)$",
+      "amStartArguments": "-n com.retroarch/com.retroarch.browser.retroactivity.RetroActivityFuture --es CONFIGFILE /storage/emulated/0/Android/data/com.retroarch/files/retroarch.cfg --es LIBRETRO /data/data/com.retroarch/cores/mesen-s_libretro_android.so --es ROM {file.path}",
+      "killPackageProcesses": false,
+      "killPackageProcessesWarning": true,
+      "extra": ""
+    },
+    {
+      "name": "RetroArch (64 bits) - MesenCE",
+      "uniqueId": "esde.sgb.ae76b57159c3",
+      "description": "Supported extensions: 7z, gb, gbc, sgb, zip.",
+      "acceptedFilenameRegex": "^(?!\\.)(.*)\\.(?:7z|gb|gbc|sgb|zip)$",
+      "amStartArguments": "-n com.retroarch.aarch64/com.retroarch.browser.retroactivity.RetroActivityFuture --es CONFIGFILE /storage/emulated/0/Android/data/com.retroarch.aarch64/files/retroarch.cfg --es LIBRETRO /data/data/com.retroarch.aarch64/cores/mesen2_libretro_android.so --es ROM {file.path}",
+      "killPackageProcesses": false,
+      "killPackageProcessesWarning": true,
+      "extra": ""
+    },
+    {
+      "name": "RetroArch (32 bits) - MesenCE",
+      "uniqueId": "esde.sgb.a35f00d26fbc",
+      "description": "Supported extensions: 7z, gb, gbc, sgb, zip.",
+      "acceptedFilenameRegex": "^(?!\\.)(.*)\\.(?:7z|gb|gbc|sgb|zip)$",
+      "amStartArguments": "-n com.retroarch.ra32/com.retroarch.browser.retroactivity.RetroActivityFuture --es CONFIGFILE /storage/emulated/0/Android/data/com.retroarch.ra32/files/retroarch.cfg --es LIBRETRO /data/data/com.retroarch.ra32/cores/mesen2_libretro_android.so --es ROM {file.path}",
+      "killPackageProcesses": false,
+      "killPackageProcessesWarning": true,
+      "extra": ""
+    },
+    {
+      "name": "RetroArch - MesenCE",
+      "uniqueId": "esde.sgb.4ea6d25a3813",
+      "description": "Supported extensions: 7z, gb, gbc, sgb, zip.",
+      "acceptedFilenameRegex": "^(?!\\.)(.*)\\.(?:7z|gb|gbc|sgb|zip)$",
+      "amStartArguments": "-n com.retroarch/com.retroarch.browser.retroactivity.RetroActivityFuture --es CONFIGFILE /storage/emulated/0/Android/data/com.retroarch/files/retroarch.cfg --es LIBRETRO /data/data/com.retroarch/cores/mesen2_libretro_android.so --es ROM {file.path}",
+      "killPackageProcesses": false,
+      "killPackageProcessesWarning": true,
+      "extra": ""
+    },
+    {
+      "name": "RetroArch (64 bits) - SameBoy",
+      "uniqueId": "esde.sgb.e92854d8c093",
+      "description": "Supported extensions: 7z, gb, gbc, sgb, zip.",
+      "acceptedFilenameRegex": "^(?!\\.)(.*)\\.(?:7z|gb|gbc|sgb|zip)$",
+      "amStartArguments": "-n com.retroarch.aarch64/com.retroarch.browser.retroactivity.RetroActivityFuture --es CONFIGFILE /storage/emulated/0/Android/data/com.retroarch.aarch64/files/retroarch.cfg --es LIBRETRO /data/data/com.retroarch.aarch64/cores/sameboy_libretro_android.so --es ROM {file.path}",
+      "killPackageProcesses": false,
+      "killPackageProcessesWarning": true,
+      "extra": ""
+    },
+    {
+      "name": "RetroArch (32 bits) - SameBoy",
+      "uniqueId": "esde.sgb.0c2bbaf69dc0",
+      "description": "Supported extensions: 7z, gb, gbc, sgb, zip.",
+      "acceptedFilenameRegex": "^(?!\\.)(.*)\\.(?:7z|gb|gbc|sgb|zip)$",
+      "amStartArguments": "-n com.retroarch.ra32/com.retroarch.browser.retroactivity.RetroActivityFuture --es CONFIGFILE /storage/emulated/0/Android/data/com.retroarch.ra32/files/retroarch.cfg --es LIBRETRO /data/data/com.retroarch.ra32/cores/sameboy_libretro_android.so --es ROM {file.path}",
+      "killPackageProcesses": false,
+      "killPackageProcessesWarning": true,
+      "extra": ""
+    },
+    {
+      "name": "RetroArch - SameBoy",
+      "uniqueId": "esde.sgb.5a7dbfae4edc",
+      "description": "Supported extensions: 7z, gb, gbc, sgb, zip.",
+      "acceptedFilenameRegex": "^(?!\\.)(.*)\\.(?:7z|gb|gbc|sgb|zip)$",
+      "amStartArguments": "-n com.retroarch/com.retroarch.browser.retroactivity.RetroActivityFuture --es CONFIGFILE /storage/emulated/0/Android/data/com.retroarch/files/retroarch.cfg --es LIBRETRO /data/data/com.retroarch/cores/sameboy_libretro_android.so --es ROM {file.path}",
+      "killPackageProcesses": false,
+      "killPackageProcessesWarning": true,
+      "extra": ""
+    },
+    {
+      "name": "RetroArch (64 bits) - mGBA",
+      "uniqueId": "esde.sgb.60baeca58056",
+      "description": "Supported extensions: 7z, gb, gbc, sgb, zip.",
+      "acceptedFilenameRegex": "^(?!\\.)(.*)\\.(?:7z|gb|gbc|sgb|zip)$",
+      "amStartArguments": "-n com.retroarch.aarch64/com.retroarch.browser.retroactivity.RetroActivityFuture --es CONFIGFILE /storage/emulated/0/Android/data/com.retroarch.aarch64/files/retroarch.cfg --es LIBRETRO /data/data/com.retroarch.aarch64/cores/mgba_libretro_android.so --es ROM {file.path}",
+      "killPackageProcesses": false,
+      "killPackageProcessesWarning": true,
+      "extra": ""
+    },
+    {
+      "name": "RetroArch (32 bits) - mGBA",
+      "uniqueId": "esde.sgb.1ddf386500f2",
+      "description": "Supported extensions: 7z, gb, gbc, sgb, zip.",
+      "acceptedFilenameRegex": "^(?!\\.)(.*)\\.(?:7z|gb|gbc|sgb|zip)$",
+      "amStartArguments": "-n com.retroarch.ra32/com.retroarch.browser.retroactivity.RetroActivityFuture --es CONFIGFILE /storage/emulated/0/Android/data/com.retroarch.ra32/files/retroarch.cfg --es LIBRETRO /data/data/com.retroarch.ra32/cores/mgba_libretro_android.so --es ROM {file.path}",
+      "killPackageProcesses": false,
+      "killPackageProcessesWarning": true,
+      "extra": ""
+    },
+    {
+      "name": "RetroArch - mGBA",
+      "uniqueId": "esde.sgb.8fe8ab88ab15",
+      "description": "Supported extensions: 7z, gb, gbc, sgb, zip.",
+      "acceptedFilenameRegex": "^(?!\\.)(.*)\\.(?:7z|gb|gbc|sgb|zip)$",
+      "amStartArguments": "-n com.retroarch/com.retroarch.browser.retroactivity.RetroActivityFuture --es CONFIGFILE /storage/emulated/0/Android/data/com.retroarch/files/retroarch.cfg --es LIBRETRO /data/data/com.retroarch/cores/mgba_libretro_android.so --es ROM {file.path}",
+      "killPackageProcesses": false,
+      "killPackageProcessesWarning": true,
+      "extra": ""
+    }
+  ]
+}

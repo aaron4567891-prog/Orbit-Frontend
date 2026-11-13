@@ -1,0 +1,122 @@
+{
+  "databaseVersion": 14,
+  "revisionNumber": 2,
+  "platform": {
+    "name": "PC Arcade Systems",
+    "uniqueId": "pcarcade",
+    "shortname": "pcarcade",
+    "description": null,
+    "acceptedFilenameRegex": "^(?!\\.)(.*)\\.(?:desktop)$",
+    "scraperSourceList": [],
+    "boxArtAspectRatioId": 0,
+    "useCustomBoxArtAspectRatio": false,
+    "customBoxArtAspectRatio": null,
+    "screenAspectRatioId": 1,
+    "useCustomScreenAspectRatio": false,
+    "customScreenAspectRatio": null,
+    "retroAchievementsConsoleIdList": [],
+    "extra": ""
+  },
+  "playerList": [
+    {
+      "name": "Winlator Cmod",
+      "uniqueId": "esde.pcarcade.f41743088acb",
+      "description": "Supported extensions: desktop.",
+      "acceptedFilenameRegex": "^(?!\\.)(.*)\\.(?:desktop)$",
+      "amStartArguments": "-n com.winlator.cmod/.XServerDisplayActivity --activity-clear-task --activity-clear-top --es shortcut_path {file.path}",
+      "killPackageProcesses": false,
+      "killPackageProcessesWarning": true,
+      "extra": ""
+    },
+    {
+      "name": "Winlator Cmod (variant 2)",
+      "uniqueId": "esde.pcarcade.673e2d31cb68",
+      "description": "Supported extensions: desktop.",
+      "acceptedFilenameRegex": "^(?!\\.)(.*)\\.(?:desktop)$",
+      "amStartArguments": "-n com.winlator.vanilla/com.winlator.cmod.XServerDisplayActivity --activity-clear-task --activity-clear-top --es shortcut_path {file.path}",
+      "killPackageProcesses": false,
+      "killPackageProcessesWarning": true,
+      "extra": ""
+    },
+    {
+      "name": "Winlator Cmod (variant 3)",
+      "uniqueId": "esde.pcarcade.77f26eae19f8",
+      "description": "Supported extensions: desktop.",
+      "acceptedFilenameRegex": "^(?!\\.)(.*)\\.(?:desktop)$",
+      "amStartArguments": "-n com.ludashi.benchmark/com.winlator.cmod.XServerDisplayActivity --activity-clear-task --activity-clear-top --es shortcut_path {file.path}",
+      "killPackageProcesses": false,
+      "killPackageProcessesWarning": true,
+      "extra": ""
+    },
+    {
+      "name": "Winlator Cmod (variant 4)",
+      "uniqueId": "esde.pcarcade.5e145b805ccf",
+      "description": "Supported extensions: desktop.",
+      "acceptedFilenameRegex": "^(?!\\.)(.*)\\.(?:desktop)$",
+      "amStartArguments": "-n com.tencent.ig/com.winlator.cmod.XServerDisplayActivity --activity-clear-task --activity-clear-top --es shortcut_path {file.path}",
+      "killPackageProcesses": false,
+      "killPackageProcessesWarning": true,
+      "extra": ""
+    },
+    {
+      "name": "Winlator Cmod Glibc",
+      "uniqueId": "esde.pcarcade.c2c2d5b38e48",
+      "description": "Supported extensions: desktop.",
+      "acceptedFilenameRegex": "^(?!\\.)(.*)\\.(?:desktop)$",
+      "amStartArguments": "-n com.winlator/.XServerDisplayActivity --activity-clear-task --activity-clear-top --es shortcut_path {file.path}",
+      "killPackageProcesses": false,
+      "killPackageProcessesWarning": true,
+      "extra": ""
+    },
+    {
+      "name": "Winlator Cmod PRoot",
+      "uniqueId": "esde.pcarcade.5bb31de664fe",
+      "description": "Supported extensions: desktop.",
+      "acceptedFilenameRegex": "^(?!\\.)(.*)\\.(?:desktop)$",
+      "amStartArguments": "-n com.cmodded.winlator/com.winlator.XServerDisplayActivity --activity-clear-task --activity-clear-top --es shortcut_path {file.path}",
+      "killPackageProcesses": false,
+      "killPackageProcessesWarning": true,
+      "extra": ""
+    },
+    {
+      "name": "WinNative",
+      "uniqueId": "esde.pcarcade.c4707f3e169d",
+      "description": "Supported extensions: desktop.",
+      "acceptedFilenameRegex": "^(?!\\.)(.*)\\.(?:desktop)$",
+      "amStartArguments": "-n com.winnative.cmod/com.winlator.cmod.runtime.display.XServerDisplayActivity --activity-clear-task --activity-clear-top --es shortcut_path {file.path}",
+      "killPackageProcesses": false,
+      "killPackageProcessesWarning": true,
+      "extra": ""
+    },
+    {
+      "name": "WinNative (variant 2)",
+      "uniqueId": "esde.pcarcade.dc8601d881ce",
+      "description": "Supported extensions: desktop.",
+      "acceptedFilenameRegex": "^(?!\\.)(.*)\\.(?:desktop)$",
+      "amStartArguments": "-n com.antutu.ABenchMark/com.winlator.cmod.runtime.display.XServerDisplayActivity --activity-clear-task --activity-clear-top --es shortcut_path {file.path}",
+      "killPackageProcesses": false,
+      "killPackageProcessesWarning": true,
+      "extra": ""
+    },
+    {
+      "name": "WinNative (variant 3)",
+      "uniqueId": "esde.pcarcade.4503cab2ee10",
+      "description": "Supported extensions: desktop.",
+      "acceptedFilenameRegex": "^(?!\\.)(.*)\\.(?:desktop)$",
+      "amStartArguments": "-n com.ludashi.benchmark/com.winlator.cmod.runtime.display.XServerDisplayActivity --activity-clear-task --activity-clear-top --es shortcut_path {file.path}",
+      "killPackageProcesses": false,
+      "killPackageProcessesWarning": true,
+      "extra": ""
+    },
+    {
+      "name": "WinNative (variant 4)",
+      "uniqueId": "esde.pcarcade.80870d98f299",
+      "description": "Supported extensions: desktop.",
+      "acceptedFilenameRegex": "^(?!\\.)(.*)\\.(?:desktop)$",
+      "amStartArguments": "-n com.tencent.ig/com.winlator.cmod.runtime.display.XServerDisplayActivity --activity-clear-task --activity-clear-top --es shortcut_path {file.path}",
+      "killPackageProcesses": false,
+      "killPackageProcessesWarning": true,
+      "extra": ""
+    }
+  ]
+}

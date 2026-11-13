@@ -1,0 +1,711 @@
+<!--
+theme name:    Colorful (Simplified)
+artwork by:    viking (https://forums.launchbox-app.com/profile/70421-viking/)
+inspired by:   https://forums.launchbox-app.com/files/file/2081-colorful-bigbox-theme/
+made by:       Anthony Caccese
+license:       creative commons CC-BY-NC-SA
+-->
+
+<theme>
+
+   <!--
+   ///
+   System Metadata
+   ///
+   -->
+   <include>./_inc/systems/metadata-global/_default.xml</include>
+   <include>./_inc/systems/metadata-global/${system.theme}.xml</include>
+   <include>./_inc/systems/metadata-custom/_default.xml</include>
+   <include>./_inc/systems/metadata-custom/${system.theme}.xml</include>
+
+   <!--
+   ///
+   Variables
+   ///
+   -->
+   <variables>
+      <spacerImage>./_inc/images/space.png</spacerImage>
+      <fontLight>./_inc/fonts/Gilroy-Light.ttf</fontLight>
+      <fontRegular>./_inc/fonts/Gilroy-Regular.ttf</fontRegular>
+      <fontSemiBold>./_inc/fonts/Gilroy-SemiBold.ttf</fontSemiBold>
+      <fontBold>./_inc/fonts/Gilroy-Bold.ttf</fontBold>
+      <fontHelpSystem>./_inc/fonts/Akrobat-Bold.ttf</fontHelpSystem>
+   </variables>
+   <colorScheme name="colorful,colorful-dark,oled,dark,light,retro-bright,dmg">
+      <variables>
+         <colorSchemePath>./colors.xml</colorSchemePath>
+      </variables>
+   </colorScheme>
+   <colorScheme name="add-on">
+      <variables>
+         <colorSchemePath>./theme-addons/system-video/addon.xml</colorSchemePath>
+      </variables>
+   </colorScheme>
+   <include>${colorSchemePath}</include>
+
+   <!--
+   ///
+   All Views
+   ///
+   -->
+   <view name="
+      system,
+      gamelist
+      ">
+      <!-- Start: menu styling resets -->
+      <clock name="
+         clock-menu-view
+         ">
+         <scope>menu</scope>
+         <origin>0 0</origin>
+         <pos>0.0075 0.01</pos>
+         <backgroundColor>222222</backgroundColor>
+         <color>cccccc</color>
+         <backgroundHorizontalPadding>0.02 0.01</backgroundHorizontalPadding>
+         <backgroundVerticalPadding>0.02 0.01</backgroundVerticalPadding>
+         <backgroundCornerRadius>0.005</backgroundCornerRadius>
+      </clock>
+      <systemstatus name="
+         system-status-menu-view
+         ">
+         <scope>menu</scope>
+         <origin>1 0</origin>
+         <pos>0.99 0.01</pos>
+         <backgroundColor>222222</backgroundColor>
+         <color>cccccc</color>
+         <backgroundHorizontalPadding>0.0075 0.02</backgroundHorizontalPadding>
+         <backgroundVerticalPadding>0.02 0.01</backgroundVerticalPadding>
+         <backgroundCornerRadius>0.005</backgroundCornerRadius>
+      </systemstatus>
+      <helpsystem name="
+         help-menu-view
+         ">
+         <scope>menu</scope>
+         <origin>0.5 1</origin>
+         <pos>0.5 0.9875</pos>
+         <iconColor>cccccc</iconColor>
+         <textColor>cccccc</textColor>
+         <backgroundColor>222222</backgroundColor>
+         <backgroundHorizontalPadding>0.01 0.01</backgroundHorizontalPadding>
+         <backgroundVerticalPadding>0.015 0.02</backgroundVerticalPadding>
+         <backgroundCornerRadius>0.005</backgroundCornerRadius>
+         <entryRelativeScale>0.9</entryRelativeScale>
+      </helpsystem>
+      <!-- End: menu styling resets -->
+      <image name="
+         background
+         ">
+         <origin>0 0</origin>
+         <pos>0 0</pos>
+         <size>1 1</size>
+         <path>${spacerImage}</path>
+         <tile>true</tile>
+         <color>${backgroundColor}</color>
+         <zIndex>0</zIndex>
+      </image>
+      <clock name="
+         clock
+         ">
+         <scope>view</scope>
+         <opacity>0</opacity>
+      </clock>
+      <systemstatus name="
+         system-status
+         ">
+         <scope>view</scope>
+         <origin>1 0</origin>
+         <fontPath>${fontRegular}</fontPath>
+         <textRelativeScale>0.75</textRelativeScale>
+         <customIcon icon="icon_bluetooth">./_inc/images/icon-bluetooth.svg</customIcon>
+         <customIcon icon="icon_wifi">./_inc/images/icon-wifi.svg</customIcon>
+         <customIcon icon="icon_cellular">./_inc/images/icon-cellular.svg</customIcon>
+         <customIcon icon="icon_battery_charging">./_inc/images/icon-battery-charging.svg</customIcon>
+         <customIcon icon="icon_battery_full">./_inc/images/icon-battery-full.svg</customIcon>
+         <customIcon icon="icon_battery_high">./_inc/images/icon-battery-high.svg</customIcon>
+         <customIcon icon="icon_battery_medium">./_inc/images/icon-battery-medium.svg</customIcon>
+         <customIcon icon="icon_battery_low">./_inc/images/icon-battery-low.svg</customIcon>
+         <backgroundCornerRadius>0.005</backgroundCornerRadius>
+      </systemstatus>
+      <helpsystem name="
+         help-system-view,
+         help-gamelist-view
+         ">
+         <fontPath>${fontHelpSystem}</fontPath>
+         <iconColor>${helpIconColor}</iconColor>
+         <textColor>${helpTextColor}</textColor>
+         <entryRelativeScale>0.7</entryRelativeScale>
+      </helpsystem>
+      <text name="
+         system-name,
+         custom-collection-name
+         ">
+         <lineSpacing>1</lineSpacing>
+         <fontPath>${fontBold}</fontPath>
+         <color>${systemNameColor}</color>
+         <verticalAlignment>top</verticalAlignment>
+         <zIndex>5</zIndex>
+      </text>
+      <text name="
+         system-name
+         ">
+         <text>${systemName}</text>
+      </text>
+   </view>
+
+   <!--
+   ///
+   System View
+   ///
+   -->
+   <view name="
+      system
+      ">
+      <systemstatus name="
+         system-status
+         ">
+         <color>${systemStatusColor}</color>
+         <backgroundColor>${systemStatusBackgroundColor}</backgroundColor>
+      </systemstatus>
+      <image name="
+         system-metadata-background
+         ">
+         <origin>0 0</origin>
+         <pos>0 0</pos>
+         <path>${spacerImage}</path>
+         <tile>true</tile>
+         <color>${systemMetadataBackgroundColor}</color>
+         <zIndex>4</zIndex>
+      </image>
+      <text name="
+         system-label
+         ">
+         <lineSpacing>1</lineSpacing>
+         <fontPath>${fontSemiBold}</fontPath>
+         <color>${systemLabelColor}</color>
+         <zIndex>5</zIndex>
+         <visible>false</visible>
+      </text>
+      <image name="
+         system-name-background,
+         system-name-background-shade
+         ">
+         <origin>0 0</origin>
+         <pos>0 0</pos>
+         <path>${spacerImage}</path>
+         <tile>true</tile>
+         <zIndex>4</zIndex>
+         <visible>false</visible>
+      </image>
+      <image name="
+         system-name-background
+         ">
+         <color>${systemNameBackgroundColor}</color>
+      </image>
+      <image name="
+         system-name-background-shade
+         ">
+         <color>${systemNameBackgroundShadeColor}</color>
+      </image>
+      <text name="
+         system-name
+         ">
+         <zIndex>5</zIndex>
+      </text>
+      <text name="
+         system-description
+         ">
+         <fontPath>${fontLight}</fontPath>
+         <text>${systemDescription}</text>
+         <color>${systemDescriptionColor}</color>
+         <container>true</container>
+         <verticalAlignment>bottom</verticalAlignment>
+         <containerVerticalSnap>true</containerVerticalSnap>
+         <containerScrollSpeed>0.6</containerScrollSpeed>
+         <zIndex>5</zIndex>
+         <visible>false</visible>
+      </text>
+      <text name="
+         system-game-count
+         ">
+         <origin>0 0.5</origin>
+         <fontPath>${fontLight}</fontPath>
+         <letterCase>uppercase</letterCase>
+         <systemdata>gamecount</systemdata>
+         <letterCase>capitalize</letterCase>
+         <color>${systemGameCountColor}</color>
+         <zIndex>5</zIndex>
+         <visible>false</visible>
+      </text>
+      <helpsystem name="
+         help-system-view
+         ">
+         <scope>view</scope>
+      </helpsystem>
+      <helpsystem name="
+         help-gamelist-view
+         ">
+         <scope>none</scope>
+      </helpsystem>
+      <carousel name="
+         system-carousel
+         ">
+         <origin>0.5 0.5</origin>
+         <type>horizontal</type>
+         <itemScale>1</itemScale>
+         <itemSize>1 1</itemSize>
+         <maxItemCount>1</maxItemCount>
+         <staticImage>./_inc/systems/images/${system.theme}.webp</staticImage>
+         <defaultImage>./_inc/systems/images/_default.webp</defaultImage>
+         <fastScrolling>true</fastScrolling>
+         <color>00000000</color>
+         <zIndex>1</zIndex>
+      </carousel>
+   </view>
+
+   <!--
+   ///
+   Gamelist View - List Variants
+   ///
+   -->
+   <variant name="
+      gamelist-list-cover,
+      gamelist-list-screenshot,
+      gamelist-list-screenshot-marquee,
+      gamelist-list-titlescreen,
+      gamelist-list-physicalmedia,
+      gamelist-list-miximage,
+      gamelist-list-metadata-screenshot-cover,
+      gamelist-list-metadata-screenshot-marquee,
+      gamelist-list-metadata-screenshot-physicalmedia,
+      ">
+      <view name="
+         gamelist
+         ">
+         <systemstatus name="
+            system-status
+            ">
+            <color>${gamelistStatusColor}</color>
+            <backgroundColor>${gamelistStatusBackgroundColor}</backgroundColor>
+         </systemstatus>
+         <image name="
+            gamelist-background
+            ">
+            <origin>0 0</origin>
+            <pos>0 0</pos>
+            <path>${spacerImage}</path>
+            <tile>true</tile>
+            <color>${gamelistTextlistBackgroundColor}</color>
+            <zIndex>4</zIndex>
+         </image>
+         <textlist name="
+            gamelist-textlist
+            ">
+            <origin>0 0</origin>
+            <fontPath>${fontRegular}</fontPath>
+            <primaryColor>${gamelistTextlistPrimaryColor}</primaryColor>
+            <secondaryColor>${gamelistTextlistSecondaryColor}</secondaryColor>
+            <selectedColor>${gamelistTextlistSelectedColor}</selectedColor>
+            <selectedBackgroundColor>${gamelistTextlistSelectorColor}</selectedBackgroundColor>
+            <selectorColor>00000000</selectorColor>
+            <systemNameSuffix>false</systemNameSuffix>
+            <selectedBackgroundCornerRadius>0.005</selectedBackgroundCornerRadius>
+         </textlist>
+         <helpsystem name="
+            help-system-view
+            ">
+            <scope>none</scope>
+         </helpsystem>
+         <helpsystem name="
+            help-gamelist-view
+            ">
+            <scope>view</scope>
+         </helpsystem>
+         <video name="
+            game-video
+            ">
+            <origin>0.5 0.5</origin>
+            <pillarboxes>false</pillarboxes>
+            <delay>3</delay>
+            <iterationCount>1</iterationCount>
+            <onIterationsDone>image</onIterationsDone>
+            <zIndex>3</zIndex>
+         </video>
+      </view>
+   </variant>
+   <!-- Gamelist View - List Variants without Metadata -->
+   <variant name="
+      gamelist-list-cover,
+      gamelist-list-titlescreen,
+      gamelist-list-physicalmedia,
+      gamelist-list-miximage,
+      ">
+      <view name="
+         gamelist
+         ">
+         <image name="
+            game-art-background
+            ">
+            <origin>0.5 0.5</origin>
+            <imageType>screenshot</imageType>
+            <saturation>0</saturation>
+            <color>${gameArtBackgroundColor}</color>
+            <zIndex>1</zIndex>
+         </image>
+      </view>
+   </variant>
+   <variant name="
+      gamelist-list-cover,
+      ">
+      <view name="
+         gamelist
+         ">
+         <video name="
+            game-video
+            ">
+            <imageType>cover</imageType>
+            <imageCornerRadius>0.005</imageCornerRadius>
+            <interpolation>linear</interpolation>
+         </video>
+      </view>
+   </variant>
+   <variant name="
+      gamelist-list-screenshot,
+      ">
+      <view name="gamelist">
+         <video name="
+            game-video
+            ">
+            <imageType>screenshot</imageType>
+         </video>
+      </view>
+   </variant>
+   <variant name="
+      gamelist-list-screenshot-marquee,
+      ">
+      <view name="
+         gamelist
+         ">
+         <video name="
+            game-video
+            ">
+            <imageType>screenshot</imageType>
+         </video>
+         <image name="
+            game-art
+            ">
+            <imageType>marquee</imageType>
+            <origin>0.5 0.5</origin>
+            <zIndex>200</zIndex>
+         </image>
+      </view>
+   </variant>
+   <variant name="
+      gamelist-list-titlescreen,
+      ">
+      <view name="
+         gamelist
+         ">
+         <video name="
+            game-video
+            ">
+            <imageType>titlescreen</imageType>
+            <imageCornerRadius>0.005</imageCornerRadius>
+         </video>
+      </view>
+   </variant>
+   <variant name="
+      gamelist-list-physicalmedia,
+      ">
+      <view name="
+         gamelist
+         ">
+         <video name="
+            game-video
+            ">
+            <imageType>physicalmedia</imageType>
+         </video>
+      </view>
+   </variant>
+   <variant name="
+      gamelist-list-miximage,
+      ">
+      <view name="
+         gamelist
+         ">
+         <video name="
+            game-video
+            ">
+            <imageType>miximage</imageType>
+         </video>
+      </view>
+   </variant>
+   <!-- Gamelist View - List Variants with Metadata -->
+   <variant name="
+      gamelist-list-metadata-screenshot-cover,
+      gamelist-list-metadata-screenshot-marquee,
+      gamelist-list-metadata-screenshot-physicalmedia,
+      ">
+      <view name="
+         gamelist
+         ">
+         <image name="
+            game-video-background
+            ">
+            <origin>0.5 0.5</origin>
+            <path>${spacerImage}</path>
+            <tile>true</tile>
+            <color>000000</color>
+            <zIndex>2</zIndex>
+         </image>
+         <video name="
+            game-video
+            ">
+            <imageType>screenshot</imageType>
+            <zIndex>3</zIndex>
+         </video>
+         <image name="
+            game-art
+            ">
+            <origin>0 1</origin>
+            <default>./_inc/images/game-art-default.webp</default>
+         </image>
+         <image name="
+            game-description-background
+            ">
+            <path>${spacerImage}</path>
+            <tile>true</tile>
+            <color>${gameDescriptionBackgroundColor}</color>
+            <zIndex>3</zIndex>
+            <visible>false</visible>
+         </image>
+         <text name="
+            game-description
+            ">
+            <fontPath>${fontRegular}</fontPath>
+            <color>${gameDescriptionColor}</color>
+            <metadata>description</metadata>
+            <containerVerticalSnap>false</containerVerticalSnap>
+            <containerScrollSpeed>0.6</containerScrollSpeed>
+            <visible>false</visible>
+         </text>
+         <image name="
+            game-metadata-background,
+            game-metadata-background-shade
+            ">
+            <path>${spacerImage}</path>
+            <tile>true</tile>
+            <color>${gameDescriptionBackgroundColor}</color>
+            <cornerRadius>0.005</cornerRadius>
+            <metadataElement>true</metadataElement>
+            <zIndex>5</zIndex>
+            <visible>false</visible>
+         </image>
+         <image name="
+            game-metadata-background
+            ">
+            <color>${gameMetadataBackgroundColor}</color>
+         </image>
+         <image name="
+            game-metadata-background-shade
+            ">
+            <color>${gameMetadataBackgroundShadeColor}</color>
+         </image>
+         <text name="
+            game-rating-label,
+            game-released-label,
+            game-players-label,
+            game-last-played-label,
+            game-times-played-label
+            ">
+            <horizontalAlignment>center</horizontalAlignment>
+            <verticalAlignment>bottom</verticalAlignment>
+            <fontPath>${fontRegular}</fontPath>
+            <color>${gameMetadataLabelColor}</color>
+            <metadataElement>true</metadataElement>
+            <visible>false</visible>
+         </text>
+         <text name="
+            game-players,
+            game-times-played
+            ">
+            <horizontalAlignment>center</horizontalAlignment>
+            <verticalAlignment>top</verticalAlignment>
+            <fontPath>${fontSemiBold}</fontPath>
+            <color>${gameMetadataColor}</color>
+            <container>true</container>
+            <containerType>horizontal</containerType>
+            <visible>false</visible>
+         </text>
+         <datetime name="
+            game-released,
+            game-last-played
+            ">
+            <horizontalAlignment>center</horizontalAlignment>
+            <verticalAlignment>top</verticalAlignment>
+            <fontPath>${fontSemiBold}</fontPath>
+            <color>${gameMetadataColor}</color>
+            <visible>false</visible>
+         </datetime>
+         <text name="
+            game-rating-label
+            ">
+            <text>Rating</text>
+         </text>
+         <rating name="
+            game-rating
+            ">
+            <origin>0.5 0</origin>
+            <filledPath>./_inc/images/icon-star-filled.svg</filledPath>
+            <unfilledPath>./_inc/images/icon-star-unfilled.svg</unfilledPath>
+            <overlay>false</overlay>
+            <color>${gameRatingColor}</color>
+            <visible>false</visible>
+         </rating>
+         <text name="
+            game-released-label
+            ">
+            <text>Released</text>
+         </text>
+         <datetime name="
+            game-released
+            ">
+            <metadata>releasedate</metadata>
+            <letterCase>capitalize</letterCase>
+            <visible>false</visible>
+         </datetime>
+         <text name="
+            game-players-label
+            ">
+            <text>Players</text>
+         </text>
+         <text name="
+            game-players
+            ">
+            <metadata>players</metadata>
+            <letterCase>capitalize</letterCase>
+         </text>
+         <text name="
+            game-last-played-label
+            ">
+            <text>Last Played</text>
+         </text>
+         <datetime name="
+            game-last-played
+            ">
+            <metadata>lastplayed</metadata>
+            <letterCase>capitalize</letterCase>
+            <defaultValue>Never</defaultValue>
+         </datetime>
+         <text name="
+            game-times-played-label
+            ">
+            <text>Play Time</text>
+         </text>
+         <text name="
+            game-times-played
+            ">
+            <metadata>playtime</metadata>
+            <defaultValue>None</defaultValue>
+         </text>
+      </view>
+   </variant>
+   <variant name="
+      gamelist-list-metadata-screenshot-marquee,
+      ">
+      <view name="
+         gamelist
+         ">
+         <image name="
+            game-art
+            ">
+            <imageType>marquee</imageType>
+         </image>
+      </view>
+   </variant>
+   <variant name="
+      gamelist-list-metadata-screenshot-cover,
+      ">
+      <view name="
+         gamelist
+         ">
+         <image name="
+            game-art
+            ">
+            <interpolation>linear</interpolation>
+            <imageType>cover</imageType>
+            <cornerRadius>0.005</cornerRadius>
+         </image>
+      </view>
+   </variant>
+   <variant name="
+      gamelist-list-metadata-screenshot-physicalmedia,
+      ">
+      <view name="
+         gamelist
+         ">
+         <image name="
+            game-art
+            ">
+            <imageType>physicalmedia</imageType>
+         </image>
+      </view>
+   </variant>
+
+   <!--
+   ///
+   Aspect Ratios
+   ///
+   -->
+   <aspectRatio name="16:9">
+      <include>./aspect-ratio-16-9.xml</include>
+   </aspectRatio>
+   <aspectRatio name="16:10">
+      <include>./aspect-ratio-16-10.xml</include>
+   </aspectRatio>
+   <aspectRatio name="4:3">
+      <include>./aspect-ratio-4-3.xml</include>
+   </aspectRatio>
+   <aspectRatio name="1:1">
+      <include>./aspect-ratio-1-1.xml</include>
+   </aspectRatio>
+
+   <!--
+   ///
+   Sounds
+   ///
+   -->
+   <view name="all">
+      <sound name="systembrowse">
+         <path>./_inc/sounds/systembrowse.wav</path>
+      </sound>
+      <sound name="quicksysselect">
+         <path>./_inc/sounds/quicksysselect.wav</path>
+      </sound>
+      <sound name="select">
+         <path>./_inc/sounds/select.wav</path>
+      </sound>
+      <sound name="back">
+         <path>./_inc/sounds/back.wav</path>
+      </sound>
+      <sound name="scroll">
+         <path>./_inc/sounds/scroll.wav</path>
+      </sound>
+      <sound name="favorite">
+         <path>./_inc/sounds/favorite.wav</path>
+      </sound>
+      <sound name="launch">
+         <path>./_inc/sounds/launch.wav</path>
+      </sound>
+   </view>
+
+   <!--
+   ///
+   Add-ons
+   ///
+   -->
+   <!-- Start: 720 System Video (https://github.com/anthonycaccese/colorful-simplified-es-de-addon_720p-system-video)
+   <include>./theme-addons/colorful-simplified-es-de-addon_720p-system-video/addon.xml</include> -->
+   <!-- Start: 1080p System Video (https://github.com/anthonycaccese/colorful-simplified-es-de-addon_1080p-system-video)
+   <include>./theme-addons/colorful-simplified-es-de-addon_1080p-system-video/addon.xml</include> -->
+
+</theme>

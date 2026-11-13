@@ -1,0 +1,52 @@
+{
+  "databaseVersion": 14,
+  "revisionNumber": 2,
+  "platform": {
+    "name": "Apple Macintosh",
+    "uniqueId": "macintosh",
+    "shortname": "macintosh",
+    "description": null,
+    "acceptedFilenameRegex": "^(?!\\.)(.*)\\.(?:dsk|img)$",
+    "scraperSourceList": [],
+    "boxArtAspectRatioId": 0,
+    "useCustomBoxArtAspectRatio": false,
+    "customBoxArtAspectRatio": null,
+    "screenAspectRatioId": 1,
+    "useCustomScreenAspectRatio": false,
+    "customScreenAspectRatio": null,
+    "retroAchievementsConsoleIdList": [],
+    "extra": ""
+  },
+  "playerList": [
+    {
+      "name": "RetroArch (64 bits) - Mini vMac",
+      "uniqueId": "esde.macintosh.901ef25115dd",
+      "description": "Supported extensions: dsk, img.",
+      "acceptedFilenameRegex": "^(?!\\.)(.*)\\.(?:dsk|img)$",
+      "amStartArguments": "-n com.retroarch.aarch64/com.retroarch.browser.retroactivity.RetroActivityFuture --es CONFIGFILE /storage/emulated/0/Android/data/com.retroarch.aarch64/files/retroarch.cfg --es LIBRETRO /data/data/com.retroarch.aarch64/cores/minivmac_libretro_android.so --es ROM {file.path}",
+      "killPackageProcesses": false,
+      "killPackageProcessesWarning": true,
+      "extra": ""
+    },
+    {
+      "name": "RetroArch (32 bits) - Mini vMac",
+      "uniqueId": "esde.macintosh.24f5dc625e16",
+      "description": "Supported extensions: dsk, img.",
+      "acceptedFilenameRegex": "^(?!\\.)(.*)\\.(?:dsk|img)$",
+      "amStartArguments": "-n com.retroarch.ra32/com.retroarch.browser.retroactivity.RetroActivityFuture --es CONFIGFILE /storage/emulated/0/Android/data/com.retroarch.ra32/files/retroarch.cfg --es LIBRETRO /data/data/com.retroarch.ra32/cores/minivmac_libretro_android.so --es ROM {file.path}",
+      "killPackageProcesses": false,
+      "killPackageProcessesWarning": true,
+      "extra": ""
+    },
+    {
+      "name": "RetroArch - Mini vMac",
+      "uniqueId": "esde.macintosh.8c31b594a7b1",
+      "description": "Supported extensions: dsk, img.",
+      "acceptedFilenameRegex": "^(?!\\.)(.*)\\.(?:dsk|img)$",
+      "amStartArguments": "-n com.retroarch/com.retroarch.browser.retroactivity.RetroActivityFuture --es CONFIGFILE /storage/emulated/0/Android/data/com.retroarch/files/retroarch.cfg --es LIBRETRO /data/data/com.retroarch/cores/minivmac_libretro_android.so --es ROM {file.path}",
+      "killPackageProcesses": false,
+      "killPackageProcessesWarning": true,
+      "extra": ""
+    }
+  ]
+}

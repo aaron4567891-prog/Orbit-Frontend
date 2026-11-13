@@ -1,0 +1,242 @@
+{
+  "databaseVersion": 14,
+  "revisionNumber": 2,
+  "platform": {
+    "name": "Bandai SuFami Turbo",
+    "uniqueId": "sufami",
+    "shortname": "sufami",
+    "description": null,
+    "acceptedFilenameRegex": "^(?!\\.)(.*)\\.(?:7z|bml|bs|fig|sfc|smc|st|zip)$",
+    "scraperSourceList": [],
+    "boxArtAspectRatioId": 0,
+    "useCustomBoxArtAspectRatio": false,
+    "customBoxArtAspectRatio": null,
+    "screenAspectRatioId": 1,
+    "useCustomScreenAspectRatio": false,
+    "customScreenAspectRatio": null,
+    "retroAchievementsConsoleIdList": [],
+    "extra": ""
+  },
+  "playerList": [
+    {
+      "name": "RetroArch (64 bits) - Snes9x - Current",
+      "uniqueId": "esde.sufami.792705bf0a13",
+      "description": "Supported extensions: 7z, bml, bs, fig, sfc, smc, st, zip.",
+      "acceptedFilenameRegex": "^(?!\\.)(.*)\\.(?:7z|bml|bs|fig|sfc|smc|st|zip)$",
+      "amStartArguments": "-n com.retroarch.aarch64/com.retroarch.browser.retroactivity.RetroActivityFuture --es CONFIGFILE /storage/emulated/0/Android/data/com.retroarch.aarch64/files/retroarch.cfg --es LIBRETRO /data/data/com.retroarch.aarch64/cores/snes9x_libretro_android.so --es ROM {file.path}",
+      "killPackageProcesses": false,
+      "killPackageProcessesWarning": true,
+      "extra": ""
+    },
+    {
+      "name": "RetroArch (32 bits) - Snes9x - Current",
+      "uniqueId": "esde.sufami.77cc32754fb3",
+      "description": "Supported extensions: 7z, bml, bs, fig, sfc, smc, st, zip.",
+      "acceptedFilenameRegex": "^(?!\\.)(.*)\\.(?:7z|bml|bs|fig|sfc|smc|st|zip)$",
+      "amStartArguments": "-n com.retroarch.ra32/com.retroarch.browser.retroactivity.RetroActivityFuture --es CONFIGFILE /storage/emulated/0/Android/data/com.retroarch.ra32/files/retroarch.cfg --es LIBRETRO /data/data/com.retroarch.ra32/cores/snes9x_libretro_android.so --es ROM {file.path}",
+      "killPackageProcesses": false,
+      "killPackageProcessesWarning": true,
+      "extra": ""
+    },
+    {
+      "name": "RetroArch - Snes9x - Current",
+      "uniqueId": "esde.sufami.8d3d5246e6c0",
+      "description": "Supported extensions: 7z, bml, bs, fig, sfc, smc, st, zip.",
+      "acceptedFilenameRegex": "^(?!\\.)(.*)\\.(?:7z|bml|bs|fig|sfc|smc|st|zip)$",
+      "amStartArguments": "-n com.retroarch/com.retroarch.browser.retroactivity.RetroActivityFuture --es CONFIGFILE /storage/emulated/0/Android/data/com.retroarch/files/retroarch.cfg --es LIBRETRO /data/data/com.retroarch/cores/snes9x_libretro_android.so --es ROM {file.path}",
+      "killPackageProcesses": false,
+      "killPackageProcessesWarning": true,
+      "extra": ""
+    },
+    {
+      "name": "RetroArch (64 bits) - Snes9x 2010",
+      "uniqueId": "esde.sufami.47141aedd874",
+      "description": "Supported extensions: 7z, bml, bs, fig, sfc, smc, st, zip.",
+      "acceptedFilenameRegex": "^(?!\\.)(.*)\\.(?:7z|bml|bs|fig|sfc|smc|st|zip)$",
+      "amStartArguments": "-n com.retroarch.aarch64/com.retroarch.browser.retroactivity.RetroActivityFuture --es CONFIGFILE /storage/emulated/0/Android/data/com.retroarch.aarch64/files/retroarch.cfg --es LIBRETRO /data/data/com.retroarch.aarch64/cores/snes9x2010_libretro_android.so --es ROM {file.path}",
+      "killPackageProcesses": false,
+      "killPackageProcessesWarning": true,
+      "extra": ""
+    },
+    {
+      "name": "RetroArch (32 bits) - Snes9x 2010",
+      "uniqueId": "esde.sufami.53c5051a97eb",
+      "description": "Supported extensions: 7z, bml, bs, fig, sfc, smc, st, zip.",
+      "acceptedFilenameRegex": "^(?!\\.)(.*)\\.(?:7z|bml|bs|fig|sfc|smc|st|zip)$",
+      "amStartArguments": "-n com.retroarch.ra32/com.retroarch.browser.retroactivity.RetroActivityFuture --es CONFIGFILE /storage/emulated/0/Android/data/com.retroarch.ra32/files/retroarch.cfg --es LIBRETRO /data/data/com.retroarch.ra32/cores/snes9x2010_libretro_android.so --es ROM {file.path}",
+      "killPackageProcesses": false,
+      "killPackageProcessesWarning": true,
+      "extra": ""
+    },
+    {
+      "name": "RetroArch - Snes9x 2010",
+      "uniqueId": "esde.sufami.16bc5ff9d0bd",
+      "description": "Supported extensions: 7z, bml, bs, fig, sfc, smc, st, zip.",
+      "acceptedFilenameRegex": "^(?!\\.)(.*)\\.(?:7z|bml|bs|fig|sfc|smc|st|zip)$",
+      "amStartArguments": "-n com.retroarch/com.retroarch.browser.retroactivity.RetroActivityFuture --es CONFIGFILE /storage/emulated/0/Android/data/com.retroarch/files/retroarch.cfg --es LIBRETRO /data/data/com.retroarch/cores/snes9x2010_libretro_android.so --es ROM {file.path}",
+      "killPackageProcesses": false,
+      "killPackageProcessesWarning": true,
+      "extra": ""
+    },
+    {
+      "name": "RetroArch (64 bits) - Snes9x 2005 Plus",
+      "uniqueId": "esde.sufami.b1a74b789e7a",
+      "description": "Supported extensions: 7z, bml, bs, fig, sfc, smc, st, zip.",
+      "acceptedFilenameRegex": "^(?!\\.)(.*)\\.(?:7z|bml|bs|fig|sfc|smc|st|zip)$",
+      "amStartArguments": "-n com.retroarch.aarch64/com.retroarch.browser.retroactivity.RetroActivityFuture --es CONFIGFILE /storage/emulated/0/Android/data/com.retroarch.aarch64/files/retroarch.cfg --es LIBRETRO /data/data/com.retroarch.aarch64/cores/snes9x2005_plus_libretro_android.so --es ROM {file.path}",
+      "killPackageProcesses": false,
+      "killPackageProcessesWarning": true,
+      "extra": ""
+    },
+    {
+      "name": "RetroArch (32 bits) - Snes9x 2005 Plus",
+      "uniqueId": "esde.sufami.78eb83353681",
+      "description": "Supported extensions: 7z, bml, bs, fig, sfc, smc, st, zip.",
+      "acceptedFilenameRegex": "^(?!\\.)(.*)\\.(?:7z|bml|bs|fig|sfc|smc|st|zip)$",
+      "amStartArguments": "-n com.retroarch.ra32/com.retroarch.browser.retroactivity.RetroActivityFuture --es CONFIGFILE /storage/emulated/0/Android/data/com.retroarch.ra32/files/retroarch.cfg --es LIBRETRO /data/data/com.retroarch.ra32/cores/snes9x2005_plus_libretro_android.so --es ROM {file.path}",
+      "killPackageProcesses": false,
+      "killPackageProcessesWarning": true,
+      "extra": ""
+    },
+    {
+      "name": "RetroArch - Snes9x 2005 Plus",
+      "uniqueId": "esde.sufami.d42a52f16b3b",
+      "description": "Supported extensions: 7z, bml, bs, fig, sfc, smc, st, zip.",
+      "acceptedFilenameRegex": "^(?!\\.)(.*)\\.(?:7z|bml|bs|fig|sfc|smc|st|zip)$",
+      "amStartArguments": "-n com.retroarch/com.retroarch.browser.retroactivity.RetroActivityFuture --es CONFIGFILE /storage/emulated/0/Android/data/com.retroarch/files/retroarch.cfg --es LIBRETRO /data/data/com.retroarch/cores/snes9x2005_plus_libretro_android.so --es ROM {file.path}",
+      "killPackageProcesses": false,
+      "killPackageProcessesWarning": true,
+      "extra": ""
+    },
+    {
+      "name": "Snes9x EX+",
+      "uniqueId": "esde.sufami.f4a617c42b07",
+      "description": "Supported extensions: 7z, bml, bs, fig, sfc, smc, st, zip.",
+      "acceptedFilenameRegex": "^(?!\\.)(.*)\\.(?:7z|bml|bs|fig|sfc|smc|st|zip)$",
+      "amStartArguments": "-n com.explusalpha.Snes9xPlus/com.imagine.BaseActivity -d {file.uri}",
+      "killPackageProcesses": false,
+      "killPackageProcessesWarning": true,
+      "extra": ""
+    },
+    {
+      "name": "RetroArch (64 bits) - bsnes",
+      "uniqueId": "esde.sufami.ace7683899e1",
+      "description": "Supported extensions: 7z, bml, bs, fig, sfc, smc, st, zip.",
+      "acceptedFilenameRegex": "^(?!\\.)(.*)\\.(?:7z|bml|bs|fig|sfc|smc|st|zip)$",
+      "amStartArguments": "-n com.retroarch.aarch64/com.retroarch.browser.retroactivity.RetroActivityFuture --es CONFIGFILE /storage/emulated/0/Android/data/com.retroarch.aarch64/files/retroarch.cfg --es LIBRETRO /data/data/com.retroarch.aarch64/cores/bsnes_libretro_android.so --es ROM {file.path}",
+      "killPackageProcesses": false,
+      "killPackageProcessesWarning": true,
+      "extra": ""
+    },
+    {
+      "name": "RetroArch (32 bits) - bsnes",
+      "uniqueId": "esde.sufami.9d317b57b87e",
+      "description": "Supported extensions: 7z, bml, bs, fig, sfc, smc, st, zip.",
+      "acceptedFilenameRegex": "^(?!\\.)(.*)\\.(?:7z|bml|bs|fig|sfc|smc|st|zip)$",
+      "amStartArguments": "-n com.retroarch.ra32/com.retroarch.browser.retroactivity.RetroActivityFuture --es CONFIGFILE /storage/emulated/0/Android/data/com.retroarch.ra32/files/retroarch.cfg --es LIBRETRO /data/data/com.retroarch.ra32/cores/bsnes_libretro_android.so --es ROM {file.path}",
+      "killPackageProcesses": false,
+      "killPackageProcessesWarning": true,
+      "extra": ""
+    },
+    {
+      "name": "RetroArch - bsnes",
+      "uniqueId": "esde.sufami.a6c4e3916d30",
+      "description": "Supported extensions: 7z, bml, bs, fig, sfc, smc, st, zip.",
+      "acceptedFilenameRegex": "^(?!\\.)(.*)\\.(?:7z|bml|bs|fig|sfc|smc|st|zip)$",
+      "amStartArguments": "-n com.retroarch/com.retroarch.browser.retroactivity.RetroActivityFuture --es CONFIGFILE /storage/emulated/0/Android/data/com.retroarch/files/retroarch.cfg --es LIBRETRO /data/data/com.retroarch/cores/bsnes_libretro_android.so --es ROM {file.path}",
+      "killPackageProcesses": false,
+      "killPackageProcessesWarning": true,
+      "extra": ""
+    },
+    {
+      "name": "RetroArch (64 bits) - bsnes-hd",
+      "uniqueId": "esde.sufami.cc5b69875308",
+      "description": "Supported extensions: 7z, bml, bs, fig, sfc, smc, st, zip.",
+      "acceptedFilenameRegex": "^(?!\\.)(.*)\\.(?:7z|bml|bs|fig|sfc|smc|st|zip)$",
+      "amStartArguments": "-n com.retroarch.aarch64/com.retroarch.browser.retroactivity.RetroActivityFuture --es CONFIGFILE /storage/emulated/0/Android/data/com.retroarch.aarch64/files/retroarch.cfg --es LIBRETRO /data/data/com.retroarch.aarch64/cores/bsnes_hd_beta_libretro_android.so --es ROM {file.path}",
+      "killPackageProcesses": false,
+      "killPackageProcessesWarning": true,
+      "extra": ""
+    },
+    {
+      "name": "RetroArch (32 bits) - bsnes-hd",
+      "uniqueId": "esde.sufami.78d5f996d1cd",
+      "description": "Supported extensions: 7z, bml, bs, fig, sfc, smc, st, zip.",
+      "acceptedFilenameRegex": "^(?!\\.)(.*)\\.(?:7z|bml|bs|fig|sfc|smc|st|zip)$",
+      "amStartArguments": "-n com.retroarch.ra32/com.retroarch.browser.retroactivity.RetroActivityFuture --es CONFIGFILE /storage/emulated/0/Android/data/com.retroarch.ra32/files/retroarch.cfg --es LIBRETRO /data/data/com.retroarch.ra32/cores/bsnes_hd_beta_libretro_android.so --es ROM {file.path}",
+      "killPackageProcesses": false,
+      "killPackageProcessesWarning": true,
+      "extra": ""
+    },
+    {
+      "name": "RetroArch - bsnes-hd",
+      "uniqueId": "esde.sufami.aecf8dec3516",
+      "description": "Supported extensions: 7z, bml, bs, fig, sfc, smc, st, zip.",
+      "acceptedFilenameRegex": "^(?!\\.)(.*)\\.(?:7z|bml|bs|fig|sfc|smc|st|zip)$",
+      "amStartArguments": "-n com.retroarch/com.retroarch.browser.retroactivity.RetroActivityFuture --es CONFIGFILE /storage/emulated/0/Android/data/com.retroarch/files/retroarch.cfg --es LIBRETRO /data/data/com.retroarch/cores/bsnes_hd_beta_libretro_android.so --es ROM {file.path}",
+      "killPackageProcesses": false,
+      "killPackageProcessesWarning": true,
+      "extra": ""
+    },
+    {
+      "name": "RetroArch (64 bits) - bsnes-jg",
+      "uniqueId": "esde.sufami.ee66f925229e",
+      "description": "Supported extensions: 7z, bml, bs, fig, sfc, smc, st, zip.",
+      "acceptedFilenameRegex": "^(?!\\.)(.*)\\.(?:7z|bml|bs|fig|sfc|smc|st|zip)$",
+      "amStartArguments": "-n com.retroarch.aarch64/com.retroarch.browser.retroactivity.RetroActivityFuture --es CONFIGFILE /storage/emulated/0/Android/data/com.retroarch.aarch64/files/retroarch.cfg --es LIBRETRO /data/data/com.retroarch.aarch64/cores/bsnes-jg_libretro_android.so --es ROM {file.path}",
+      "killPackageProcesses": false,
+      "killPackageProcessesWarning": true,
+      "extra": ""
+    },
+    {
+      "name": "RetroArch (32 bits) - bsnes-jg",
+      "uniqueId": "esde.sufami.42f69eada454",
+      "description": "Supported extensions: 7z, bml, bs, fig, sfc, smc, st, zip.",
+      "acceptedFilenameRegex": "^(?!\\.)(.*)\\.(?:7z|bml|bs|fig|sfc|smc|st|zip)$",
+      "amStartArguments": "-n com.retroarch.ra32/com.retroarch.browser.retroactivity.RetroActivityFuture --es CONFIGFILE /storage/emulated/0/Android/data/com.retroarch.ra32/files/retroarch.cfg --es LIBRETRO /data/data/com.retroarch.ra32/cores/bsnes-jg_libretro_android.so --es ROM {file.path}",
+      "killPackageProcesses": false,
+      "killPackageProcessesWarning": true,
+      "extra": ""
+    },
+    {
+      "name": "RetroArch - bsnes-jg",
+      "uniqueId": "esde.sufami.dbed16c7e700",
+      "description": "Supported extensions: 7z, bml, bs, fig, sfc, smc, st, zip.",
+      "acceptedFilenameRegex": "^(?!\\.)(.*)\\.(?:7z|bml|bs|fig|sfc|smc|st|zip)$",
+      "amStartArguments": "-n com.retroarch/com.retroarch.browser.retroactivity.RetroActivityFuture --es CONFIGFILE /storage/emulated/0/Android/data/com.retroarch/files/retroarch.cfg --es LIBRETRO /data/data/com.retroarch/cores/bsnes-jg_libretro_android.so --es ROM {file.path}",
+      "killPackageProcesses": false,
+      "killPackageProcessesWarning": true,
+      "extra": ""
+    },
+    {
+      "name": "RetroArch (64 bits) - bsnes-mercury Accuracy",
+      "uniqueId": "esde.sufami.2221569956a6",
+      "description": "Supported extensions: 7z, bml, bs, fig, sfc, smc, st, zip.",
+      "acceptedFilenameRegex": "^(?!\\.)(.*)\\.(?:7z|bml|bs|fig|sfc|smc|st|zip)$",
+      "amStartArguments": "-n com.retroarch.aarch64/com.retroarch.browser.retroactivity.RetroActivityFuture --es CONFIGFILE /storage/emulated/0/Android/data/com.retroarch.aarch64/files/retroarch.cfg --es LIBRETRO /data/data/com.retroarch.aarch64/cores/bsnes_mercury_accuracy_libretro_android.so --es ROM {file.path}",
+      "killPackageProcesses": false,
+      "killPackageProcessesWarning": true,
+      "extra": ""
+    },
+    {
+      "name": "RetroArch (32 bits) - bsnes-mercury Accuracy",
+      "uniqueId": "esde.sufami.34d19092b4c4",
+      "description": "Supported extensions: 7z, bml, bs, fig, sfc, smc, st, zip.",
+      "acceptedFilenameRegex": "^(?!\\.)(.*)\\.(?:7z|bml|bs|fig|sfc|smc|st|zip)$",
+      "amStartArguments": "-n com.retroarch.ra32/com.retroarch.browser.retroactivity.RetroActivityFuture --es CONFIGFILE /storage/emulated/0/Android/data/com.retroarch.ra32/files/retroarch.cfg --es LIBRETRO /data/data/com.retroarch.ra32/cores/bsnes_mercury_accuracy_libretro_android.so --es ROM {file.path}",
+      "killPackageProcesses": false,
+      "killPackageProcessesWarning": true,
+      "extra": ""
+    },
+    {
+      "name": "RetroArch - bsnes-mercury Accuracy",
+      "uniqueId": "esde.sufami.81a51ab1e056",
+      "description": "Supported extensions: 7z, bml, bs, fig, sfc, smc, st, zip.",
+      "acceptedFilenameRegex": "^(?!\\.)(.*)\\.(?:7z|bml|bs|fig|sfc|smc|st|zip)$",
+      "amStartArguments": "-n com.retroarch/com.retroarch.browser.retroactivity.RetroActivityFuture --es CONFIGFILE /storage/emulated/0/Android/data/com.retroarch/files/retroarch.cfg --es LIBRETRO /data/data/com.retroarch/cores/bsnes_mercury_accuracy_libretro_android.so --es ROM {file.path}",
+      "killPackageProcesses": false,
+      "killPackageProcessesWarning": true,
+      "extra": ""
+    }
+  ]
+}

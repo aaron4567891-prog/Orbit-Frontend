@@ -1,0 +1,52 @@
+{
+  "databaseVersion": 14,
+  "revisionNumber": 2,
+  "platform": {
+    "name": "Atari 800",
+    "uniqueId": "atari800",
+    "shortname": "atari800",
+    "description": null,
+    "acceptedFilenameRegex": "^(?!\\.)(.*)\\.(?:7z|a52|atr|atx|bin|car|cas|cdm|com|rom|xex|xfd|zip)$",
+    "scraperSourceList": [],
+    "boxArtAspectRatioId": 0,
+    "useCustomBoxArtAspectRatio": false,
+    "customBoxArtAspectRatio": null,
+    "screenAspectRatioId": 1,
+    "useCustomScreenAspectRatio": false,
+    "customScreenAspectRatio": null,
+    "retroAchievementsConsoleIdList": [],
+    "extra": ""
+  },
+  "playerList": [
+    {
+      "name": "RetroArch (64 bits) - Atari800",
+      "uniqueId": "esde.atari800.cc32c659b4ff",
+      "description": "Supported extensions: 7z, a52, atr, atx, bin, car, cas, cdm, com, rom, xex, xfd, zip.",
+      "acceptedFilenameRegex": "^(?!\\.)(.*)\\.(?:7z|a52|atr|atx|bin|car|cas|cdm|com|rom|xex|xfd|zip)$",
+      "amStartArguments": "-n com.retroarch.aarch64/com.retroarch.browser.retroactivity.RetroActivityFuture --es CONFIGFILE /storage/emulated/0/Android/data/com.retroarch.aarch64/files/retroarch.cfg --es LIBRETRO /data/data/com.retroarch.aarch64/cores/atari800_libretro_android.so --es ROM {file.path}",
+      "killPackageProcesses": false,
+      "killPackageProcessesWarning": true,
+      "extra": ""
+    },
+    {
+      "name": "RetroArch (32 bits) - Atari800",
+      "uniqueId": "esde.atari800.ce83a354920b",
+      "description": "Supported extensions: 7z, a52, atr, atx, bin, car, cas, cdm, com, rom, xex, xfd, zip.",
+      "acceptedFilenameRegex": "^(?!\\.)(.*)\\.(?:7z|a52|atr|atx|bin|car|cas|cdm|com|rom|xex|xfd|zip)$",
+      "amStartArguments": "-n com.retroarch.ra32/com.retroarch.browser.retroactivity.RetroActivityFuture --es CONFIGFILE /storage/emulated/0/Android/data/com.retroarch.ra32/files/retroarch.cfg --es LIBRETRO /data/data/com.retroarch.ra32/cores/atari800_libretro_android.so --es ROM {file.path}",
+      "killPackageProcesses": false,
+      "killPackageProcessesWarning": true,
+      "extra": ""
+    },
+    {
+      "name": "RetroArch - Atari800",
+      "uniqueId": "esde.atari800.ec190395d3a6",
+      "description": "Supported extensions: 7z, a52, atr, atx, bin, car, cas, cdm, com, rom, xex, xfd, zip.",
+      "acceptedFilenameRegex": "^(?!\\.)(.*)\\.(?:7z|a52|atr|atx|bin|car|cas|cdm|com|rom|xex|xfd|zip)$",
+      "amStartArguments": "-n com.retroarch/com.retroarch.browser.retroactivity.RetroActivityFuture --es CONFIGFILE /storage/emulated/0/Android/data/com.retroarch/files/retroarch.cfg --es LIBRETRO /data/data/com.retroarch/cores/atari800_libretro_android.so --es ROM {file.path}",
+      "killPackageProcesses": false,
+      "killPackageProcessesWarning": true,
+      "extra": ""
+    }
+  ]
+}

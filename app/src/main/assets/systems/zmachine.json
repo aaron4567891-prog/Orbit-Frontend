@@ -1,0 +1,52 @@
+{
+  "databaseVersion": 14,
+  "revisionNumber": 2,
+  "platform": {
+    "name": "Infocom Z-machine",
+    "uniqueId": "zmachine",
+    "shortname": "zmachine",
+    "description": null,
+    "acceptedFilenameRegex": "^(?!\\.)(.*)\\.(?:dat|z1|z2|z3|z4|z5|z6|z7|z8|zblorb|zlb)$",
+    "scraperSourceList": [],
+    "boxArtAspectRatioId": 0,
+    "useCustomBoxArtAspectRatio": false,
+    "customBoxArtAspectRatio": null,
+    "screenAspectRatioId": 1,
+    "useCustomScreenAspectRatio": false,
+    "customScreenAspectRatio": null,
+    "retroAchievementsConsoleIdList": [],
+    "extra": ""
+  },
+  "playerList": [
+    {
+      "name": "RetroArch (64 bits) - MojoZork",
+      "uniqueId": "esde.zmachine.7b51fd5f665e",
+      "description": "Supported extensions: dat, z1, z2, z3, z4, z5, z6, z7, z8, zblorb, zlb.",
+      "acceptedFilenameRegex": "^(?!\\.)(.*)\\.(?:dat|z1|z2|z3|z4|z5|z6|z7|z8|zblorb|zlb)$",
+      "amStartArguments": "-n com.retroarch.aarch64/com.retroarch.browser.retroactivity.RetroActivityFuture --es CONFIGFILE /storage/emulated/0/Android/data/com.retroarch.aarch64/files/retroarch.cfg --es LIBRETRO /data/data/com.retroarch.aarch64/cores/mojozork_libretro_android.so --es ROM {file.path}",
+      "killPackageProcesses": false,
+      "killPackageProcessesWarning": true,
+      "extra": ""
+    },
+    {
+      "name": "RetroArch (32 bits) - MojoZork",
+      "uniqueId": "esde.zmachine.806201c96b4c",
+      "description": "Supported extensions: dat, z1, z2, z3, z4, z5, z6, z7, z8, zblorb, zlb.",
+      "acceptedFilenameRegex": "^(?!\\.)(.*)\\.(?:dat|z1|z2|z3|z4|z5|z6|z7|z8|zblorb|zlb)$",
+      "amStartArguments": "-n com.retroarch.ra32/com.retroarch.browser.retroactivity.RetroActivityFuture --es CONFIGFILE /storage/emulated/0/Android/data/com.retroarch.ra32/files/retroarch.cfg --es LIBRETRO /data/data/com.retroarch.ra32/cores/mojozork_libretro_android.so --es ROM {file.path}",
+      "killPackageProcesses": false,
+      "killPackageProcessesWarning": true,
+      "extra": ""
+    },
+    {
+      "name": "RetroArch - MojoZork",
+      "uniqueId": "esde.zmachine.ec99691f6d4a",
+      "description": "Supported extensions: dat, z1, z2, z3, z4, z5, z6, z7, z8, zblorb, zlb.",
+      "acceptedFilenameRegex": "^(?!\\.)(.*)\\.(?:dat|z1|z2|z3|z4|z5|z6|z7|z8|zblorb|zlb)$",
+      "amStartArguments": "-n com.retroarch/com.retroarch.browser.retroactivity.RetroActivityFuture --es CONFIGFILE /storage/emulated/0/Android/data/com.retroarch/files/retroarch.cfg --es LIBRETRO /data/data/com.retroarch/cores/mojozork_libretro_android.so --es ROM {file.path}",
+      "killPackageProcesses": false,
+      "killPackageProcessesWarning": true,
+      "extra": ""
+    }
+  ]
+}

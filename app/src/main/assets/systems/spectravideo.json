@@ -1,0 +1,52 @@
+{
+  "databaseVersion": 14,
+  "revisionNumber": 2,
+  "platform": {
+    "name": "Spectravideo",
+    "uniqueId": "spectravideo",
+    "shortname": "spectravideo",
+    "description": null,
+    "acceptedFilenameRegex": "^(?!\\.)(.*)\\.(?:7z|cas|col|dsk|m3u|mx1|mx2|ri|rom|sc|sg|zip)$",
+    "scraperSourceList": [],
+    "boxArtAspectRatioId": 0,
+    "useCustomBoxArtAspectRatio": false,
+    "customBoxArtAspectRatio": null,
+    "screenAspectRatioId": 1,
+    "useCustomScreenAspectRatio": false,
+    "customScreenAspectRatio": null,
+    "retroAchievementsConsoleIdList": [],
+    "extra": ""
+  },
+  "playerList": [
+    {
+      "name": "RetroArch (64 bits) - blueMSX",
+      "uniqueId": "esde.spectravideo.1e00299f0b04",
+      "description": "Supported extensions: 7z, cas, col, dsk, m3u, mx1, mx2, ri, rom, sc, sg, zip.",
+      "acceptedFilenameRegex": "^(?!\\.)(.*)\\.(?:7z|cas|col|dsk|m3u|mx1|mx2|ri|rom|sc|sg|zip)$",
+      "amStartArguments": "-n com.retroarch.aarch64/com.retroarch.browser.retroactivity.RetroActivityFuture --es CONFIGFILE /storage/emulated/0/Android/data/com.retroarch.aarch64/files/retroarch.cfg --es LIBRETRO /data/data/com.retroarch.aarch64/cores/bluemsx_libretro_android.so --es ROM {file.path}",
+      "killPackageProcesses": false,
+      "killPackageProcessesWarning": true,
+      "extra": ""
+    },
+    {
+      "name": "RetroArch (32 bits) - blueMSX",
+      "uniqueId": "esde.spectravideo.38e499a4a0e0",
+      "description": "Supported extensions: 7z, cas, col, dsk, m3u, mx1, mx2, ri, rom, sc, sg, zip.",
+      "acceptedFilenameRegex": "^(?!\\.)(.*)\\.(?:7z|cas|col|dsk|m3u|mx1|mx2|ri|rom|sc|sg|zip)$",
+      "amStartArguments": "-n com.retroarch.ra32/com.retroarch.browser.retroactivity.RetroActivityFuture --es CONFIGFILE /storage/emulated/0/Android/data/com.retroarch.ra32/files/retroarch.cfg --es LIBRETRO /data/data/com.retroarch.ra32/cores/bluemsx_libretro_android.so --es ROM {file.path}",
+      "killPackageProcesses": false,
+      "killPackageProcessesWarning": true,
+      "extra": ""
+    },
+    {
+      "name": "RetroArch - blueMSX",
+      "uniqueId": "esde.spectravideo.3cb9b7d441f6",
+      "description": "Supported extensions: 7z, cas, col, dsk, m3u, mx1, mx2, ri, rom, sc, sg, zip.",
+      "acceptedFilenameRegex": "^(?!\\.)(.*)\\.(?:7z|cas|col|dsk|m3u|mx1|mx2|ri|rom|sc|sg|zip)$",
+      "amStartArguments": "-n com.retroarch/com.retroarch.browser.retroactivity.RetroActivityFuture --es CONFIGFILE /storage/emulated/0/Android/data/com.retroarch/files/retroarch.cfg --es LIBRETRO /data/data/com.retroarch/cores/bluemsx_libretro_android.so --es ROM {file.path}",
+      "killPackageProcesses": false,
+      "killPackageProcessesWarning": true,
+      "extra": ""
+    }
+  ]
+}

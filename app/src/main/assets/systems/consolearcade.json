@@ -1,0 +1,202 @@
+{
+  "databaseVersion": 14,
+  "revisionNumber": 2,
+  "platform": {
+    "name": "Console Arcade Systems",
+    "uniqueId": "consolearcade",
+    "shortname": "consolearcade",
+    "description": null,
+    "acceptedFilenameRegex": "^(?!\\.)(.*)\\.(?:7z|arcadedef|iso|ps3|zip)$",
+    "scraperSourceList": [],
+    "boxArtAspectRatioId": 0,
+    "useCustomBoxArtAspectRatio": false,
+    "customBoxArtAspectRatio": null,
+    "screenAspectRatioId": 1,
+    "useCustomScreenAspectRatio": false,
+    "customScreenAspectRatio": null,
+    "retroAchievementsConsoleIdList": [],
+    "extra": ""
+  },
+  "playerList": [
+    {
+      "name": "RetroArch (64 bits) - MAME - Current",
+      "uniqueId": "esde.consolearcade.db1c9a24377c",
+      "description": "Supported extensions: 7z, arcadedef, iso, ps3, zip.",
+      "acceptedFilenameRegex": "^(?!\\.)(.*)\\.(?:7z|arcadedef|iso|ps3|zip)$",
+      "amStartArguments": "-n com.retroarch.aarch64/com.retroarch.browser.retroactivity.RetroActivityFuture --es CONFIGFILE /storage/emulated/0/Android/data/com.retroarch.aarch64/files/retroarch.cfg --es LIBRETRO /data/data/com.retroarch.aarch64/cores/mamearcade_libretro_android.so --es ROM {file.path}",
+      "killPackageProcesses": false,
+      "killPackageProcessesWarning": true,
+      "extra": ""
+    },
+    {
+      "name": "RetroArch (32 bits) - MAME - Current",
+      "uniqueId": "esde.consolearcade.a530e8cb2cf9",
+      "description": "Supported extensions: 7z, arcadedef, iso, ps3, zip.",
+      "acceptedFilenameRegex": "^(?!\\.)(.*)\\.(?:7z|arcadedef|iso|ps3|zip)$",
+      "amStartArguments": "-n com.retroarch.ra32/com.retroarch.browser.retroactivity.RetroActivityFuture --es CONFIGFILE /storage/emulated/0/Android/data/com.retroarch.ra32/files/retroarch.cfg --es LIBRETRO /data/data/com.retroarch.ra32/cores/mamearcade_libretro_android.so --es ROM {file.path}",
+      "killPackageProcesses": false,
+      "killPackageProcessesWarning": true,
+      "extra": ""
+    },
+    {
+      "name": "RetroArch - MAME - Current",
+      "uniqueId": "esde.consolearcade.768aee4c5f22",
+      "description": "Supported extensions: 7z, arcadedef, iso, ps3, zip.",
+      "acceptedFilenameRegex": "^(?!\\.)(.*)\\.(?:7z|arcadedef|iso|ps3|zip)$",
+      "amStartArguments": "-n com.retroarch/com.retroarch.browser.retroactivity.RetroActivityFuture --es CONFIGFILE /storage/emulated/0/Android/data/com.retroarch/files/retroarch.cfg --es LIBRETRO /data/data/com.retroarch/cores/mamearcade_libretro_android.so --es ROM {file.path}",
+      "killPackageProcesses": false,
+      "killPackageProcessesWarning": true,
+      "extra": ""
+    },
+    {
+      "name": "RetroArch (64 bits) - Flycast",
+      "uniqueId": "esde.consolearcade.f053d1f6681a",
+      "description": "Supported extensions: 7z, arcadedef, iso, ps3, zip.",
+      "acceptedFilenameRegex": "^(?!\\.)(.*)\\.(?:7z|arcadedef|iso|ps3|zip)$",
+      "amStartArguments": "-n com.retroarch.aarch64/com.retroarch.browser.retroactivity.RetroActivityFuture --es CONFIGFILE /storage/emulated/0/Android/data/com.retroarch.aarch64/files/retroarch.cfg --es LIBRETRO /data/data/com.retroarch.aarch64/cores/flycast_libretro_android.so --es ROM {file.path}",
+      "killPackageProcesses": false,
+      "killPackageProcessesWarning": true,
+      "extra": ""
+    },
+    {
+      "name": "RetroArch (32 bits) - Flycast",
+      "uniqueId": "esde.consolearcade.464dab1d4226",
+      "description": "Supported extensions: 7z, arcadedef, iso, ps3, zip.",
+      "acceptedFilenameRegex": "^(?!\\.)(.*)\\.(?:7z|arcadedef|iso|ps3|zip)$",
+      "amStartArguments": "-n com.retroarch.ra32/com.retroarch.browser.retroactivity.RetroActivityFuture --es CONFIGFILE /storage/emulated/0/Android/data/com.retroarch.ra32/files/retroarch.cfg --es LIBRETRO /data/data/com.retroarch.ra32/cores/flycast_libretro_android.so --es ROM {file.path}",
+      "killPackageProcesses": false,
+      "killPackageProcessesWarning": true,
+      "extra": ""
+    },
+    {
+      "name": "RetroArch - Flycast",
+      "uniqueId": "esde.consolearcade.fe447fc15641",
+      "description": "Supported extensions: 7z, arcadedef, iso, ps3, zip.",
+      "acceptedFilenameRegex": "^(?!\\.)(.*)\\.(?:7z|arcadedef|iso|ps3|zip)$",
+      "amStartArguments": "-n com.retroarch/com.retroarch.browser.retroactivity.RetroActivityFuture --es CONFIGFILE /storage/emulated/0/Android/data/com.retroarch/files/retroarch.cfg --es LIBRETRO /data/data/com.retroarch/cores/flycast_libretro_android.so --es ROM {file.path}",
+      "killPackageProcesses": false,
+      "killPackageProcessesWarning": true,
+      "extra": ""
+    },
+    {
+      "name": "Flycast",
+      "uniqueId": "esde.consolearcade.773bda088f8a",
+      "description": "Supported extensions: 7z, arcadedef, iso, ps3, zip.",
+      "acceptedFilenameRegex": "^(?!\\.)(.*)\\.(?:7z|arcadedef|iso|ps3|zip)$",
+      "amStartArguments": "-n com.flycast.emulator/com.flycast.emulator.MainActivity -a android.intent.action.VIEW -d {file.uri}",
+      "killPackageProcesses": false,
+      "killPackageProcessesWarning": true,
+      "extra": ""
+    },
+    {
+      "name": "Flycast (variant 2)",
+      "uniqueId": "esde.consolearcade.b15699c42a0c",
+      "description": "Supported extensions: 7z, arcadedef, iso, ps3, zip.",
+      "acceptedFilenameRegex": "^(?!\\.)(.*)\\.(?:7z|arcadedef|iso|ps3|zip)$",
+      "amStartArguments": "-n com.flycast.emulator/com.reicast.emulator.MainActivity -a android.intent.action.VIEW -d {file.uri}",
+      "killPackageProcesses": false,
+      "killPackageProcessesWarning": true,
+      "extra": ""
+    },
+    {
+      "name": "Play!",
+      "uniqueId": "esde.consolearcade.11d5fae322ef",
+      "description": "Supported extensions: 7z, arcadedef, iso, ps3, zip.",
+      "acceptedFilenameRegex": "^(?!\\.)(.*)\\.(?:7z|arcadedef|iso|ps3|zip)$",
+      "amStartArguments": "-n com.virtualapplications.play/.MainActivity -a android.intent.action.VIEW -d {file.uri}",
+      "killPackageProcesses": false,
+      "killPackageProcessesWarning": true,
+      "extra": ""
+    },
+    {
+      "name": "aPS3e Directory",
+      "uniqueId": "esde.consolearcade.8c115632335f",
+      "description": "Supported extensions: 7z, arcadedef, iso, ps3, zip.",
+      "acceptedFilenameRegex": "^(?!\\.)(.*)\\.(?:7z|arcadedef|iso|ps3|zip)$",
+      "amStartArguments": "-n aenu.aps3e.premium/aenu.aps3e.EmulatorActivity -a aenu.intent.action.APS3E --es game_dir {file.path}",
+      "killPackageProcesses": false,
+      "killPackageProcessesWarning": true,
+      "extra": ""
+    },
+    {
+      "name": "aPS3e Directory (variant 2)",
+      "uniqueId": "esde.consolearcade.70aa33bcd899",
+      "description": "Supported extensions: 7z, arcadedef, iso, ps3, zip.",
+      "acceptedFilenameRegex": "^(?!\\.)(.*)\\.(?:7z|arcadedef|iso|ps3|zip)$",
+      "amStartArguments": "-n aenu.aps3e/aenu.aps3e.EmulatorActivity -a aenu.intent.action.APS3E --es game_dir {file.path}",
+      "killPackageProcesses": false,
+      "killPackageProcessesWarning": true,
+      "extra": ""
+    },
+    {
+      "name": "aPS3e ISO",
+      "uniqueId": "esde.consolearcade.1dc2d6ce846b",
+      "description": "Supported extensions: 7z, arcadedef, iso, ps3, zip.",
+      "acceptedFilenameRegex": "^(?!\\.)(.*)\\.(?:7z|arcadedef|iso|ps3|zip)$",
+      "amStartArguments": "-n aenu.aps3e.premium/aenu.aps3e.EmulatorActivity -a aenu.intent.action.APS3E --es iso_uri {file.uri}",
+      "killPackageProcesses": false,
+      "killPackageProcessesWarning": true,
+      "extra": ""
+    },
+    {
+      "name": "aPS3e ISO (variant 2)",
+      "uniqueId": "esde.consolearcade.4cb19998db6d",
+      "description": "Supported extensions: 7z, arcadedef, iso, ps3, zip.",
+      "acceptedFilenameRegex": "^(?!\\.)(.*)\\.(?:7z|arcadedef|iso|ps3|zip)$",
+      "amStartArguments": "-n aenu.aps3e/aenu.aps3e.EmulatorActivity -a aenu.intent.action.APS3E --es iso_uri {file.uri}",
+      "killPackageProcesses": false,
+      "killPackageProcessesWarning": true,
+      "extra": ""
+    },
+    {
+      "name": "ARMSX3 Directory or ISO",
+      "uniqueId": "esde.consolearcade.28e5c75ae5ae",
+      "description": "Supported extensions: 7z, arcadedef, iso, ps3, zip.",
+      "acceptedFilenameRegex": "^(?!\\.)(.*)\\.(?:7z|arcadedef|iso|ps3|zip)$",
+      "amStartArguments": "-n com.armsx3/com.armsx2.Main --es path {file.path}",
+      "killPackageProcesses": false,
+      "killPackageProcessesWarning": true,
+      "extra": ""
+    },
+    {
+      "name": "EmuCoreC Directory or ISO",
+      "uniqueId": "esde.consolearcade.c3d7e1def6e1",
+      "description": "Supported extensions: 7z, arcadedef, iso, ps3, zip.",
+      "acceptedFilenameRegex": "^(?!\\.)(.*)\\.(?:7z|arcadedef|iso|ps3|zip)$",
+      "amStartArguments": "-n com.sbro.emucorec/.core.ps3.Emulator --es gamePath {file.path}",
+      "killPackageProcesses": false,
+      "killPackageProcessesWarning": true,
+      "extra": ""
+    },
+    {
+      "name": "RetroArch (64 bits) - Dolphin",
+      "uniqueId": "esde.consolearcade.8c4e567493a2",
+      "description": "Supported extensions: 7z, arcadedef, iso, ps3, zip.",
+      "acceptedFilenameRegex": "^(?!\\.)(.*)\\.(?:7z|arcadedef|iso|ps3|zip)$",
+      "amStartArguments": "-n com.retroarch.aarch64/com.retroarch.browser.retroactivity.RetroActivityFuture --es CONFIGFILE /storage/emulated/0/Android/data/com.retroarch.aarch64/files/retroarch.cfg --es LIBRETRO /data/data/com.retroarch.aarch64/cores/dolphin_libretro_android.so --es ROM {file.path}",
+      "killPackageProcesses": false,
+      "killPackageProcessesWarning": true,
+      "extra": ""
+    },
+    {
+      "name": "RetroArch (32 bits) - Dolphin",
+      "uniqueId": "esde.consolearcade.66b840d37b8d",
+      "description": "Supported extensions: 7z, arcadedef, iso, ps3, zip.",
+      "acceptedFilenameRegex": "^(?!\\.)(.*)\\.(?:7z|arcadedef|iso|ps3|zip)$",
+      "amStartArguments": "-n com.retroarch.ra32/com.retroarch.browser.retroactivity.RetroActivityFuture --es CONFIGFILE /storage/emulated/0/Android/data/com.retroarch.ra32/files/retroarch.cfg --es LIBRETRO /data/data/com.retroarch.ra32/cores/dolphin_libretro_android.so --es ROM {file.path}",
+      "killPackageProcesses": false,
+      "killPackageProcessesWarning": true,
+      "extra": ""
+    },
+    {
+      "name": "RetroArch - Dolphin",
+      "uniqueId": "esde.consolearcade.9eff921b79b7",
+      "description": "Supported extensions: 7z, arcadedef, iso, ps3, zip.",
+      "acceptedFilenameRegex": "^(?!\\.)(.*)\\.(?:7z|arcadedef|iso|ps3|zip)$",
+      "amStartArguments": "-n com.retroarch/com.retroarch.browser.retroactivity.RetroActivityFuture --es CONFIGFILE /storage/emulated/0/Android/data/com.retroarch/files/retroarch.cfg --es LIBRETRO /data/data/com.retroarch/cores/dolphin_libretro_android.so --es ROM {file.path}",
+      "killPackageProcesses": false,
+      "killPackageProcessesWarning": true,
+      "extra": ""
+    }
+  ]
+}

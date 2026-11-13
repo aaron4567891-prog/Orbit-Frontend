@@ -1,0 +1,6 @@
+{
+  "format": "orbit-native", "version": 1, "id": "midnight", "name": "Orbit Midnight",
+  "description": "Deep blue, original console illustrations and a spacious game media view. Designed for Orbit's two screens.",
+  "systemLayout": "artwork", "gameListFraction": 0.44,
+  "colors": {"background": "#081a32", "surface": "#102c4b", "accent": "#1679da", "text": "#f4f8ff", "muted": "#9bb6d3"}
+}

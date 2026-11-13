@@ -1,0 +1,62 @@
+{
+  "databaseVersion": 14,
+  "revisionNumber": 1,
+  "platform": {
+    "name": "Adobe Flash",
+    "uniqueId": "adobeflash",
+    "shortname": "adobeflash",
+    "description": null,
+    "acceptedFilenameRegex": "^(?!(?:\\._|\\.).*).*$",
+    "scraperSourceList": [],
+    "boxArtAspectRatioId": 2,
+    "useCustomBoxArtAspectRatio": false,
+    "customBoxArtAspectRatio": null,
+    "screenAspectRatioId": 1,
+    "useCustomScreenAspectRatio": false,
+    "customScreenAspectRatio": null,
+    "retroAchievementsConsoleIdList": [],
+    "extra": ""
+  },
+  "playerList": [
+    {
+      "name": "Swiff",
+      "uniqueId": "flash.io.navivani.swiff",
+      "description": "Supported extensions: swiffid",
+      "acceptedFilenameRegex": "^(.*)\\.(?:swiffid)$",
+      "amStartArguments": "-n io.navivani.swiff/.MainActivity\n -a android.intent.action.VIEW\n -d {file.uri}\n -t application/octet-stream\n --activity-clear-task  --activity-clear-top  --activity-no-history",
+      "killPackageProcesses": true,
+      "killPackageProcessesWarning": true,
+      "extra": ""
+    },
+    {
+      "name": "Ruffle",
+      "uniqueId": "flash.rs.ruffle",
+      "description": "Supported extensions: swf",
+      "acceptedFilenameRegex": "^(.*)\\.(?:swf)$",
+      "amStartArguments": " -n rs.ruffle/.PlayerActivity\n -a android.intent.action.VIEW\n -d {file.uri}\n",
+      "killPackageProcesses": false,
+      "killPackageProcessesWarning": false,
+      "extra": ""
+    },
+    {
+      "name": "SWF Player",
+      "uniqueId": "flash.com.issess.flashplayer",
+      "description": "Supported extensions: swf",
+      "acceptedFilenameRegex": "^(.*)\\.(?:swf)$",
+      "amStartArguments": " -n com.issess.flashplayer/.player.FlashPlayerActivity\n -a android.intent.action.VIEW\n -d {file.uri}\n --activity-clear-task  --activity-clear-top",
+      "killPackageProcesses": false,
+      "killPackageProcessesWarning": false,
+      "extra": ""
+    },
+    {
+      "name": "SWF Player Pro",
+      "uniqueId": "flash.com.issess.flashplayerpro",
+      "description": "Supported extensions: swf",
+      "acceptedFilenameRegex": "^(.*)\\.(?:swf)$",
+      "amStartArguments": " -n com.issess.flashplayerpro/com.issess.flashplayer.player.FlashPlayerActivity\n -a android.intent.action.VIEW\n -d {file.uri}\n --activity-clear-task  --activity-clear-top",
+      "killPackageProcesses": false,
+      "killPackageProcessesWarning": false,
+      "extra": ""
+    }
+  ]
+}

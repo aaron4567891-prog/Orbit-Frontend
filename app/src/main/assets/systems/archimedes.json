@@ -1,0 +1,21 @@
+{
+  "databaseVersion": 14,
+  "revisionNumber": 2,
+  "platform": {
+    "name": "Acorn Archimedes",
+    "uniqueId": "archimedes",
+    "shortname": "archimedes",
+    "description": null,
+    "acceptedFilenameRegex": "^(?!\\.)(.*)\\.(?:1dd|360|7z|adf|adl|adm|ads|apd|bbc|chd|cqi|cqm|d77|d88|dfi|dsd|dsk|hfe|ima|imd|img|ipf|jfd|mfi|mfm|msa|ssd|st|td0|ufi|zip)$",
+    "scraperSourceList": [],
+    "boxArtAspectRatioId": 0,
+    "useCustomBoxArtAspectRatio": false,
+    "customBoxArtAspectRatio": null,
+    "screenAspectRatioId": 1,
+    "useCustomScreenAspectRatio": false,
+    "customScreenAspectRatio": null,
+    "retroAchievementsConsoleIdList": [],
+    "extra": ""
+  },
+  "playerList": []
+}

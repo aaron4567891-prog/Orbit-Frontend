@@ -1,0 +1,58 @@
+[
+  {
+    "code": "us",
+    "name": "USA"
+  },
+  {
+    "code": "eu",
+    "name": "Europe"
+  },
+  {
+    "code": "jp",
+    "name": "Japan"
+  },
+  {
+    "code": "wor",
+    "name": "World"
+  },
+  {
+    "code": "au",
+    "name": "Australia"
+  },
+  {
+    "code": "uk",
+    "name": "United Kingdom"
+  },
+  {
+    "code": "ca",
+    "name": "Canada"
+  },
+  {
+    "code": "fr",
+    "name": "France"
+  },
+  {
+    "code": "de",
+    "name": "Germany"
+  },
+  {
+    "code": "sp",
+    "name": "Spain"
+  },
+  {
+    "code": "it",
+    "name": "Italy"
+  },
+  {
+    "code": "br",
+    "name": "Brazil"
+  },
+  {
+    "code": "cn",
+    "name": "China"
+  },
+  {
+    "code": "kr",
+    "name": "Korea"
+  }
+]

@@ -1,0 +1,82 @@
+{
+  "databaseVersion": 14,
+  "revisionNumber": 2,
+  "platform": {
+    "name": "Amstrad GX4000",
+    "uniqueId": "gx4000",
+    "shortname": "gx4000",
+    "description": null,
+    "acceptedFilenameRegex": "^(?!\\.)(.*)\\.(?:7z|bin|cdt|cpr|dsk|kcr|m3u|sna|tap|tar|voc|zip)$",
+    "scraperSourceList": [],
+    "boxArtAspectRatioId": 0,
+    "useCustomBoxArtAspectRatio": false,
+    "customBoxArtAspectRatio": null,
+    "screenAspectRatioId": 1,
+    "useCustomScreenAspectRatio": false,
+    "customScreenAspectRatio": null,
+    "retroAchievementsConsoleIdList": [],
+    "extra": ""
+  },
+  "playerList": [
+    {
+      "name": "RetroArch (64 bits) - Caprice32",
+      "uniqueId": "esde.gx4000.1b1e06bfbca2",
+      "description": "Supported extensions: 7z, bin, cdt, cpr, dsk, kcr, m3u, sna, tap, tar, voc, zip.",
+      "acceptedFilenameRegex": "^(?!\\.)(.*)\\.(?:7z|bin|cdt|cpr|dsk|kcr|m3u|sna|tap|tar|voc|zip)$",
+      "amStartArguments": "-n com.retroarch.aarch64/com.retroarch.browser.retroactivity.RetroActivityFuture --es CONFIGFILE /storage/emulated/0/Android/data/com.retroarch.aarch64/files/retroarch.cfg --es LIBRETRO /data/data/com.retroarch.aarch64/cores/cap32_libretro_android.so --es ROM {file.path}",
+      "killPackageProcesses": false,
+      "killPackageProcessesWarning": true,
+      "extra": ""
+    },
+    {
+      "name": "RetroArch (32 bits) - Caprice32",
+      "uniqueId": "esde.gx4000.136a203ea01a",
+      "description": "Supported extensions: 7z, bin, cdt, cpr, dsk, kcr, m3u, sna, tap, tar, voc, zip.",
+      "acceptedFilenameRegex": "^(?!\\.)(.*)\\.(?:7z|bin|cdt|cpr|dsk|kcr|m3u|sna|tap|tar|voc|zip)$",
+      "amStartArguments": "-n com.retroarch.ra32/com.retroarch.browser.retroactivity.RetroActivityFuture --es CONFIGFILE /storage/emulated/0/Android/data/com.retroarch.ra32/files/retroarch.cfg --es LIBRETRO /data/data/com.retroarch.ra32/cores/cap32_libretro_android.so --es ROM {file.path}",
+      "killPackageProcesses": false,
+      "killPackageProcessesWarning": true,
+      "extra": ""
+    },
+    {
+      "name": "RetroArch - Caprice32",
+      "uniqueId": "esde.gx4000.fd337d3f39a3",
+      "description": "Supported extensions: 7z, bin, cdt, cpr, dsk, kcr, m3u, sna, tap, tar, voc, zip.",
+      "acceptedFilenameRegex": "^(?!\\.)(.*)\\.(?:7z|bin|cdt|cpr|dsk|kcr|m3u|sna|tap|tar|voc|zip)$",
+      "amStartArguments": "-n com.retroarch/com.retroarch.browser.retroactivity.RetroActivityFuture --es CONFIGFILE /storage/emulated/0/Android/data/com.retroarch/files/retroarch.cfg --es LIBRETRO /data/data/com.retroarch/cores/cap32_libretro_android.so --es ROM {file.path}",
+      "killPackageProcesses": false,
+      "killPackageProcessesWarning": true,
+      "extra": ""
+    },
+    {
+      "name": "RetroArch (64 bits) - CrocoDS",
+      "uniqueId": "esde.gx4000.d77335808131",
+      "description": "Supported extensions: 7z, bin, cdt, cpr, dsk, kcr, m3u, sna, tap, tar, voc, zip.",
+      "acceptedFilenameRegex": "^(?!\\.)(.*)\\.(?:7z|bin|cdt|cpr|dsk|kcr|m3u|sna|tap|tar|voc|zip)$",
+      "amStartArguments": "-n com.retroarch.aarch64/com.retroarch.browser.retroactivity.RetroActivityFuture --es CONFIGFILE /storage/emulated/0/Android/data/com.retroarch.aarch64/files/retroarch.cfg --es LIBRETRO /data/data/com.retroarch.aarch64/cores/crocods_libretro_android.so --es ROM {file.path}",
+      "killPackageProcesses": false,
+      "killPackageProcessesWarning": true,
+      "extra": ""
+    },
+    {
+      "name": "RetroArch (32 bits) - CrocoDS",
+      "uniqueId": "esde.gx4000.8b569752a18b",
+      "description": "Supported extensions: 7z, bin, cdt, cpr, dsk, kcr, m3u, sna, tap, tar, voc, zip.",
+      "acceptedFilenameRegex": "^(?!\\.)(.*)\\.(?:7z|bin|cdt|cpr|dsk|kcr|m3u|sna|tap|tar|voc|zip)$",
+      "amStartArguments": "-n com.retroarch.ra32/com.retroarch.browser.retroactivity.RetroActivityFuture --es CONFIGFILE /storage/emulated/0/Android/data/com.retroarch.ra32/files/retroarch.cfg --es LIBRETRO /data/data/com.retroarch.ra32/cores/crocods_libretro_android.so --es ROM {file.path}",
+      "killPackageProcesses": false,
+      "killPackageProcessesWarning": true,
+      "extra": ""
+    },
+    {
+      "name": "RetroArch - CrocoDS",
+      "uniqueId": "esde.gx4000.c07f92b520aa",
+      "description": "Supported extensions: 7z, bin, cdt, cpr, dsk, kcr, m3u, sna, tap, tar, voc, zip.",
+      "acceptedFilenameRegex": "^(?!\\.)(.*)\\.(?:7z|bin|cdt|cpr|dsk|kcr|m3u|sna|tap|tar|voc|zip)$",
+      "amStartArguments": "-n com.retroarch/com.retroarch.browser.retroactivity.RetroActivityFuture --es CONFIGFILE /storage/emulated/0/Android/data/com.retroarch/files/retroarch.cfg --es LIBRETRO /data/data/com.retroarch/cores/crocods_libretro_android.so --es ROM {file.path}",
+      "killPackageProcesses": false,
+      "killPackageProcessesWarning": true,
+      "extra": ""
+    }
+  ]
+}

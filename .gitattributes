@@ -1,0 +1,23 @@
+# Store text files with LF line endings in the repository; Git converts them for each checkout.
+* text=auto
+
+# Windows scripts keep CRLF.
+*.bat text eol=crlf
+*.cmd text eol=crlf
+
+# Shell scripts keep LF.
+gradlew text eol=lf
+*.sh text eol=lf
+
+# Binary files are never converted.
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.webp binary
+*.gif binary
+*.ttf binary
+*.otf binary
+*.jar binary
+*.apk binary
+*.mp4 binary
+*.zip binary

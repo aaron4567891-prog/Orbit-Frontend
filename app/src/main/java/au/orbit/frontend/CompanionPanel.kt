@@ -53,9 +53,13 @@ class CompanionPanel(private val activity:Activity) {
             status.visibility=if(selected==null)android.view.View.VISIBLE else android.view.View.GONE
             heading.visibility=if(selected==null)android.view.View.VISIBLE else android.view.View.GONE
             heading.text="◉  ORBIT  /  SECOND SCREEN"
-            if(selected?.system!=null && artwork==null) {
-                handler.removeCallbacks(warmArtwork)
-                handler.post(warmArtwork)
+            selected?.system?.let { system ->
+                val first = DualScreenCoordinator.firstGameForArtwork(system)
+                if (first != null) preloadGame(system, first)
+                else if (artwork == null) {
+                    handler.removeCallbacks(warmArtwork)
+                    handler.post(warmArtwork)
+                }
             }
             return
         }

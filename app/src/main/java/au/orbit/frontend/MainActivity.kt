@@ -72,6 +72,7 @@ open class MainActivity : Activity() {
         colorfulSystems?.destroy();colorfulSystems=null
         importedSystems?.destroy();importedSystems=null;importedScene?.destroy();importedScene=null
         artworkPanel?.destroy();artworkPanel=null
+        discardPreparedArtwork()
         appsPanel?.destroy();appsPanel=null
         gameLogos.cancelPreload();discardPreparedSplitGameView()
         gameMediaRoot=null;gameMediaSurface=null
@@ -215,6 +216,7 @@ open class MainActivity : Activity() {
     }
     private fun focusSystem(spec:SystemSpec) {
         focusedSystemIndex=systems.indexOf(spec)
+        preloadListArtwork(spec)
         if(activeTab==0 && !library)tabViews[0]?.let { it.background=pageBackground(it) }
         DualScreenCoordinator.refreshMedia()
     }
@@ -575,6 +577,7 @@ open class MainActivity : Activity() {
         this,::selectedScrapingSystems,{ spec -> pages[spec.id]?.games?.size ?: 0 }
     ) {
         GameArtworkPanel.clearMediaCache();EsDeScene.clearMediaCache();gameLogos.clear();preloadKey=null
+        discardPreparedArtwork()
         DualScreenCoordinator.refreshMedia(true)
     }.also { scraperSettingsPanel=it }
     private var scrapingSidebar:View?=null
@@ -600,11 +603,32 @@ open class MainActivity : Activity() {
     private var pages = emptyMap<String, LibraryPage>()
     private var gameList: AbsListView? = null
     private var artworkPanel: GameArtworkPanel? = null
+    private var preparedArtworkPanel: GameArtworkPanel? = null
     private var colorfulSystems: ColorfulSystemsView? = null
     private var importedSystems:ImportedSystemsView?=null
     private var importedScene:EsDeScene?=null
     private var gamePreloader:EsDeScene?=null
     private var preloadKey:String?=null
+    internal fun firstGameForArtwork(spec: SystemSpec): Game? =
+        if (ready && !library && !scanning && OrbitThemes.current().libraryScreen == "top") pages[spec.id]?.games?.firstOrNull() else null
+
+    private fun preloadListArtwork(spec: SystemSpec) {
+        if (!ready || showingCompanion || activeTab != 0 || library || scanning) return
+        val entries = pages[spec.id]?.games.orEmpty()
+        val first = entries.firstOrNull() ?: return
+        val panel = preparedArtworkPanel ?: GameArtworkPanel(this, OrbitThemes.current().systemLayout == "artwork")
+            .also { preparedArtworkPanel = it }
+        panel.preload(spec, first)
+        if (UserDataStore.cachedInt("nativeListLogos", 0) == 1) {
+            gameLogos.preload(spec, "marquee", delayMillis = 75) { entries.take(8) }
+        }
+    }
+
+    private fun discardPreparedArtwork() {
+        preparedArtworkPanel?.destroy()
+        preparedArtworkPanel = null
+    }
+
     private fun preloadFirstGame(spec:SystemSpec) {
         if(activeTab!=0 || library)return
         val theme=ImportedThemes.active(this) ?: return
@@ -917,7 +941,7 @@ open class MainActivity : Activity() {
         DualScreenCoordinator.detach(this)
         super.onStop()
     }
-    override fun onDestroy() { remoteSettingsDialog?.dismiss();mediaTransferPanel?.destroy();scraperSettingsPanel?.destroy();themeBackdrop?.destroy();gamePreloader?.destroy();importedSystems?.destroy();importedScene?.destroy();gameLogos.destroy();companionPanel?.destroy();if(showingCompanion)DualScreenCoordinator.panelDestroyed(this);colorfulSystems?.destroy(); artworkPanel?.destroy(); appsPanel?.destroy(); skipStartup.set(true); generation++; libraryRefreshWorker.shutdownNow();worker.shutdownNow(); super.onDestroy() }
+    override fun onDestroy() { remoteSettingsDialog?.dismiss();mediaTransferPanel?.destroy();scraperSettingsPanel?.destroy();themeBackdrop?.destroy();gamePreloader?.destroy();importedSystems?.destroy();importedScene?.destroy();gameLogos.destroy();companionPanel?.destroy();if(showingCompanion)DualScreenCoordinator.panelDestroyed(this);colorfulSystems?.destroy(); artworkPanel?.destroy(); discardPreparedArtwork(); appsPanel?.destroy(); skipStartup.set(true); generation++; libraryRefreshWorker.shutdownNow();worker.shutdownNow(); super.onDestroy() }
     private fun dp(n: Int) = (n * resources.displayMetrics.density).toInt()
     private fun text(value: String, size: Float, color: Int = Color.WHITE) = TextView(this).apply {
         text = value; textSize = size; setTextColor(color); setPadding(0, dp(5), 0, dp(5))
@@ -1130,7 +1154,11 @@ open class MainActivity : Activity() {
                 root.addView(scene,LinearLayout.LayoutParams(-1,0,1f))
                 scene.initialise(system,entries.size,entries.firstOrNull())
             } else {
-            val artwork = GameArtworkPanel(this, nativeTheme.systemLayout=="artwork", colorfulModel).also { artworkPanel = it }
+            val artwork = (preparedArtworkPanel.takeIf { colorfulModel == null }
+                ?: GameArtworkPanel(this, nativeTheme.systemLayout=="artwork", colorfulModel)).also {
+                if (it === preparedArtworkPanel) preparedArtworkPanel = null else discardPreparedArtwork()
+                artworkPanel = it
+            }
             gameMediaSurface?.let { surface ->
                 artwork.backgroundMediaChanged=surface::update
                 artwork.backgroundMediaPaused=surface::pause
@@ -1169,28 +1197,33 @@ open class MainActivity : Activity() {
     private val physicalMediaKey="splitGameTilePhysicalMedia"
     private fun physicalMediaTiles()=UserDataStore.cachedInt(physicalMediaKey,0)==1
 
-    private fun preloadSplitGames(grid:SplitLibraryGrid) {
-        val spec=systems.getOrNull(focusedSystemIndex)
+    private fun preloadSplitGames(grid:SplitLibraryGrid, initial: Boolean = false) {
+        val spec=grid.selectedLibraryIndex?.let(populated::getOrNull)
         val entries=spec?.let { pages[it.id]?.games }
         if(grid.scrollState!=RecyclerView.SCROLL_STATE_IDLE || grid.shortcutSelected || spec==null || entries.isNullOrEmpty()) {
             gameLogos.cancelPreload()
             return
         }
-        gameLogos.preloadTiles(spec,physicalMediaTiles(),onReady={
+        val physicalMedia = physicalMediaTiles()
+        gameLogos.preload(spec, if (physicalMedia) "physicalmedia" else "cover",
+            fallback = if (physicalMedia) "cover" else null,
+            delayMillis = if (initial) 0L else 150L, onReady = {
             if(grid.isShown && activeTab==0 && !library && grid.scrollState==RecyclerView.SCROLL_STATE_IDLE &&
                 matchingSplitGamePage(preparedSplitGameView,spec,entries,OrbitThemes.current())!=null)
                 stagePreparedSplitGameView()
         }) {
             val tile=grid.cursorTile
             if(!grid.isShown || activeTab!=0 || library || grid.scrollState!=RecyclerView.SCROLL_STATE_IDLE ||
-                grid.width==0 || grid.height==0 || tile==null || tile.right<=0 || tile.left>=grid.width)emptyList()
+                (!initial && (tile==null || tile.right<=0 || tile.left>=grid.width)))emptyList()
             else {
                 val prefix="splitGameTile"
                 val legacy=splitTileArrangement(prefix,"Size",SplitLibraryGrid.Arrangement.TWO_ROWS)
                 val layout=splitTileArrangement(prefix,"Layout",legacy)
                 // Leave room for the system title above the game grid.
-                val columnWidth=layout.columnWidth(grid.width,(grid.height-dp(48)).coerceAtLeast(1))
-                val visibleSlots=(((grid.width+columnWidth-1)/columnWidth)*layout.rows).coerceAtMost(32)
+                val width = grid.width.takeIf { it > 0 } ?: resources.displayMetrics.widthPixels
+                val height = grid.height.takeIf { it > 0 } ?: resources.displayMetrics.heightPixels
+                val columnWidth=layout.columnWidth(width,(height-dp(48)).coerceAtLeast(1))
+                val visibleSlots=(((width+columnWidth-1)/columnWidth)*layout.rows).coerceAtMost(32)
                 val theme=OrbitThemes.current()
                 val cached=listOfNotNull(tabViews[6],preparedSplitGameView)
                     .firstNotNullOfOrNull { matchingSplitGamePage(it,spec,entries,theme) }
@@ -1271,6 +1304,7 @@ open class MainActivity : Activity() {
         if(inGames)gameCursor=0
         root=view
         showSplitGrid(grid,initialSlot,openingGames=openingGames)
+        if (!inGames) preloadSplitGames(grid, initial = true)
     }
 
     private fun createSplitGrid(
@@ -1666,6 +1700,7 @@ open class MainActivity : Activity() {
         val tab=destination.tab
         artworkPanel?.pause();importedScene?.pause()
         currentFocus?.let { tabFocus[if(activeTab==0 && library)6 else activeTab] = it }
+        if (tab != 0) discardPreparedArtwork()
         val closingMenu=startMenu?.takeIf { it.isShowing }
         activeTab = tab
         library = destination.library
@@ -1709,6 +1744,7 @@ open class MainActivity : Activity() {
         }
     }
     private fun themeChanged(keepSettings:Boolean=false) {
+        discardPreparedArtwork()
         gameLogos.cancelPreload()
         discardPreparedSplitGameView()
         nativeSystems=null
@@ -1731,6 +1767,7 @@ open class MainActivity : Activity() {
         DualScreenCoordinator.refreshMedia()
     }
     private fun refreshTransferredMedia() {
+        discardPreparedArtwork()
         GameArtworkPanel.clearMediaCache(); EsDeScene.clearMediaCache(); gameLogos.clear(); preloadKey = null
         artworkPanel?.show(system, games.getOrNull(gameCursor), true)
         importedScene?.showGame(games.getOrNull(gameCursor), true)

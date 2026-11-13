@@ -38,15 +38,16 @@ class GameLogoRows(private val context:Context) {
         pendingPreload=null
     }
 
-    internal fun preloadTiles(system:SystemSpec,physicalMedia:Boolean,onReady:()->Unit,visibleGames:()->List<Game>) {
+    internal fun preload(
+        system: SystemSpec, mediaType: String, fallback: String? = null,
+        delayMillis: Long = 0, onReady: () -> Unit = {}, visibleGames: () -> List<Game>
+    ) {
         cancelPreload()
         val ticket=preloadGeneration
         pendingPreload=Runnable {
             pendingPreload=null
             val games=visibleGames().iterator()
             val location=UserDataStore.location(context)
-            val mediaType=if(physicalMedia)"physicalmedia" else "cover"
-            val fallback=if(physicalMedia)"cover" else null
             var warmedBytes=0
             fun next() {
                 while(ticket==preloadGeneration && games.hasNext() && warmedBytes<20*1024*1024) {
@@ -67,7 +68,7 @@ class GameLogoRows(private val context:Context) {
                 if(ticket==preloadGeneration)onReady()
             }
             next()
-        }.also { handler.postDelayed(it,150L) }
+        }.also { handler.postDelayed(it,delayMillis) }
     }
 
     fun bind(

@@ -85,6 +85,7 @@ object DualScreenCoordinator : DisplayManager.DisplayListener {
     internal fun finishCompanionVideo() { panel.get()?.finishCompanionVideo() }
     internal val companionVideoActive get()=panel.get()?.companionVideoActive==true
     fun browseSelection():CompanionBrowse?=mainHost.get()?.companionBrowse()
+    internal fun firstGameForArtwork(system: SystemSpec) = mainHost.get()?.firstGameForArtwork(system)
     fun companionDisplay():Int?=panel.get()?.takeIf { it.showingCompanion && !it.isDestroyed && !it.isFinishing }?.windowManager?.defaultDisplay?.displayId
     internal fun companionOnDisplay(displayId:Int):MainActivity?=panel.get()?.takeIf {
         it.showingCompanion && !it.isDestroyed && !it.isFinishing &&

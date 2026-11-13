@@ -1,6 +1,9 @@
 package au.orbit.frontend
 
+import android.content.BroadcastReceiver
 import android.content.Context
+import android.content.Intent
+import android.content.IntentFilter
 import android.graphics.Matrix
 import android.graphics.SurfaceTexture
 import android.media.AudioAttributes
@@ -8,6 +11,8 @@ import android.media.AudioFocusRequest
 import android.media.AudioManager
 import android.media.MediaPlayer
 import android.net.Uri
+import android.os.Build
+import android.os.PowerManager
 import android.view.Surface
 import android.view.TextureView
 import android.view.View
@@ -27,6 +32,16 @@ class GameVideoPreview(context: Context, private val soundEnabled: Boolean = tru
     private var playSound = soundEnabled
     private var audioFocused = false
     private val audio=context.getSystemService(AudioManager::class.java)
+    private val power=context.getSystemService(PowerManager::class.java)
+    private var observingPower = false
+    private val powerReceiver = object : BroadcastReceiver() {
+        override fun onReceive(context: Context, intent: Intent) {
+            when (intent.action) {
+                Intent.ACTION_SCREEN_OFF -> releasePlayback()
+                Intent.ACTION_SCREEN_ON -> startVideo()
+            }
+        }
+    }
     private val audioAttributes=AudioAttributes.Builder().setUsage(AudioAttributes.USAGE_MEDIA)
         .setContentType(AudioAttributes.CONTENT_TYPE_MOVIE).build()
     private val focus=AudioFocusRequest.Builder(AudioManager.AUDIOFOCUS_GAIN_TRANSIENT_MAY_DUCK)
@@ -44,11 +59,34 @@ class GameVideoPreview(context: Context, private val soundEnabled: Boolean = tru
         source=uri
         playSound=withSound
         if(uri==null)return
+        observePower()
         pending=Runnable { ready=true; startVideo() }.also { postDelayed(it,delay) }
     }
 
     fun stop() {
-        pending?.let(::removeCallbacks); pending=null; source=null;ready=false;alpha=0f
+        pending?.let(::removeCallbacks); pending=null; source=null;ready=false
+        if (observingPower) {
+            context.unregisterReceiver(powerReceiver)
+            observingPower = false
+        }
+        releasePlayback()
+    }
+
+    private fun observePower() {
+        if (observingPower || !isAttachedToWindow || source == null) return
+        val filter = IntentFilter(Intent.ACTION_SCREEN_OFF).apply { addAction(Intent.ACTION_SCREEN_ON) }
+        if (Build.VERSION.SDK_INT >= 33) {
+            context.registerReceiver(powerReceiver, filter, Context.RECEIVER_NOT_EXPORTED)
+        } else {
+            context.registerReceiver(powerReceiver, filter)
+        }
+        observingPower = true
+    }
+
+    private fun canPlay() = power.isInteractive && windowVisibility == View.VISIBLE && isShown
+
+    private fun releasePlayback() {
+        alpha=0f
         frameReadyChanged?.invoke(false)
         player?.release();player=null
         surface?.release();surface=null
@@ -63,7 +101,7 @@ class GameVideoPreview(context: Context, private val soundEnabled: Boolean = tru
     private fun startVideo() {
         val uri=source ?: return
         val texture=surfaceTexture ?: return
-        if(!ready || player!=null || !isShown)return
+        if(!ready || player!=null || !canPlay())return
         val next=MediaPlayer()
         player=next
         runCatching {
@@ -74,7 +112,12 @@ class GameVideoPreview(context: Context, private val soundEnabled: Boolean = tru
             val volume=if(audioFocused)1f else 0f
             next.setVolume(volume,volume)
             next.setOnVideoSizeChangedListener { _,w,h -> videoWidth=w;videoHeight=h;fit() }
-            next.setOnPreparedListener { if(player===it) { it.isLooping=true;it.start() } }
+            next.setOnPreparedListener {
+                if (player === it) {
+                    if (canPlay()) { it.isLooping = true; it.start() }
+                    else releasePlayback()
+                }
+            }
             next.setOnInfoListener { media,what,_ ->
                 if(player===media && what==MediaPlayer.MEDIA_INFO_VIDEO_RENDERING_START) {
                     alpha=1f;frameReadyChanged?.invoke(true)
@@ -98,10 +141,11 @@ class GameVideoPreview(context: Context, private val soundEnabled: Boolean = tru
     override fun onSurfaceTextureAvailable(texture: SurfaceTexture,w:Int,h:Int) { fit();startVideo() }
     override fun onSurfaceTextureSizeChanged(texture: SurfaceTexture,w:Int,h:Int) { fit() }
     override fun onSurfaceTextureUpdated(texture: SurfaceTexture) = Unit
-    override fun onSurfaceTextureDestroyed(texture: SurfaceTexture): Boolean { stop();return true }
+    override fun onSurfaceTextureDestroyed(texture: SurfaceTexture): Boolean { releasePlayback();return true }
     override fun onWindowVisibilityChanged(visibility: Int) {
         super.onWindowVisibilityChanged(visibility)
-        if(visibility!=View.VISIBLE)stop()
+        if (visibility == View.VISIBLE) startVideo() else releasePlayback()
     }
+    override fun onAttachedToWindow() { super.onAttachedToWindow(); observePower() }
     override fun onDetachedFromWindow() { stop();super.onDetachedFromWindow() }
 }

@@ -17,6 +17,16 @@ open class MainActivity : Activity() {
     var showingCompanion=false
         private set
     private var companionPanel:CompanionPanel?=null
+    private val systemsMusic by lazy { SystemsMusic(this) }
+    private var musicVisible = false
+    private var musicDuringStartup = false
+
+    private fun updateSystemsMusic() {
+        systemsMusic.setBrowsing(
+            musicVisible && !showingCompanion && (musicDuringStartup || ready && activeTab == 0 && !library && !scanning) &&
+                startMenu?.isShowing != true && UserDataStore.cachedInt("systemsMusic", 1) != 0
+        )
+    }
     private var gameMediaRoot:View?=null
     private var gameMediaSurface:GameMediaSurface?=null
     fun companionSelection(): Pair<SystemSpec,Game>? =
@@ -70,6 +80,7 @@ open class MainActivity : Activity() {
     }
     fun showCompanionScreen() {
         cancelSwapKey();generation++;discardViews();showingCompanion=true
+        updateSystemsMusic()
         window.addFlags(WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE)
         companionPanel?.destroy()
         companionPanel=CompanionPanel(this)
@@ -281,7 +292,10 @@ open class MainActivity : Activity() {
         val previous = tabViews.put(slot, view)
         if (previous != null && previous !== view) host.removeView(previous)
         if (view.parent == null) host.addView(view, FrameLayout.LayoutParams(-1, -1))
-        if(!warmingTabs)DualScreenCoordinator.refreshMedia()
+        if (!warmingTabs) {
+            updateSystemsMusic()
+            DualScreenCoordinator.refreshMedia()
+        }
         if (warmingTabs) view.visibility = View.INVISIBLE
         else for(i in 0 until host.childCount) {
             val child=host.getChildAt(i)
@@ -708,6 +722,7 @@ open class MainActivity : Activity() {
     private val system get() = systems[selected]
     override fun onCreate(state: Bundle?) {
         super.onCreate(state)
+        volumeControlStream = android.media.AudioManager.STREAM_MUSIC
         showingCompanion=state?.getBoolean("companionRole") ?: intent.getBooleanExtra("companionRole",this is CompanionActivity)
         if(intent.getBooleanExtra("startLibrary",false)) {
             intent.removeExtra("startLibrary")
@@ -724,6 +739,7 @@ open class MainActivity : Activity() {
     }
     private fun startLibrary(state:Bundle?) {
         val startupBegan=android.os.SystemClock.elapsedRealtime()
+        val restoreGameList = state?.getBoolean("library") == true
         startupFinished = state?.getBoolean("startupFinished") ?: false
         val loading = LinearLayout(this).apply {
             orientation = LinearLayout.VERTICAL; gravity = Gravity.CENTER
@@ -743,8 +759,15 @@ open class MainActivity : Activity() {
         worker.execute {
             var scannedOnStartup=false
             val result = runCatching {
-                SystemCatalog.initialize(this)
                 UserDataStore.initialize(this)
+                if (!restoreGameList) runOnUiThread {
+                    if (!isDestroyed && !isFinishing && !ready && !showingCompanion &&
+                        intent.getIntExtra("navigationTab", 0) == 0) {
+                        musicDuringStartup = true
+                        updateSystemsMusic()
+                    }
+                }
+                SystemCatalog.initialize(this)
                 repository = LibraryRepository(this)
                 val startupReports = mutableMapOf<SystemSpec, RomScanResult>()
                 val scanOnStartup=!startupFinished && UserDataStore.int(this,"scanOnStartup",1)!=0
@@ -783,6 +806,7 @@ open class MainActivity : Activity() {
             }
             runOnUiThread {
                 if (isDestroyed || isFinishing) return@runOnUiThread
+                musicDuringStartup = false
                 result.onSuccess { (available, first, loaded) ->
                     populated = available
                     pages = loaded
@@ -798,7 +822,10 @@ open class MainActivity : Activity() {
                     intent.takeIf { it.hasExtra("navigationTab") }?.let { navigateTab(it.getIntExtra("navigationTab", 0)); it.removeExtra("navigationTab") }
                     DualScreenCoordinator.libraryReady()
                     if(!scannedOnStartup)libraryRefreshWorker.execute { runCatching { prepareLaunchProfiles() } }
-                }.onFailure { showDataError(it) }
+                }.onFailure {
+                    updateSystemsMusic()
+                    showDataError(it)
+                }
             }
         }
     }
@@ -833,6 +860,10 @@ open class MainActivity : Activity() {
     override fun onNewIntent(intent: Intent) {
         super.onNewIntent(intent)
         setIntent(intent)
+        if (!ready && intent.getIntExtra("navigationTab", 0) != 0) {
+            musicDuringStartup = false
+            updateSystemsMusic()
+        }
         val startLibrary=intent.getBooleanExtra("startLibrary",false)
         intent.removeExtra("startLibrary")
         val reopenLibrary=showingCompanion && this !is CompanionActivity && !intent.getBooleanExtra("companionRole",false) &&
@@ -851,7 +882,13 @@ open class MainActivity : Activity() {
             navigateTab(intent.getIntExtra("navigationTab", 0)); intent.removeExtra("navigationTab")
         }
     }
-    override fun onStart() { super.onStart();companionPanel?.start(); DualScreenCoordinator.attach(this) }
+    override fun onStart() {
+        super.onStart()
+        musicVisible = true
+        updateSystemsMusic()
+        companionPanel?.start()
+        DualScreenCoordinator.attach(this)
+    }
     override fun onResume() {
         super.onResume()
         FrontendNavigationBar.apply(this)
@@ -873,7 +910,13 @@ open class MainActivity : Activity() {
         if(!showingCompanion)DualScreenCoordinator.finishCompanionVideo()
         super.onPause()
     }
-    override fun onStop() { companionPanel?.stop();DualScreenCoordinator.detach(this); super.onStop() }
+    override fun onStop() {
+        musicVisible = false
+        updateSystemsMusic()
+        companionPanel?.stop()
+        DualScreenCoordinator.detach(this)
+        super.onStop()
+    }
     override fun onDestroy() { remoteSettingsDialog?.dismiss();mediaTransferPanel?.destroy();scraperSettingsPanel?.destroy();themeBackdrop?.destroy();gamePreloader?.destroy();importedSystems?.destroy();importedScene?.destroy();gameLogos.destroy();companionPanel?.destroy();if(showingCompanion)DualScreenCoordinator.panelDestroyed(this);colorfulSystems?.destroy(); artworkPanel?.destroy(); appsPanel?.destroy(); skipStartup.set(true); generation++; libraryRefreshWorker.shutdownNow();worker.shutdownNow(); super.onDestroy() }
     private fun dp(n: Int) = (n * resources.displayMetrics.density).toInt()
     private fun text(value: String, size: Float, color: Int = Color.WHITE) = TextView(this).apply {
@@ -1589,6 +1632,7 @@ open class MainActivity : Activity() {
         remoteSettingsHost=host
         menu.dialog.setOnDismissListener { settingsWindowClosed(menu.dialog) }
         renderSettingsPage(menu,menu.dialog::dismiss)
+        updateSystemsMusic()
     }
     private fun settingsWindowClosed(dialog:AlertDialog) {
         if(startMenu===dialog)startMenu=null
@@ -1597,6 +1641,7 @@ open class MainActivity : Activity() {
             remoteSettingsHost=null
             DualScreenCoordinator.restoreHostFocus()
         }
+        updateSystemsMusic()
         if(activeTab==0 && library)(gameList ?: activeSplitGrid())?.requestFocus()
         DualScreenCoordinator.refreshMedia()
     }
@@ -2276,6 +2321,11 @@ open class MainActivity : Activity() {
                         val gallery = ThemeGalleryPanel(this, columns = 2, exit = parent) { themeApplied(keepSettings = true) }
                         embedPage(gallery.view, { if (!gallery.back()) parent() }, gallery.initialFocus,
                             gallery::handleNavigation, showBack = false)
+                    }
+                    val musicOn = UserDataStore.int(this, "systemsMusic", 1) != 0
+                    option("Background music", "Play music while browsing Systems.", if (musicOn) "On" else "Off") {
+                        runCatching { UserDataStore.put(this, "settings", "systemsMusic", if (musicOn) 0 else 1) }
+                            .onSuccess { updateSystemsMusic(); showCategory(index, true) }.onFailure { showDataError(it) }
                     }
                     screenMediaLink()
                     val imagesRow = optionRows.size

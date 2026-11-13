@@ -1,6 +1,17 @@
 # Orbit — Android frontend 0.1
 
-A native Kotlin frontend for AYN Thor, with credited console artwork. ROMs and emulators are supplied by the user.
+**Orbit** is a native Android frontend, written in Kotlin, built for the AYN Thor and other dual-screen handhelds. It turns your ROM folders into a controller-friendly library: systems and games on one screen, with hero art, box art and video previews on the other.
+
+- **Dual-screen by design:** keep the library on the top or bottom screen, swap screens at any time, and choose which screen each system or game launches on.
+- **195 systems:** a catalogue built from the ES-DE Android configuration, with Cocoon-compatible launch profiles for 119 of them. You supply your own ROMs and emulators.
+- **Themes:** built-in themes, including a 3DS-style tile layout, plus custom themes with your own background, hero and per-page artwork, and ES-DE theme import.
+- **Page transitions:** Fade, Slide, Zoom, Scale, Flip, Dip or Instant, with direction and speed settings, applied to all themes or per theme. Optional tile cascade, gliding selection and artwork crossfades.
+- **Artwork:** scrape from providers like ScreenScraper, search for artwork in-app, or import media from NeoStation and ES-DE.
+- **Your data stays yours:** settings, media and profiles live in a user data folder you choose.
+
+Orbit doesn't include any games or emulators. Console artwork is credited in `app/src/main/assets/system-artwork/ARTWORK-CREDITS.md`.
+
+## System catalogue
 
 The system catalogue contains all 195 entries in the ES-DE Android configuration snapshot retrieved on 2026-10-19. Each has a JSON file under the user data `systems` folder. For 119 matching systems, files use the published Cocoon snapshot with its launch arguments unchanged. System prefixes are removed from player name fields only. Other systems retain their existing shared-format definitions because no published Cocoon equivalent was found. Source provenance and unsupported-command notes are kept separately in system-catalog.json. These profiles require emulator/core setup and are not all tested on hardware. All systems appear in one continuous horizontal carousel with touch and D-pad navigation. Use Systems to search the catalogue or jump directly to a console.
 

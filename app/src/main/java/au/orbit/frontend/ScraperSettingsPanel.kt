@@ -20,6 +20,7 @@ class ScraperSettingsPanel(private val activity:Activity,private val selectedSys
     private var pool:java.util.concurrent.ExecutorService?=null
     private var closed=false
     private var busy=false
+    private var backgroundProgress: ScrapeProgress.Job? = null
     private var provider="ScreenScraper"
     private var games=emptyList<Game>()
     private var gameSystems=emptyList<SystemSpec>()
@@ -93,6 +94,10 @@ class ScraperSettingsPanel(private val activity:Activity,private val selectedSys
         refreshLabels()
     }
     private fun refreshLabels() {
+        if (!busy) {
+            backgroundProgress?.finish()
+            backgroundProgress = null
+        }
         start.text=if(busy)"Cancel scraping" else "Start scraping"
         start.isEnabled=true
         grid.visibility=if(progressRows.isEmpty())android.view.View.GONE else android.view.View.VISIBLE
@@ -159,6 +164,7 @@ class ScraperSettingsPanel(private val activity:Activity,private val selectedSys
     private fun scrape() {
         val targets=selectedSystems()
         if(targets.isEmpty()) { status.text="Scan your ROM folders first.";chooseSystems();return }
+        backgroundProgress = ScrapeProgress.start()
         busy=true;cancelled.set(false);status.text="Loading selected games…";resetProgress()
         worker.execute {
             val result=runCatching {
@@ -181,6 +187,7 @@ class ScraperSettingsPanel(private val activity:Activity,private val selectedSys
     private fun scrapeLoaded() {
         val chosen=selected.sorted().filter { it in games.indices }
         if(chosen.isEmpty()) { busy=false;status.text="No scanned games in the selected systems.";refreshLabels();return }
+        backgroundProgress?.update(0, chosen.size)
         provider=activity.getSharedPreferences("scraper_credentials",0).getString("scrape.provider","ScreenScraper") ?: "ScreenScraper"
         val source=provider;status.text="Checking $source…";refreshLabels()
         worker.execute {
@@ -225,6 +232,7 @@ class ScraperSettingsPanel(private val activity:Activity,private val selectedSys
                     while(completed<chosen.size && !cancelled.get()) {
                         val future=completion.poll(250,TimeUnit.MILLISECONDS) ?: continue
                         val (slot,spec,game,outcome)=future.get();completed++
+                        val completedGames = completed
                         outcome.onSuccess { if(it=="Skipped")skipped++ else if(it=="No match")missing++ else if(it.startsWith("Saved 0") || it.contains("downloads failed"))errors.add("${game.title}: $it") else success++ }
                             .onFailure { errors.add("${game.title}: ${it.message}") }
                         val progress="$completed/${chosen.size} · $success scraped · $missing not found · $skipped skipped · ${errors.size} issues · $allowed concurrent"
@@ -232,6 +240,7 @@ class ScraperSettingsPanel(private val activity:Activity,private val selectedSys
                         val totalScraped=success
                         val phase=when { outcome.isFailure -> "Failed";outcome.getOrNull()=="No match" -> "Not found";outcome.getOrNull()=="Skipped" -> "Skipped";issue -> "Media incomplete";else -> "Scraped" }
                         activity.runOnUiThread { if(!closed) {
+                            backgroundProgress?.update(completedGames, chosen.size)
                             status.text=progress;scrapedCount=totalScraped
                             progressRows[slot]?.takeIf { it.game.uri==game.uri }?.let { it.finished=true;it.phase=phase;it.issue=issue }
                             refreshLabels()
@@ -328,5 +337,9 @@ class ScraperSettingsPanel(private val activity:Activity,private val selectedSys
         (view.parent as? ViewGroup)?.removeView(view);parent.addView(view)
         refreshLabels()
     }
-    fun destroy() { closed=true;popup?.dismiss();cancelled.set(true);pool?.shutdownNow();worker.shutdownNow();previewWorker.shutdownNow() }
+    fun destroy() {
+        closed=true;popup?.dismiss();cancelled.set(true);pool?.shutdownNow();worker.shutdownNow();previewWorker.shutdownNow()
+        backgroundProgress?.finish()
+        backgroundProgress = null
+    }
 }

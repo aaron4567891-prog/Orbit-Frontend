@@ -74,14 +74,18 @@ class GameScraperPopup(
         (parentPage ?: { menu.dialog.dismiss() }).invoke()
         val revision = menu.revision
         Toast.makeText(context, "Scraping ${game.title} in the background.", Toast.LENGTH_SHORT).show()
+        val progress = ScrapeProgress.start()
         worker.execute {
             val result = runCatching {
                 ScraperClient(context, provider).search(query).firstOrNull()?.let { match ->
-                    GameScraper.scrape(context, provider, system, game, match)
+                    GameScraper.scrape(context, provider, system, game, match, onProgress = { done, total ->
+                        main.post { progress.update(done, total) }
+                    })
                 }
             }
             main.post {
                 activeGames.remove(group)
+                progress.finish()
                 if (result.getOrNull() != null) {
                     changed()
                     artworkListeners[group]?.toList()?.forEach { it() }

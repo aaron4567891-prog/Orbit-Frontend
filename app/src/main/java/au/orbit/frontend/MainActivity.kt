@@ -84,7 +84,7 @@ open class MainActivity : Activity() {
         gameLogos.cancelPreload();discardPreparedSplitGameView()
         gameMediaRoot=null;gameMediaSurface=null
         libraryDock=null;libraryDockContent=null;dockPadding.clear()
-        screenHost=null;tabViews.clear();tabFocus.clear();settingsKeyHandlers.clear();gameList=null;settingsKeys=null
+        screenHost=null;gameScrapeProgressBar=null;tabViews.clear();tabFocus.clear();settingsKeyHandlers.clear();gameList=null;settingsKeys=null
     }
     fun showCompanionScreen() {
         cancelSwapKey();generation++;discardViews();showingCompanion=true
@@ -139,6 +139,7 @@ open class MainActivity : Activity() {
     private var appsPanel: AppsPanel? = null
     private var scraperSettingsPanel:ScraperSettingsPanel?=null
     private var screenHost: FrameLayout? = null
+    private var gameScrapeProgressBar: GameScrapeProgressBar? = null
     private var libraryDock:BottomScreenControls?=null
     private var libraryDockContent:View?=null
     private val dockPadding=java.util.WeakHashMap<View,Int>()
@@ -271,6 +272,11 @@ open class MainActivity : Activity() {
                     libraryDock=dock
                     addView(dock,FrameLayout.LayoutParams(-1,-2,Gravity.BOTTOM))
                 }
+                val progress = GameScrapeProgressBar(this@MainActivity)
+                gameScrapeProgressBar = progress
+                addView(progress, FrameLayout.LayoutParams(-2, -2, Gravity.TOP or Gravity.RIGHT).apply {
+                    rightMargin = dp(10)
+                })
             }
             super.setContentView(shell)
         }
@@ -313,6 +319,15 @@ open class MainActivity : Activity() {
                 if(padded.paddingTop!=topPadding)padded.setPadding(padded.paddingLeft,topPadding,padded.paddingRight,padded.paddingBottom)
             }
             libraryDockContent=padded;refreshLibraryDock()
+            gameScrapeProgressBar?.let { progress ->
+                val margin = padded.paddingTop + dp(6)
+                val params = progress.layoutParams as FrameLayout.LayoutParams
+                if (params.topMargin != margin) {
+                    params.topMargin = margin
+                    progress.layoutParams = params
+                }
+                progress.inGameView = ready && activeTab == 0 && library
+            }
             (host.layoutParams as FrameLayout.LayoutParams).apply {
                 if(topMargin!=0) {
                     topMargin=0

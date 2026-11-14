@@ -164,6 +164,7 @@ class GameArtworkPanel(private val context: Activity, private val coverOnly: Boo
         "${UserDataStore.location(context)}/$variant/$coverOnly/$mediaMode/$options/$group/$customPaths"
 
     private fun requestArtwork(system:SystemSpec,game:Game?,refresh:Boolean,showNow:Boolean) {
+        val previewedBackground = earlyBackgroundGroup
         if (showNow) earlyBackgroundGroup = null
         displayWhenReady=showNow
         if(game==null) {
@@ -180,7 +181,14 @@ class GameArtworkPanel(private val context: Activity, private val coverOnly: Boo
         val key=cacheKey(options, group, customPaths)
         if(!changed && currentCacheKey==key && !refresh) {
             if(pending!=null || job!=null)return
-            currentArtwork?.let { if(showNow && previewPaused)display(it);return }
+            currentArtwork?.let { artwork ->
+                if (showNow && previewPaused) display(artwork)
+                else if (showNow && previewedBackground != null && previewedBackground != group) {
+                    // The wheel can preview another game and settle back on the one already loaded.
+                    backgroundMediaChanged?.invoke(artwork.media, artwork.videoUri)
+                }
+                return
+            }
         }
         val ticket=++generation
         cancelLoad()

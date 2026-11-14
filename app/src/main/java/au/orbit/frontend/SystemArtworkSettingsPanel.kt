@@ -7,7 +7,7 @@ import android.view.KeyEvent
 import android.view.View
 import android.widget.*
 
-/** Top-screen artwork overrides in the System Settings Customisation tab. */
+/** Top-screen artwork overrides in System Settings. */
 class SystemArtworkSettingsPanel(
     private val activity:MainActivity,
     private val menu:EmulatorSettings.MenuWindow,
@@ -18,9 +18,9 @@ class SystemArtworkSettingsPanel(
     private fun label(value:String,size:Float,color:Int=Color.WHITE)=TextView(activity).apply {
         text=value;textSize=size;setTextColor(color)
     }
-    fun show() = showControls()
+    fun show(back: () -> Unit) = showControls(back)
 
-    private fun showControls(scrollY: Int = 0) {
+    private fun showControls(back: () -> Unit, scrollY: Int = 0) {
         val theme = OrbitThemes.current()
         val screen = OrbitThemeArtwork.artworkScreen(activity, "top", theme)
         val content=LinearLayout(activity).apply { orientation=LinearLayout.VERTICAL }
@@ -33,7 +33,7 @@ class SystemArtworkSettingsPanel(
             change {
                 if(menu.dialog.isShowing && menu.revision==expectedRevision) {
                     selectedKey = key
-                    showControls(offset)
+                    showControls(back, offset)
                 }
             }
         }
@@ -53,9 +53,14 @@ class SystemArtworkSettingsPanel(
             control(key,row,choose)
             return row
         }
-        fun imageCard(hero:Boolean) {
-            val role=if(hero)"hero" else "system"
-            val custom=if(hero)theme.systemHeroes[system.id]?.containsKey(screen)==true else theme.systemImages[system.id]?.containsKey(screen)==true
+        fun imageCard(role:String,title:String) {
+            val hero=role=="hero"
+            val logo=role=="logo"
+            val custom=when(role) {
+                "hero" -> theme.systemHeroes[system.id]?.containsKey(screen)==true
+                "logo" -> system.id in theme.systemLogos
+                else -> theme.systemImages[system.id]?.containsKey(screen)==true
+            }
             val card=LinearLayout(activity).apply { gravity=Gravity.CENTER_VERTICAL;setPadding(dp(10),dp(10),dp(14),dp(10)) }
             val box=FrameLayout(activity).apply { SelectionStyle.apply(this);isFocusable=false }
             val image=ImageView(activity).apply { scaleType=ImageView.ScaleType.FIT_CENTER }
@@ -63,30 +68,39 @@ class SystemArtworkSettingsPanel(
             box.addView(image,FrameLayout.LayoutParams(-1,-1));box.addView(empty,FrameLayout.LayoutParams(-1,-1))
             card.addView(box,LinearLayout.LayoutParams(dp(150),dp(90)).apply { rightMargin=dp(16) })
             val text=LinearLayout(activity).apply { orientation=LinearLayout.VERTICAL }
-            text.addView(label(if(hero)"Hero image" else "System image",17f))
-            text.addView(label(if(custom)"Custom" else if(hero)"Global" else "Default",13f,theme.muted))
+            text.addView(label(title,17f))
+            text.addView(label(if(custom)"Custom" else if(hero)"Global" else if(logo)"System name" else "Default",13f,theme.muted))
             card.addView(text,LinearLayout.LayoutParams(0,-2,1f))
-            card.contentDescription = if (hero) "Hero image" else "System image"
+            card.contentDescription = title
             fun refreshPreview() {
-                val bitmap=if(hero)OrbitThemeArtwork.image(activity,theme,"hero",system,screen)
+                val bitmap=if(logo)OrbitThemeArtwork.systemLogo(theme,system)
+                    else if(hero)OrbitThemeArtwork.image(activity,theme,"hero",system,screen)
                     else OrbitThemeArtwork.systemImage(activity,theme,system,screen) ?: OrbitConsoleImages.cached(system)
                 image.setImageBitmap(bitmap)
                 empty.visibility=if(bitmap==null)View.VISIBLE else View.GONE
             }
             refreshPreview()
-            if(hero)OrbitThemeArtwork.requestHero(activity,theme,system,screen,::refreshPreview)
+            if(logo)OrbitThemeArtwork.requestSystemLogo(activity,theme,system,::refreshPreview)
+            else if(hero)OrbitThemeArtwork.requestHero(activity,theme,system,screen,::refreshPreview)
             else {
                 OrbitThemeArtwork.requestSystemImage(activity,theme,system,screen,::refreshPreview)
                 OrbitConsoleImages.request(activity,system,::refreshPreview)
             }
-            control("$role/image",card) { refreshAfter { changed -> ThemeMediaSettings.chooseSystemImage(activity,system,screen,hero,changed) } }
-            if(custom)action("$role/reset",if(hero)"Use global hero image" else "Use default system image") {
+            control("$role/image",card) { refreshAfter { changed ->
+                if(logo)ThemeMediaSettings.chooseSystemLogo(activity,system,changed)
+                else ThemeMediaSettings.chooseSystemImage(activity,system,screen,hero,changed)
+            } }
+            if(custom)action("$role/reset",if(logo)"Remove system logo" else if(hero)"Use global hero image" else "Use default system image") {
                 selectedKey="$role/image"
-                refreshAfter { changed -> ThemeMediaSettings.resetSystemImage(activity,system,screen,hero,changed) }
+                refreshAfter { changed ->
+                    if(logo)ThemeMediaSettings.setSystemLogo(activity,theme,system,null,changed)
+                    else ThemeMediaSettings.resetSystemImage(activity,system,screen,hero,changed)
+                }
             }
         }
-        imageCard(true)
-        imageCard(false)
+        imageCard("hero","Hero image")
+        imageCard("system","System image")
+        imageCard("logo","System logo")
         var savingVisibility=false
         lateinit var visibilityButton:Button
         fun visibilitySaved() {
@@ -107,7 +121,7 @@ class SystemArtworkSettingsPanel(
                 ThemeMediaSettings.resetSystemImageVisibility(activity,system,screen,::visibilitySaved)
             }
         }
-        menu.page("Customisation · ${system.title}", viewport, backLabel = "Close", handle = { key, event ->
+        menu.page("Artwork images · ${system.title}", viewport, back = back, handle = { key, event ->
             val index=controls.indexOfFirst { it.second.hasFocus() }.takeIf { it>=0 }
                 ?: controls.indexOfFirst { it.first==selectedKey }.coerceAtLeast(0)
             when(key) {

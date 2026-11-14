@@ -74,7 +74,8 @@ class GameLogoRows(private val context:Context) {
     fun bind(
         row:FrameLayout,text:TextView,system:SystemSpec,game:Game,enabled:Boolean,
         mediaType:String="marquee",fallbackMediaType:String?=null,spinDiscs:Boolean=false,
-        showTitleWhileLoading:Boolean=true,onArtworkPending:((Boolean)->Unit)?=null
+        showTitleWhileLoading:Boolean=true,onArtworkPending:((Boolean)->Unit)?=null,
+        blendFromTitle:Boolean=false
     ) {
         val image=(row.getChildAt(1) as? ImageView) ?: GameTileArtworkView(context).apply {
             scaleType=ImageView.ScaleType.FIT_CENTER;isFocusable=false
@@ -85,6 +86,10 @@ class GameLogoRows(private val context:Context) {
         val previous=(row.tag as? Binding)?.key
         val binding=Binding(key,spinDiscs)
         val spinView=image as? GameTileArtworkView
+        image.animate().cancel()
+        text.animate().cancel()
+        image.alpha=1f
+        text.alpha=1f
         if(!enabled || !spinDiscs || row.tag!=binding)spinView?.showDisc(null)
         if(!enabled || previous?.group!=key.group || previous.location!=key.location) {
             image.setImageDrawable(null);image.visibility=View.INVISIBLE;text.visibility=View.VISIBLE
@@ -96,11 +101,19 @@ class GameLogoRows(private val context:Context) {
             onArtworkPending?.invoke(false)
             return
         }
-        fun display(artwork:Artwork?) {
+        fun display(artwork:Artwork?, loadedAsync:Boolean=false) {
             if(row.tag!=binding)return
             val bitmap=artwork?.bitmap
+            val blend = blendFromTitle && loadedAsync && bitmap != null &&
+                text.visibility == View.VISIBLE && row.isShown
             image.setImageBitmap(bitmap);image.visibility=if(bitmap==null)View.INVISIBLE else View.VISIBLE
-            text.visibility=if(bitmap==null)View.VISIBLE else View.INVISIBLE
+            if (blend) {
+                image.alpha=0f
+                image.animate().alpha(1f).setDuration(140L).start()
+                text.animate().alpha(0f).setDuration(140L).withEndAction {
+                    if (row.tag === binding) text.visibility=View.INVISIBLE
+                }.start()
+            } else text.visibility=if(bitmap==null)View.VISIBLE else View.INVISIBLE
             spinView?.showDisc(artwork?.disc?.takeIf { spinDiscs })
             onArtworkPending?.invoke(false)
         }
@@ -109,7 +122,7 @@ class GameLogoRows(private val context:Context) {
         val awaitingArtwork=image.drawable==null
         if(!showTitleWhileLoading && awaitingArtwork)text.visibility=View.INVISIBLE
         onArtworkPending?.invoke(awaitingArtwork)
-        request(key,::display)
+        request(key) { display(it, loadedAsync = true) }
     }
 
     private fun request(key:ArtworkKey,callback:(Artwork?)->Unit) {
@@ -162,6 +175,7 @@ class GameLogoRows(private val context:Context) {
 
     private fun mediaTypes(mediaType:String)=when(mediaType) {
         "cover" -> listOf("box-2D","cover","boxart","grids")
+        "3dbox" -> ScraperMediaTypes.boxArt3D.types
         "physicalmedia" -> listOf("support-2D","physicalmedia")
         else -> listOf("wheel-hd","wheel","logo","logos","marquee")
     }

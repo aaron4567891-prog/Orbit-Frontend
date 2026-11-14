@@ -7,6 +7,21 @@ import org.junit.Test
 
 class OrbitThemesTest {
     private val folder=File("src/main/assets/themes/native")
+    @Test fun systemLogosPersistSeparatelyFromOtherSystemArtwork() {
+        val original=OrbitThemes.parse(File(folder,"midnight.json").readText())
+            .withSystemHero("psx",setOf("top"),"artwork/hero.png")
+            .withSystemImage("psx",setOf("bottom"),"artwork/console.png")
+        assertTrue(original.systemLogos.isEmpty())
+        val customized=original.withSystemLogo("psx","artwork/logo.webp")
+            .withSystemLogo("gba","artwork/gba.png")
+        val restored=OrbitThemes.parse(customized.json())
+        assertEquals("artwork/logo.webp",restored.systemLogos["psx"])
+        assertEquals(original.systemHeroes,restored.systemHeroes)
+        assertEquals(original.systemImages,restored.systemImages)
+        assertEquals(mapOf("gba" to "artwork/gba.png"),restored.withSystemLogo("psx",null).systemLogos)
+        val invalid=JSONObject(restored.json()).put("systemLogos",JSONObject().put("psx","artwork/../logo.png"))
+        assertThrows(IllegalArgumentException::class.java) { OrbitThemes.parse(invalid.toString()) }
+    }
     @Test fun customSystemImagesAreIndependentOfHeroesAndOtherScreens() {
         val global=OrbitThemes.parse(File(folder,"midnight.json").readText())
             .withArtwork("hero",setOf("top","bottom"),"artwork/global-hero.png")

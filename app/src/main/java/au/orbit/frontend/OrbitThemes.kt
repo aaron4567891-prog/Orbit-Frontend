@@ -20,7 +20,8 @@ object OrbitThemes {
         val systemHeroes:Map<String,Map<String,String>> = emptyMap(),
         val systemArtworkOverrides:Map<String,Set<String>> = emptyMap(),
         val systemImages:Map<String,Map<String,String>> = emptyMap(),
-        val libraryScreen:String = "top") {
+        val libraryScreen:String = "top",
+        val systemLogos:Map<String,String> = emptyMap()) {
         fun json()=JSONObject().put("format","orbit-native").put("version",1).put("id",id).put("name",name)
             .put("description",description).put("systemLayout",systemLayout).put("gameListFraction",listFraction).put("libraryScreen",libraryScreen)
             .put("colors",JSONObject().put("background",hex(background)).put("surface",hex(surface))
@@ -29,6 +30,7 @@ object OrbitThemes {
             .put("systemArtworkScreens",org.json.JSONArray(systemArtworkScreens.sorted()))
             .put("systemHeroes",JSONObject().apply { systemHeroes.toSortedMap().forEach { (system,images) -> put(system,JSONObject(images)) } })
             .put("systemImages",JSONObject().apply { systemImages.toSortedMap().forEach { (system,images) -> put(system,JSONObject(images)) } })
+            .put("systemLogos",JSONObject(systemLogos.toSortedMap()))
             .put("systemArtworkOverrides",JSONObject().apply { systemArtworkOverrides.toSortedMap().forEach { (system,screens) -> put(system,org.json.JSONArray(screens.sorted())) } }).toString(2)
         fun image(role:String,screen:String)=artwork.firstOrNull { it.role==role && it.screen==screen }?.file
         fun heroImage(screen:String,systemId:String?=null)=systemId?.let { systemHeroes[it]?.get(screen) } ?: image("hero",screen)
@@ -47,6 +49,11 @@ object OrbitThemes {
             copy(systemHeroes=updatedSystemImages(systemHeroes,systemId,screens,file))
         fun withSystemImage(systemId:String,screens:Set<String>,file:String?)=
             copy(systemImages=updatedSystemImages(systemImages,systemId,screens,file))
+        fun withSystemLogo(systemId:String,file:String?):Theme {
+            require(validSystemId(systemId)) { "Invalid system ID" }
+            require(file==null || validArtworkPath(file)) { "Invalid artwork path" }
+            return copy(systemLogos=if(file==null)systemLogos-systemId else systemLogos+(systemId to file))
+        }
         fun withSystemArtworkVisible(systemId:String,screen:String,visible:Boolean):Theme {
             require(screen in setOf("top","bottom")) { "Invalid artwork screen" }
             val screens=(systemArtworkOverrides[systemId] ?: systemArtworkScreens).toMutableSet()
@@ -115,6 +122,13 @@ object OrbitThemes {
         }
         val heroes=systemImages("systemHeroes")
         val images=systemImages("systemImages")
+        val logosObject=if(json.has("systemLogos"))json.getJSONObject("systemLogos") else JSONObject()
+        require(logosObject.length()<=512) { "Too many system logo assignments" }
+        val logos=logosObject.keys().asSequence().associate { system ->
+            val path=logosObject.getString(system)
+            require(validSystemId(system) && validArtworkPath(path)) { "Invalid system logo assignment" }
+            system to path
+        }
         val overridesObject=if(json.has("systemArtworkOverrides"))json.getJSONObject("systemArtworkOverrides") else JSONObject()
         require(overridesObject.length()<=512) { "Too many system artwork assignments" }
         val overrides=overridesObject.keys().asSequence().associate { system ->
@@ -125,7 +139,7 @@ object OrbitThemes {
             require(values.all { it in setOf("top","bottom") } && values.distinct().size==values.size) { "Invalid system artwork screen" }
             system to values.toSet()
         }
-        return Theme(id,name,json.optString("description"),color("background"),color("surface"),color("accent"),color("text"),color("muted"),layout,fraction.toFloat(),artwork,visible,heroes,overrides,images,libraryScreen)
+        return Theme(id,name,json.optString("description"),color("background"),color("surface"),color("accent"),color("text"),color("muted"),layout,fraction.toFloat(),artwork,visible,heroes,overrides,images,libraryScreen,logos)
     }
     fun refresh(context:Context) {
         val loaded=linkedMapOf(fallback.id to fallback)
@@ -142,7 +156,8 @@ object OrbitThemes {
             val active=saved.firstOrNull { it.id==activeId } ?: loaded[activeId] ?: loaded.getValue("midnight")
             val split=loaded.getValue(SPLIT_THEME)
             val migrated=split.copy(artwork=active.artwork,systemArtworkScreens=active.systemArtworkScreens,
-                systemHeroes=active.systemHeroes,systemArtworkOverrides=active.systemArtworkOverrides,systemImages=active.systemImages)
+                systemHeroes=active.systemHeroes,systemArtworkOverrides=active.systemArtworkOverrides,systemImages=active.systemImages,
+                systemLogos=active.systemLogos)
             UserDataStore.saveNativeTheme(context,migrated.id,migrated.json())
             loaded[migrated.id]=migrated
         } else null

@@ -1,9 +1,19 @@
 package au.orbit.frontend
 
+import android.animation.ValueAnimator
 import android.content.Context
 import android.graphics.*
 import android.graphics.drawable.Drawable
+import android.text.TextPaint
 import android.view.*
+import android.view.animation.DecelerateInterpolator
+import kotlin.math.abs
+import kotlin.math.roundToInt
+
+private const val WHEEL_HOLD_DELAY_MS = 240L
+private const val WHEEL_HOLD_RAMP_MS = 1200f
+private const val WHEEL_HOLD_START_SPEED = 8f
+private const val WHEEL_HOLD_MAX_SPEED = 24f
 
 /** Original vector artwork, shared by Orbit's system gallery and companion display. */
 object OrbitSystemArtwork {
@@ -82,52 +92,341 @@ object OrbitSystemArtwork {
     }
 }
 
-/** Instant, native system navigation. No XML, bitmap decoder or background queue. */
-class OrbitSystemsView(context:Context,private val systems:List<SystemSpec>,initial:Int,private val count:(SystemSpec)->Int,
-    private val selected:(SystemSpec)->Unit,private val open:(SystemSpec)->Unit,private val showHero:Boolean=true):View(context) {
-    private var cursor=initial.coerceIn(systems.indices)
-    private var touchX=0f
-    private val paint=Paint(Paint.ANTI_ALIAS_FLAG)
-    init { isFocusableInTouchMode=true;defaultFocusHighlightEnabled=false;isClickable=true
-        setOnClickListener { open(systems[cursor]) };setOnKeyListener { _,_,event -> handle(event) };selected(systems[cursor]);prepareImages() }
-    private fun prepareImages() {
-        val theme=OrbitThemes.current()
-        val heroScreen=if(showHero)OrbitThemeArtwork.artworkScreen(context) else OrbitThemeArtwork.artworkScreen(context,"top")
-        for(offset in -1..1) {
-            val spec=systems[(cursor+offset+systems.size)%systems.size]
-            OrbitConsoleImages.request(context,spec) { invalidate() }
-            OrbitThemeArtwork.requestHero(context,theme,spec,heroScreen) { if(showHero)invalidate() }
-            OrbitThemeArtwork.requestSystemImage(context,theme,spec) { invalidate() }
+/** Native system navigation. The wheel draws cached artwork and moves independently of the preview. */
+class OrbitSystemsView(
+    context: Context,
+    private val systems: List<SystemSpec>,
+    initial: Int,
+    private val count: (SystemSpec) -> Int,
+    private val selected: (SystemSpec) -> Unit,
+    private val open: (SystemSpec) -> Unit,
+    private val showHero: Boolean = true,
+    private val verticalScroll: Boolean = false
+) : View(context) {
+    private var cursor = initial.coerceIn(systems.indices)
+    private var touchStart = 0f
+    private val paint = Paint(Paint.ANTI_ALIAS_FLAG)
+    private val titlePaint = TextPaint(Paint.ANTI_ALIAS_FLAG).apply {
+        typeface = Typeface.DEFAULT_BOLD
+    }
+    private val collectionTypeface = Typeface.create("sans-serif-medium", Typeface.NORMAL)
+    private val artworkBounds = RectF()
+    private val logoBounds = RectF()
+    private val logoPaint = Paint(Paint.ANTI_ALIAS_FLAG or Paint.FILTER_BITMAP_FLAG)
+    private var wheelOffset = 0f
+    private var wheelAnimation: ValueAnimator? = null
+    private var keyTarget = 0f
+    private var lastTouchY = 0f
+    private var dragging = false
+    private var wheelVelocity: VelocityTracker? = null
+    private var heldDirection = 0
+    private var heldSince = 0L
+    private var holdFrameTime = 0L
+    private val holdFrame = object : Runnable {
+        override fun run() {
+            if (heldDirection == 0 || !isShown) {
+                stopHeldScroll(snap = true)
+                return
+            }
+            val now = android.os.SystemClock.uptimeMillis()
+            if (holdFrameTime == 0L) {
+                wheelAnimation?.cancel()
+                keyTarget = 0f
+            } else {
+                val heldScrollTime = now - heldSince - WHEEL_HOLD_DELAY_MS
+                val ramp = (heldScrollTime / WHEEL_HOLD_RAMP_MS).coerceIn(0f, 1f)
+                val speed = WHEEL_HOLD_START_SPEED + (WHEEL_HOLD_MAX_SPEED - WHEEL_HOLD_START_SPEED) * ramp
+                scrollWheel(heldDirection * speed * (now - holdFrameTime).coerceAtMost(48L) / 1000f)
+            }
+            holdFrameTime = now
+            postOnAnimation(this)
         }
     }
-    fun handle(event:KeyEvent):Boolean {
-        val step=when(event.keyCode) { KeyEvent.KEYCODE_DPAD_LEFT -> -1;KeyEvent.KEYCODE_DPAD_RIGHT -> 1;else -> 0 }
-        if(step!=0) { if(event.action==KeyEvent.ACTION_DOWN)move(step);return true }
-        if(event.keyCode in setOf(KeyEvent.KEYCODE_BUTTON_A,KeyEvent.KEYCODE_DPAD_CENTER)) {
-            if(event.action==KeyEvent.ACTION_DOWN && event.repeatCount==0)performClick();return true
+    private val touchSlop = ViewConfiguration.get(context).scaledTouchSlop
+    private val portrait get() = !usesThorLayout && height > width * 1.2f
+    private val wheelTop get() = if (portrait) 0.49f else 0.14f
+    private val wheelRight get() = if (portrait) 0.96f else 0.46f
+    private val wheelCentre get() = height * if (portrait) 0.675f else 0.50f
+    private val wheelSpacing get() = height * if (portrait) 0.085f else 0.135f
+    private fun textScale(height: Float) = if (portrait) minOf(height, width * 1.25f) else height
+
+    init {
+        isFocusableInTouchMode = true
+        defaultFocusHighlightEnabled = false
+        isClickable = true
+        setOnClickListener { open(systems[cursor]) }
+        setOnKeyListener { _, _, event -> handle(event) }
+        updateSelection()
+    }
+
+    private fun updateSelection() {
+        val spec = systems[cursor]
+        if (verticalScroll) contentDescription = spec.title
+        selected(spec)
+        val theme = OrbitThemes.current()
+        val heroScreen = if (showHero) OrbitThemeArtwork.artworkScreen(context) else OrbitThemeArtwork.artworkScreen(context, "top")
+        val nearby = (-1..1).map { Math.floorMod(cursor + it, systems.size) }.distinct()
+        for (index in nearby) {
+            val system = systems[index]
+            OrbitConsoleImages.request(context, system) { invalidate() }
+            OrbitThemeArtwork.requestHero(context, theme, system, heroScreen) { if (showHero) invalidate() }
+            OrbitThemeArtwork.requestSystemImage(context, theme, system) { invalidate() }
+        }
+        val logoRange = if (verticalScroll) minOf(4, (systems.size - 1) / 2) else 0
+        val logoEnd = if (verticalScroll) minOf(4, systems.size / 2) else 0
+        for (step in -logoRange..logoEnd) {
+            val system = systems[Math.floorMod(cursor + step, systems.size)]
+            OrbitThemeArtwork.requestSystemLogo(context, theme, system) { invalidate() }
+        }
+        invalidate()
+    }
+
+    fun handle(event: KeyEvent): Boolean {
+        val previous = if (verticalScroll) KeyEvent.KEYCODE_DPAD_UP else KeyEvent.KEYCODE_DPAD_LEFT
+        val next = if (verticalScroll) KeyEvent.KEYCODE_DPAD_DOWN else KeyEvent.KEYCODE_DPAD_RIGHT
+        val step = when (event.keyCode) {
+            previous -> -1
+            next -> 1
+            else -> 0
+        }
+        if (step != 0) {
+            if (!verticalScroll) {
+                if (event.action == KeyEvent.ACTION_DOWN && !event.isCanceled) move(step)
+            } else if (event.action == KeyEvent.ACTION_DOWN && !event.isCanceled) {
+                if (event.repeatCount == 0 && heldDirection != step) startHeldScroll(step)
+            } else if (event.action == KeyEvent.ACTION_UP && heldDirection == step) {
+                stopHeldScroll(snap = true)
+            }
+            return true
+        }
+        if (event.keyCode == KeyEvent.KEYCODE_BUTTON_A || event.keyCode == KeyEvent.KEYCODE_DPAD_CENTER) {
+            if (event.action == KeyEvent.ACTION_DOWN && event.repeatCount == 0 && !event.isCanceled) performClick()
+            return true
         }
         return false
     }
-    private fun move(step:Int) { cursor=(cursor+step+systems.size)%systems.size;selected(systems[cursor]);prepareImages();invalidate() }
-    override fun onDraw(canvas:Canvas) {
-        val theme=OrbitThemes.current()
-        val w=width.toFloat();val h=height.toFloat();val spec=systems[cursor]
-        paint.color=theme.muted;paint.typeface=Typeface.create("sans-serif-medium",Typeface.NORMAL);paint.textSize=h*0.022f
-        canvas.drawText("O R B I T   /   COLLECTION",w*0.055f,h*0.10f,paint)
-        paint.color=theme.text;paint.typeface=Typeface.create("sans-serif",Typeface.BOLD);paint.textSize=h*0.066f
-        val title=android.text.TextUtils.ellipsize(spec.title,android.text.TextPaint(paint),w*0.40f,android.text.TextUtils.TruncateAt.END)
-        canvas.drawText(title.toString(),w*0.055f,h*0.40f,paint)
-        paint.typeface=Typeface.DEFAULT;paint.textSize=h*0.030f;paint.color=theme.muted
-        canvas.drawText("${count(spec)} games",w*0.055f,h*0.47f,paint)
-        paint.color=theme.accent;paint.textSize=h*0.023f
-        canvas.drawText("${cursor+1} / ${systems.size}",w*0.055f,h*0.75f,paint)
-        val area=RectF(w*0.48f,h*0.19f,w*0.94f,h*0.83f)
-        OrbitSystemArtwork.drawForScreen(context,canvas,area,spec,theme,showHero,heroInBackground=true)
+
+    private fun startHeldScroll(step: Int) {
+        stopHeldScroll(snap = false)
+        heldDirection = step
+        heldSince = android.os.SystemClock.uptimeMillis()
+        val target = ((wheelOffset + keyTarget).roundToInt() + step).coerceIn(-3, 3)
+        animateWheel(target - wheelOffset, keyStep = true)
+        if (systems.size > 1) postDelayed(holdFrame, WHEEL_HOLD_DELAY_MS)
     }
-    override fun onTouchEvent(event:MotionEvent):Boolean {
-        if(event.action==MotionEvent.ACTION_DOWN) { touchX=event.x;return true }
-        if(event.action==MotionEvent.ACTION_UP) { val delta=event.x-touchX;if(kotlin.math.abs(delta)>width*0.07f)move(if(delta>0)-1 else 1) else performClick() }
+
+    private fun stopHeldScroll(snap: Boolean) {
+        val scrolling = holdFrameTime != 0L
+        removeCallbacks(holdFrame)
+        heldDirection = 0
+        holdFrameTime = 0L
+        if (scrolling && snap) animateWheel(-wheelOffset)
+    }
+
+    private fun move(step: Int) {
+        val next = Math.floorMod(cursor + step, systems.size)
+        if (cursor == next) return
+        cursor = next
+        updateSelection()
+    }
+
+    // Keep the offset relative to the closest title so the wheel can wrap indefinitely.
+    private fun scrollWheel(distance: Float) {
+        wheelOffset += distance
+        val steps = wheelOffset.roundToInt()
+        wheelOffset -= steps
+        if (steps != 0) move(steps)
+        invalidate()
+    }
+
+    private fun animateWheel(distance: Float, durationMs: Long = 170L, keyStep: Boolean = false) {
+        wheelAnimation?.cancel()
+        keyTarget = if (keyStep) distance else 0f
+        if (systems.size < 2 || abs(distance) < 0.001f) return
+        var travelled = 0f
+        wheelAnimation = ValueAnimator.ofFloat(0f, distance).apply {
+            duration = durationMs
+            interpolator = DecelerateInterpolator()
+            addUpdateListener {
+                val position = it.animatedValue as Float
+                if (keyStep) keyTarget = distance - position
+                scrollWheel(position - travelled)
+                travelled = position
+            }
+            start()
+        }
+    }
+
+    override fun onDraw(canvas: Canvas) {
+        val theme = OrbitThemes.current()
+        val w = width.toFloat()
+        val h = height.toFloat()
+        if (verticalScroll) drawWheel(canvas, theme, w, h)
+        else drawTitle(canvas, theme, cursor, w, h)
+        drawSelectedArtwork(canvas, theme, w, h)
+        paint.color = theme.muted
+        paint.typeface = collectionTypeface
+        paint.textSize = textScale(h) * 0.022f
+        canvas.drawText("O R B I T   /   COLLECTION", w * 0.055f, h * 0.10f, paint)
+    }
+
+    private fun drawWheel(canvas: Canvas, theme: OrbitThemes.Theme, w: Float, h: Float) {
+        canvas.save()
+        canvas.clipRect(0f, h * wheelTop, w * wheelRight, h * 0.86f)
+        val first = -minOf(3, (systems.size - 1) / 2)
+        val last = minOf(3, systems.size / 2)
+        for (step in first..last) {
+            val position = step - wheelOffset
+            val emphasis = (1f - abs(position) * 0.23f).coerceIn(0.45f, 1f)
+            val index = Math.floorMod(cursor + step, systems.size)
+            val left = w * (0.055f + (1f - emphasis) * 0.065f)
+            val center = wheelCentre + position * wheelSpacing
+            val available = w * (wheelRight - 0.005f) - left
+            val logoHeight = if (portrait) 0.072f else 0.104f
+            if (drawLogo(canvas, theme, index, left, center, available, h * logoHeight * emphasis, emphasis)) continue
+            val selectedAmount = (1f - abs(position)).coerceIn(0f, 1f)
+            titlePaint.color = androidx.core.graphics.ColorUtils.blendARGB(theme.muted, theme.text, selectedAmount)
+            titlePaint.alpha = (255 * emphasis).toInt()
+            titlePaint.textSize = textScale(h) * 0.066f * emphasis
+            val label = android.text.TextUtils.ellipsize(systems[index].title, titlePaint,
+                available, android.text.TextUtils.TruncateAt.END)
+            val baseline = center - (titlePaint.ascent() + titlePaint.descent()) / 2
+            canvas.drawText(label.toString(), left, baseline, titlePaint)
+        }
+        canvas.restore()
+    }
+
+    private fun drawTitle(canvas: Canvas, theme: OrbitThemes.Theme, index: Int, w: Float, h: Float) {
+        val titleWidth = w * if (portrait) 0.89f else 0.40f
+        val titleCenter = h * if (portrait) 0.62f else 0.37f
+        if (drawLogo(canvas, theme, index, w * 0.055f, titleCenter, titleWidth, textScale(h) * 0.13f, 1f)) return
+        titlePaint.color = theme.text
+        titlePaint.textSize = textScale(h) * 0.066f
+        val title = android.text.TextUtils.ellipsize(systems[index].title, titlePaint, titleWidth, android.text.TextUtils.TruncateAt.END)
+        canvas.drawText(title.toString(), w * 0.055f, h * if (portrait) 0.65f else 0.40f, titlePaint)
+    }
+
+    private fun drawLogo(canvas: Canvas, theme: OrbitThemes.Theme, index: Int, left: Float, center: Float,
+        width: Float, height: Float, opacity: Float): Boolean {
+        val bitmap = OrbitThemeArtwork.systemLogo(theme, systems[index]) ?: return false
+        val scale = minOf(width / bitmap.width, height / bitmap.height)
+        val halfHeight = bitmap.height * scale / 2f
+        logoBounds.set(left, center - halfHeight, left + bitmap.width * scale, center + halfHeight)
+        logoPaint.alpha = (255 * opacity).toInt()
+        canvas.drawBitmap(bitmap, null, logoBounds, logoPaint)
         return true
     }
-    override fun performClick()=super.performClick()
+
+    private fun drawSelectedArtwork(canvas: Canvas, theme: OrbitThemes.Theme, w: Float, h: Float) {
+        val system = systems[cursor]
+        paint.typeface = Typeface.DEFAULT
+        paint.textSize = textScale(h) * 0.030f
+        paint.color = theme.muted
+        val countY = when {
+            verticalScroll -> 0.92f
+            portrait -> 0.73f
+            else -> 0.47f
+        }
+        canvas.drawText("${count(system)} games", w * 0.055f, h * countY, paint)
+        paint.color = theme.accent
+        paint.textSize = textScale(h) * 0.023f
+        val position = "${cursor + 1} / ${systems.size}"
+        val positionX = when {
+            portrait -> w * 0.94f - paint.measureText(position)
+            verticalScroll -> w * 0.34f
+            else -> w * 0.055f
+        }
+        canvas.drawText(position, positionX, h * if (verticalScroll) 0.92f else if (portrait) 0.73f else 0.75f, paint)
+        if (portrait) {
+            val artWidth = minOf(w * 0.89f, h * 0.33f * 1.5f)
+            val artHeight = artWidth / 1.5f
+            artworkBounds.set((w - artWidth) / 2f, h * 0.29f - artHeight / 2f,
+                (w + artWidth) / 2f, h * 0.29f + artHeight / 2f)
+        } else artworkBounds.set(w * 0.48f, h * 0.19f, w * 0.94f, h * 0.83f)
+        OrbitSystemArtwork.drawForScreen(context, canvas, artworkBounds, system, theme, showHero, heroInBackground = true)
+    }
+
+    override fun onTouchEvent(event: MotionEvent): Boolean {
+        if (verticalScroll) return handleWheelTouch(event)
+        when (event.actionMasked) {
+            MotionEvent.ACTION_DOWN -> touchStart = event.x
+            MotionEvent.ACTION_UP -> {
+                val delta = event.x - touchStart
+                if (abs(delta) > width * 0.07f) move(if (delta > 0) -1 else 1)
+                else performClick()
+            }
+        }
+        return true
+    }
+
+    private fun handleWheelTouch(event: MotionEvent): Boolean {
+        val spacing = wheelSpacing
+        if (spacing <= 0f) return false
+        if (event.actionMasked == MotionEvent.ACTION_DOWN) {
+            wheelVelocity?.recycle()
+            wheelVelocity = VelocityTracker.obtain()
+        }
+        wheelVelocity?.addMovement(event)
+        when (event.actionMasked) {
+            MotionEvent.ACTION_DOWN -> {
+                stopHeldScroll(snap = false)
+                wheelAnimation?.cancel()
+                keyTarget = 0f
+                touchStart = event.y
+                lastTouchY = event.y
+                dragging = false
+            }
+            MotionEvent.ACTION_MOVE -> if (systems.size > 1 && (dragging || abs(event.y - touchStart) >= touchSlop)) {
+                dragging = true
+                scrollWheel((lastTouchY - event.y) / spacing)
+                lastTouchY = event.y
+            }
+            MotionEvent.ACTION_UP -> {
+                if (dragging) {
+                    scrollWheel((lastTouchY - event.y) / spacing)
+                    val velocity = wheelVelocity?.let {
+                        it.computeCurrentVelocity(1000)
+                        -it.yVelocity / spacing
+                    } ?: 0f
+                    val coast = if (abs(velocity) >= 3f) (velocity * 0.11f).coerceIn(-4f, 4f) else 0f
+                    animateWheel((wheelOffset + coast).roundToInt() - wheelOffset, if (coast == 0f) 150L else 240L)
+                } else if (event.x <= width * wheelRight && event.y in height * wheelTop..height * 0.86f) {
+                    val step = ((event.y - wheelCentre) / spacing + wheelOffset).roundToInt()
+                    val first = -minOf(3, (systems.size - 1) / 2)
+                    val last = minOf(3, systems.size / 2)
+                    if (step == 0) performClick()
+                    else if (step in first..last) {
+                        animateWheel(step - wheelOffset)
+                    } else animateWheel(-wheelOffset)
+                } else {
+                    if (event.x > width * wheelRight || (portrait && event.y < height * wheelTop)) performClick()
+                    animateWheel(-wheelOffset)
+                }
+            }
+            MotionEvent.ACTION_CANCEL -> animateWheel(-wheelOffset)
+        }
+        if (event.actionMasked == MotionEvent.ACTION_UP || event.actionMasked == MotionEvent.ACTION_CANCEL) {
+            wheelVelocity?.recycle()
+            wheelVelocity = null
+        }
+        return true
+    }
+
+    override fun onWindowFocusChanged(hasWindowFocus: Boolean) {
+        super.onWindowFocusChanged(hasWindowFocus)
+        if (!hasWindowFocus) stopHeldScroll(snap = true)
+    }
+
+    override fun onDetachedFromWindow() {
+        stopHeldScroll(snap = false)
+        wheelVelocity?.recycle()
+        wheelVelocity = null
+        wheelAnimation?.cancel()
+        wheelAnimation = null
+        wheelOffset = 0f
+        keyTarget = 0f
+        super.onDetachedFromWindow()
+    }
+
+    override fun performClick() = super.performClick()
 }

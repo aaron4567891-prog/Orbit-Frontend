@@ -17,7 +17,7 @@ import android.widget.Toast
 import java.util.concurrent.Executors
 import org.json.JSONObject
 
-/** The game popup keeps both screens' artwork assignments on one page. */
+/** Top-screen artwork assignments in Game Settings. */
 internal class GameCustomArtworkPanel(
     private val activity: MainActivity,
     private val menu: EmulatorSettings.MenuWindow,
@@ -36,8 +36,6 @@ internal class GameCustomArtworkPanel(
         val scrapedPreview: Pair<String, (Bitmap?) -> Unit>?
     )
 
-    fun show() = menu.actions("Customisation · ${system.title}", listOf("Custom Media" to { showImages(::show) }))
-
     private fun dp(value: Int) = (value * activity.resources.displayMetrics.density).toInt()
 
     private fun label(value: String, size: Float, color: Int = Color.WHITE) = TextView(activity).apply {
@@ -54,21 +52,18 @@ internal class GameCustomArtworkPanel(
             addView(content)
         }
         val rows = mutableListOf<ArtworkRow>()
-        for (screen in listOf("top", "bottom")) {
-            val screenTitle = GameLaunchDisplay.label(screen)
-            content.addView(label(screenTitle, 18f).apply {
-                typeface = Typeface.DEFAULT_BOLD
-                setPadding(dp(10), dp(if (screen == "top") 4 else 14), 0, dp(4))
-            })
-            for (role in GameCustomArtwork.roles) {
-                val row = artworkRow(screen, role, rows.size) { showImages(back) }
-                rows.add(row)
-                content.addView(LinearLayout(activity).apply {
-                    gravity = Gravity.CENTER_VERTICAL
-                    addView(row.image, LinearLayout.LayoutParams(0, -2, 1f))
-                    row.delete?.let { addView(it, LinearLayout.LayoutParams(-2, dp(48)).apply { marginStart = dp(8) }) }
-                }, LinearLayout.LayoutParams(-1, -2).apply { bottomMargin = dp(4) })
-            }
+        content.addView(label(GameLaunchDisplay.label("top"), 18f).apply {
+            typeface = Typeface.DEFAULT_BOLD
+            setPadding(dp(10), dp(4), 0, dp(4))
+        })
+        for (role in GameCustomArtwork.roles) {
+            val row = artworkRow("top", role, rows.size) { showImages(back) }
+            rows.add(row)
+            content.addView(LinearLayout(activity).apply {
+                gravity = Gravity.CENTER_VERTICAL
+                addView(row.image, LinearLayout.LayoutParams(0, -2, 1f))
+                row.delete?.let { addView(it, LinearLayout.LayoutParams(-2, dp(48)).apply { marginStart = dp(8) }) }
+            }, LinearLayout.LayoutParams(-1, -2).apply { bottomMargin = dp(4) })
         }
         fun focus(view: View, immediate: Boolean = false) {
             view.requestFocus()

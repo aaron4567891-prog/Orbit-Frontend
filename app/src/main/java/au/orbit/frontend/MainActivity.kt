@@ -251,9 +251,18 @@ open class MainActivity : Activity() {
     }
     private fun focusSystem(spec:SystemSpec) {
         focusedSystemIndex=systems.indexOf(spec)
-        preloadListArtwork(spec)
+        val wheel=nativeSystems?.takeIf { it.isShown && systemsAppearance()==SystemsAppearance.VERTICAL_SCROLL }
+        if(wheel==null)preloadListArtwork(spec)
+        else {
+            // Keep the preview in sync, but wait until the wheel settles to warm its game list.
+            wheel.removeCallbacks(warmWheelSelection)
+            wheel.postDelayed(warmWheelSelection,160L)
+        }
         if(activeTab==0 && !library)tabViews[0]?.let { it.background=pageBackground(it) }
         DualScreenCoordinator.refreshMedia()
+    }
+    private val warmWheelSelection=Runnable {
+        if(nativeSystems?.isShown==true)systems.getOrNull(focusedSystemIndex)?.let(::preloadListArtwork)
     }
     private fun present(contentView: View) {
         finishCrossfade()
@@ -716,6 +725,7 @@ open class MainActivity : Activity() {
     private val gameLogos=GameLogoRows(this)
     private var gameCursor = 0
     private fun moveGameCursor(position: Int) {
+        if (library) activeGameWheel()?.let { it.select(position, animate = false); return }
         if(library)activeSplitGrid()?.let { it.selectLibrary(position);return }
         val list = gameList ?: return
         if (list.count == 0) return
@@ -747,6 +757,7 @@ open class MainActivity : Activity() {
     private fun openSystem(index: Int) {
         rememberPage(PageDestination(0,true))
         activeTab = 0; selected = index; library = true
+        gameCursor = 0
         val cached = pages[system.id]
         if (cached == null) { scan(); return }
         generation++; scanning = false; games = cached.games
@@ -1048,14 +1059,30 @@ open class MainActivity : Activity() {
         val splitDisplays=nativeTheme.libraryScreen=="bottom" && (screen=="bottom" || DualScreenManager(this).displays().any {
             it.displayId!=android.view.Display.DEFAULT_DISPLAY && it.state!=android.view.Display.STATE_OFF
         })
-        if(splitDisplays && !scanning && populated.isNotEmpty() && (!library || games.isNotEmpty())) {
+        useSplitGameGrid = splitDisplays
+        val gameView = gameAppearance()
+        if (library && !scanning && games.isNotEmpty() && gameView != GameAppearance.THEME_DEFAULT) {
+            renderGameWheel(nativeTheme, gameView, splitDisplays)
+            return
+        }
+        val appearance = systemsAppearance()
+        val useTileGrid = if (library) splitDisplays else when (appearance) {
+            SystemsAppearance.THEME_DEFAULT -> splitDisplays
+            SystemsAppearance.HORIZONTAL_VIEW, SystemsAppearance.VERTICAL_SCROLL -> false
+            SystemsAppearance.VERTICAL_GRID, SystemsAppearance.HORIZONTAL_SCROLL -> true
+        }
+        if(useTileGrid && !scanning && populated.isNotEmpty() && (!library || games.isNotEmpty())) {
             renderSplitLibrary(nativeTheme)
             return
         }
         val showSystemHero=screen!="bottom"
-        if((nativeTheme.systemLayout=="artwork" || OrbitThemeArtwork.image(this,nativeTheme,"hero",target=screen)!=null) && !library && populated.isNotEmpty() && !scanning) {
+        val verticalScroll = appearance == SystemsAppearance.VERTICAL_SCROLL
+        val useArtworkCarousel = verticalScroll || appearance == SystemsAppearance.HORIZONTAL_VIEW || nativeTheme.systemLayout == "artwork" ||
+            OrbitThemeArtwork.image(this, nativeTheme, "hero", target = screen) != null
+        if(useArtworkCarousel && !library && populated.isNotEmpty() && !scanning) {
             val scene=OrbitSystemsView(this,populated,populated.indexOf(systems.getOrNull(focusedSystemIndex)).coerceAtLeast(0),
-                { pages[it.id]?.games?.size ?: 0 },::focusSystem,{ openSystem(systems.indexOf(it)) },showHero=showSystemHero)
+                { pages[it.id]?.games?.size ?: 0 },::focusSystem,{ openSystem(systems.indexOf(it)) },
+                showHero=showSystemHero, verticalScroll=verticalScroll)
             root=LinearLayout(this).apply { orientation=LinearLayout.VERTICAL;setBackgroundColor(nativeTheme.background);addView(scene,LinearLayout.LayoutParams(-1,-1)) }
             nativeSystems=scene;present(root);tabFocus[0]=scene
             scene.post { if(activeTab==0 && !library)scene.requestFocus() }
@@ -1132,7 +1159,22 @@ open class MainActivity : Activity() {
                         OrbitThemeArtwork.requestSystemImage(this@MainActivity,nativeTheme,spec) { console.invalidate() }
                         OrbitConsoleImages.request(this@MainActivity,spec) { console.invalidate() }
                     }
-                    addView(text(spec.title, 15f))
+                    val titleLabel = text(spec.title, 15f)
+                    val logo = ImageView(this@MainActivity).apply {
+                        scaleType = ImageView.ScaleType.FIT_CENTER
+                        visibility = View.GONE
+                    }
+                    addView(titleLabel)
+                    addView(logo, LinearLayout.LayoutParams(-1, dp(30)))
+                    fun bindLogo() {
+                        val bitmap = OrbitThemeArtwork.systemLogo(nativeTheme, spec)
+                        logo.setImageBitmap(bitmap)
+                        logo.visibility = if (bitmap == null) View.GONE else View.VISIBLE
+                        titleLabel.visibility = if (bitmap == null) View.VISIBLE else View.GONE
+                        contentDescription = spec.title
+                    }
+                    bindLogo()
+                    OrbitThemeArtwork.requestSystemLogo(this@MainActivity, nativeTheme, spec, ::bindLogo)
                     setOnFocusChangeListener { v, focused ->
                         if (focused) { tabFocus[0] = v; rail.reveal(v);focusSystem(spec) }
                         v.background = surface(nativeTheme.surface, if (focused) blue else Color.rgb(38, 49, 65))
@@ -1284,6 +1326,106 @@ open class MainActivity : Activity() {
         if (!library) root.addView(footer)
     }
 
+    private enum class SystemsAppearance(val label: String, val savedName: String? = null) {
+        THEME_DEFAULT("Theme default"),
+        HORIZONTAL_VIEW("Horizontal view"),
+        VERTICAL_SCROLL("Vertical scroll", savedName = "VERTICAL_WHEEL"),
+        VERTICAL_GRID("Vertical grid", savedName = "VERTICAL_SCROLL"),
+        HORIZONTAL_SCROLL("Horizontal scroll")
+    }
+
+    private enum class GameAppearance(val label: String) {
+        THEME_DEFAULT("Theme default"),
+        VERTICAL_WHEEL("Vertical wheel"),
+        HORIZONTAL_WHEEL("Horizontal wheel")
+    }
+
+    private enum class GameWheelMedia(val label: String, val artworkType: String) {
+        MARQUEES("Marquees", "marquee"),
+        BOX_ART("2D box art", "cover"),
+        BOX_ART_3D("3D box art", "3dbox"),
+        PHYSICAL_MEDIA("Physical media", "physicalmedia")
+    }
+
+    private fun gameWheelMedia(): GameWheelMedia {
+        val stored = UserDataStore.cachedString("settings", "gameWheelMedia")
+        return GameWheelMedia.entries.firstOrNull { it.name == stored } ?: GameWheelMedia.MARQUEES
+    }
+
+    private fun gameAppearance(): GameAppearance {
+        val stored = UserDataStore.cachedString("settings", "gameAppearance")
+        return GameAppearance.entries.firstOrNull { it.name == stored } ?: GameAppearance.THEME_DEFAULT
+    }
+
+    private fun activeGameWheel() = tabViews[6]?.findViewWithTag<GameWheelView>("orbit-game-wheel")
+
+    private fun renderGameWheel(theme: OrbitThemes.Theme, appearance: GameAppearance, splitDisplays: Boolean) {
+        val spec = system
+        val entries = games
+        gameCursor = gameCursor.coerceIn(entries.indices)
+        val panel = if (splitDisplays) null else {
+            (preparedArtworkPanel ?: GameArtworkPanel(this, theme.systemLayout == "artwork")).also {
+                preparedArtworkPanel = null
+                artworkPanel = it
+            }
+        }
+        val vertical = appearance == GameAppearance.VERTICAL_WHEEL
+        lateinit var wheel: GameWheelView
+        val showSelectedMedia = Runnable {
+            if (activeTab == 0 && library && wheel.isShown && activeGameWheel() === wheel) {
+                val game = entries[gameCursor]
+                panel?.show(spec, game)
+                panel?.warmAdjacentFanArt(spec, adjacentGames(game))
+                DualScreenCoordinator.refreshMedia()
+            }
+        }
+        wheel = GameWheelView(this, entries, vertical, gameCursor, theme,
+            bindArtwork = { cell, label, game ->
+                val media = gameWheelMedia()
+                gameLogos.bind(cell, label, spec, game, true, mediaType = media.artworkType,
+                    spinDiscs = media == GameWheelMedia.PHYSICAL_MEDIA && UserDataStore.cachedInt("splitGameDiscSpin", 0) == 1,
+                    blendFromTitle = true)
+            },
+            selected = { index ->
+                gameCursor = index
+                wheel.removeCallbacks(showSelectedMedia)
+                wheel.postDelayed(showSelectedMedia, 100L)
+            },
+            open = { index -> chooseEmulator(entries[index]) }
+        ).apply { tag = "orbit-game-wheel" }
+        root = LinearLayout(this).apply {
+            orientation = if (!vertical || resources.configuration.screenWidthDp < 500) LinearLayout.VERTICAL else LinearLayout.HORIZONTAL
+            setPadding(dp(12), 0, dp(12), dp(8))
+            if (panel == null) addView(wheel, LinearLayout.LayoutParams(-1, -1))
+            else if (orientation == LinearLayout.HORIZONTAL) {
+                addView(wheel, LinearLayout.LayoutParams(0, -1, theme.listFraction))
+                addView(panel.view, LinearLayout.LayoutParams(0, -1, 1f - theme.listFraction))
+            } else {
+                addView(panel.view, LinearLayout.LayoutParams(-1, 0, 0.65f))
+                addView(wheel, LinearLayout.LayoutParams(-1, 0, 0.35f))
+            }
+        }
+        if (panel != null) {
+            gameMediaRoot = root
+            gameMediaSurface = GameMediaSurface(this, root).also {
+                panel.backgroundMediaChanged = it::update
+                panel.backgroundMediaPaused = it::pause
+            }
+        }
+        present(root)
+        tabFocus[6] = wheel
+        if (startMenu?.isShowing != true) wheel.requestFocus()
+        showSelectedMedia.run()
+    }
+
+    private val systemsAppearanceKey = "systemsAppearance"
+    private var useSplitGameGrid = false
+
+    private fun systemsAppearance(): SystemsAppearance {
+        val saved = UserDataStore.cachedString("settings", systemsAppearanceKey)
+        return SystemsAppearance.entries.firstOrNull { (it.savedName ?: it.name) == saved } ?: SystemsAppearance.THEME_DEFAULT
+    }
+
     private fun splitTileArrangement(prefix:String,key:String,fallback:SplitLibraryGrid.Arrangement):SplitLibraryGrid.Arrangement {
         val layouts=SplitLibraryGrid.Arrangement.entries
         return layouts[UserDataStore.cachedInt(prefix+key,fallback.ordinal).coerceIn(layouts.indices)]
@@ -1294,6 +1436,11 @@ open class MainActivity : Activity() {
 
     private fun preloadSplitGames(grid:SplitLibraryGrid, initial: Boolean = false) {
         val spec=grid.selectedLibraryIndex?.let(populated::getOrNull)
+        if (!useSplitGameGrid) {
+            spec?.let(::preloadListArtwork)
+            return
+        }
+        if (gameAppearance() != GameAppearance.THEME_DEFAULT) return
         val entries=spec?.let { pages[it.id]?.games }
         if(grid.scrollState!=RecyclerView.SCROLL_STATE_IDLE || grid.shortcutSelected || spec==null || entries.isNullOrEmpty()) {
             gameLogos.cancelPreload()
@@ -1369,7 +1516,6 @@ open class MainActivity : Activity() {
         present(root)
         tabFocus[if(library)6 else 0]=grid
         if(reused)grid.reopen() else grid.select(initialSlot,animate=false)
-        if(openingGames)grid.cascadeIn()
         if(grid.isShown && startMenu?.isShowing!=true && !grid.requestFocus())
             grid.post { if(grid.isShown && startMenu?.isShowing!=true)grid.requestFocus() }
     }
@@ -1377,7 +1523,7 @@ open class MainActivity : Activity() {
     private fun renderSplitLibrary(theme:OrbitThemes.Theme) {
         val inGames=library
         val openingGames=inGames && tabViews[0]?.isShown==true
-        val initialSlot=if(inGames)0 else activeSplitGrid()?.cursorPosition ?: 0
+        val previousSlot = if (inGames) null else activeSplitGrid()?.cursorPosition
         val entries=games
         val spec=system
         if(openingGames) {
@@ -1395,6 +1541,8 @@ open class MainActivity : Activity() {
         }
         val libraryKeys=if(inGames)entries.map { it.uri.toString() } else populated.map { it.id }
         val slots=SplitTileSlots(this,if(inGames)"games/${spec.id}" else "systems",libraryKeys)
+        val initialSlot = if (inGames) 0 else previousSlot
+            ?: slots.librarySlot(populated.indexOf(systems.getOrNull(focusedSystemIndex))) ?: 0
         val (view,grid)=createSplitGrid(theme,inGames,spec,entries,slots)
         if(inGames)gameCursor=0
         root=view
@@ -1406,11 +1554,17 @@ open class MainActivity : Activity() {
         theme:OrbitThemes.Theme,inGames:Boolean,spec:SystemSpec,entries:List<Game>,slots:SplitTileSlots
     ):Pair<LinearLayout,SplitLibraryGrid> {
         val systemsHere=populated
-        val prefix=if(inGames)"splitGameTile" else "splitSystemTile"
+        val verticalScroll = !inGames && systemsAppearance() == SystemsAppearance.VERTICAL_GRID
+        val prefix = when {
+            inGames -> "splitGameTile"
+            verticalScroll -> "verticalSystemTile"
+            else -> "splitSystemTile"
+        }
         val scaleKey=prefix+"Scale"
         val discSpinKey="splitGameDiscSpin"
         fun spinDiscs()=UserDataStore.cachedInt(discSpinKey,0)==1
-        val legacyLayout=splitTileArrangement(prefix,"Size",SplitLibraryGrid.Arrangement.TWO_ROWS)
+        val defaultLayout = if (verticalScroll) SplitLibraryGrid.Arrangement.FOUR_ROWS else SplitLibraryGrid.Arrangement.TWO_ROWS
+        val legacyLayout=splitTileArrangement(prefix,"Size",defaultLayout)
         val initialLayout=splitTileArrangement(prefix,"Layout",legacyLayout)
         val sizes=SplitLibraryGrid.TileSize.entries
         val oldScale=if(legacyLayout>=SplitLibraryGrid.Arrangement.ONE_ROW)
@@ -1457,7 +1611,7 @@ open class MainActivity : Activity() {
                     inGames -> chooseEmulator(entries[index])
                     else -> openSplitSystem(grid,systems.indexOf(systemsHere[index]))
                 }
-            }, hold = { tileMenu.show() }, changeLayout = { changeLayout(it, true) })
+            }, hold = { tileMenu.show() }, changeLayout = { changeLayout(it, true) }, verticalScroll = verticalScroll)
         grid.tag=if(inGames)"orbit-game-list" else "orbit-systems-grid"
         if(!inGames)grid.addOnScrollListener(object:RecyclerView.OnScrollListener() {
             override fun onScrollStateChanged(recyclerView:RecyclerView,newState:Int) {
@@ -1510,12 +1664,14 @@ open class MainActivity : Activity() {
         val visible=theme.showSystemArtwork(spec.id,screen)
         fun bind() {
             if(cell.tag!=spec.id)return
-            val bitmap=if(visible)OrbitThemeArtwork.systemImage(this,theme,spec,screen) ?: OrbitConsoleImages.cached(spec) else null
+            val bitmap=OrbitThemeArtwork.systemLogo(theme,spec)
+                ?: if(visible)OrbitThemeArtwork.systemImage(this,theme,spec,screen) ?: OrbitConsoleImages.cached(spec) else null
             image.setImageBitmap(bitmap)
             image.visibility=if(bitmap==null)View.INVISIBLE else View.VISIBLE
             label.visibility=if(bitmap==null)View.VISIBLE else View.INVISIBLE
         }
         bind()
+        OrbitThemeArtwork.requestSystemLogo(this,theme,spec,::bind)
         if(visible) {
             OrbitThemeArtwork.requestSystemImage(this,theme,spec,screen,::bind)
             OrbitConsoleImages.request(this,spec,::bind)
@@ -1781,7 +1937,10 @@ open class MainActivity : Activity() {
             DualScreenCoordinator.restoreHostFocus()
         }
         updateSystemsMusic()
-        if(activeTab==0 && library)(gameList ?: activeSplitGrid())?.requestFocus()
+        if (activeTab == 0) {
+            val focus = if (library) activeGameWheel() ?: gameList ?: activeSplitGrid() else tabFocus[0]
+            focus?.requestFocus()
+        }
         DualScreenCoordinator.refreshMedia()
     }
     private fun rememberPage(destination:PageDestination) {
@@ -1827,7 +1986,7 @@ open class MainActivity : Activity() {
         } else {
             val cursor=gameCursor
             render()
-            if(slot==6)(gameList ?: activeSplitGrid())?.post { moveGameCursor(cursor) }
+            if(slot==6)(activeGameWheel() ?: gameList ?: activeSplitGrid())?.post { moveGameCursor(cursor) }
         }
         if(closingMenu!=null) {
             val destination=screenHost ?: window.decorView
@@ -2136,6 +2295,36 @@ open class MainActivity : Activity() {
                 { showCategory(index, enter = true, restoreOption = row, subpage = parentPage) }
             fun isCurrent(parent: () -> Unit): Boolean =
                 activeTab == pageTab && root.isShown && returnFromSubpage === parent
+            fun showSystemLogoOptions(spec: SystemSpec, parent: () -> Unit, focused: Int = 0) {
+                val theme = OrbitThemes.current()
+                val configured = spec.id in theme.systemLogos
+                val choices = buildList {
+                    add(Choice("Search artwork", "Find a logo for ${spec.title}.") {
+                        val backToLogo: () -> Unit = { showSystemLogoOptions(spec, parent) }
+                        ArtworkSearchPicker(this@MainActivity, "marquees", spec.title, emptySet()) { bytes ->
+                            ThemeMediaSettings.applyDownloaded(this@MainActivity, theme, "systemLogo", emptySet(), spec, bytes) {
+                                if (isCurrent(backToLogo) || isCurrent(parent)) backToLogo()
+                            }
+                        }.show(
+                            embed = { content, focus, keys, back -> embedPage(content, back, focus, keys, "System logo · Search artwork") },
+                            closePage = backToLogo
+                        )
+                    })
+                    add(Choice("Choose from device", "Select a PNG, JPEG or WebP logo.") {
+                        pickThemeImage { uri ->
+                            if (uri != null) ThemeMediaSettings.setSystemLogo(this@MainActivity, theme, spec, uri) {
+                                if (isCurrent(parent)) showSystemLogoOptions(spec, parent, 1)
+                            }
+                        }
+                    })
+                    if (configured) add(Choice("Remove system logo", "Go back to the default system artwork or name.") {
+                        ThemeMediaSettings.setSystemLogo(this@MainActivity, theme, spec, null) {
+                            if (isCurrent(parent)) showSystemLogoOptions(spec, parent, 1)
+                        }
+                    })
+                }
+                showChoices("System logo · ${spec.title}", parent, choices, if (configured) "Custom logo" else "Default", focused)
+            }
             fun showArtworkImages(parent: () -> Unit, focused: Int? = null) {
                 val theme = OrbitThemes.current()
                 val choices = mutableListOf<Choice>()
@@ -2167,6 +2356,20 @@ open class MainActivity : Activity() {
                             ThemeMediaSettings.setImage(this, theme, role, screens, null, update(row + 1))
                         }
                     }
+                }
+                val logosRow = choices.size
+                choices += Choice("System logo", "Choose a logo for a system in your library.", section = "System artwork") {
+                    val backToImages: () -> Unit = { showArtworkImages(parent, logosRow) }
+                    fun showSystems(focus: Int? = null) {
+                        val current = OrbitThemes.current()
+                        val rows = populated.mapIndexed { row, spec ->
+                            Choice(spec.title, value = if (spec.id in current.systemLogos) "Custom" else "") {
+                                showSystemLogoOptions(spec, { showSystems(row) })
+                            }
+                        }
+                        showChoices("System logos", backToImages, rows, if (rows.isEmpty()) "No systems in your library yet." else "", focus)
+                    }
+                    showSystems()
                 }
                 showChoices("Artwork images", parent, choices, focused = focused)
             }
@@ -2872,6 +3075,7 @@ open class MainActivity : Activity() {
         return tabViews[if(library)6 else 0]?.findViewWithTag<View>(tag) as? SplitLibraryGrid
     }
     private fun refreshGameTiles() {
+        activeGameWheel()?.adapter?.notifyDataSetChanged()
         (gameList?.adapter as? BaseAdapter)?.notifyDataSetChanged()
         if(library)activeSplitGrid()?.refreshTiles()
     }
@@ -3018,13 +3222,23 @@ open class MainActivity : Activity() {
             val step=NavigationTabs.direction(event.keyCode)
             if(step!=0) {
                 // Reuse each theme's normal system navigation, including key repeats.
-                val key=if(step<0)KeyEvent.KEYCODE_DPAD_LEFT else KeyEvent.KEYCODE_DPAD_RIGHT
+                val vertical = when (systemsAppearance()) {
+                    SystemsAppearance.VERTICAL_GRID, SystemsAppearance.VERTICAL_SCROLL -> true
+                    else -> false
+                }
+                val key = if (vertical) {
+                    if (step < 0) KeyEvent.KEYCODE_DPAD_UP else KeyEvent.KEYCODE_DPAD_DOWN
+                } else {
+                    if (step < 0) KeyEvent.KEYCODE_DPAD_LEFT else KeyEvent.KEYCODE_DPAD_RIGHT
+                }
                 return dispatchFrontendKeyEvent(KeyEvent(event.downTime,event.eventTime,event.action,key,
                     event.repeatCount,event.metaState,event.deviceId,event.scanCode,event.flags,event.source))
             }
         }
         if(ready && startMenu?.isShowing!=true &&
             activeSplitGrid()?.takeIf { it.isShown }?.handleController(event)==true)return true
+        if (ready && activeTab == 0 && library && startMenu?.isShowing != true &&
+            activeGameWheel()?.takeIf { it.isShown }?.handle(event) == true) return true
         if (ready && activeTab == 0 && library && event.keyCode == KeyEvent.KEYCODE_BUTTON_Y) {
             if (event.action == KeyEvent.ACTION_UP) onKeyUp(event.keyCode, event)
             return true
@@ -3102,57 +3316,107 @@ open class MainActivity : Activity() {
         )
     }
 
+    private fun showSystemViews(menu: EmulatorSettings.MenuWindow, back: () -> Unit) {
+        val appearances = SystemsAppearance.entries
+        val labels = appearances.map { appearance ->
+            { if (appearance == systemsAppearance()) "✓  ${appearance.label}" else appearance.label }
+        }
+        menu.liveActions("System views", labels, { position ->
+            val appearance = appearances[position]
+            if (appearance != systemsAppearance()) {
+                runCatching { UserDataStore.put(this, "settings", systemsAppearanceKey, appearance.savedName ?: appearance.name) }
+                    .onSuccess { if (activeTab == 0 && !library) render() }
+                    .onFailure(::showDataError)
+            }
+        }, back, initialSelection = systemsAppearance().ordinal)
+    }
+
+    private fun showGameViews(menu: EmulatorSettings.MenuWindow, back: () -> Unit) {
+        val appearances = GameAppearance.entries
+        val labels = appearances.map { appearance ->
+            { if (appearance == gameAppearance()) "✓  ${appearance.label}" else appearance.label }
+        } + listOf<() -> String>({ "Game media · ${gameWheelMedia().label}" })
+        menu.liveActions("Game Views", labels, { position ->
+            val appearance = appearances.getOrNull(position)
+            if (appearance == null) {
+                showGameWheelMedia(menu) { showGameViews(menu, back) }
+            } else if (appearance != gameAppearance()) {
+                runCatching { UserDataStore.put(this, "settings", "gameAppearance", appearance.name) }
+                    .onSuccess {
+                        discardPreparedSplitGameView()
+                        if (activeTab == 0 && library) {
+                            val selectedGame = gameCursor
+                            render()
+                            moveGameCursor(selectedGame)
+                        }
+                    }
+                    .onFailure(::showDataError)
+            }
+        }, back, initialSelection = gameAppearance().ordinal)
+    }
+
+    private fun showGameWheelMedia(menu: EmulatorSettings.MenuWindow, back: () -> Unit) {
+        val mediaOptions = GameWheelMedia.entries
+        val labels = mediaOptions.map { media ->
+            { if (media == gameWheelMedia()) "✓  ${media.label}" else media.label }
+        }
+        menu.liveActions("Game media", labels, { position ->
+            val media = mediaOptions[position]
+            if (media != gameWheelMedia()) {
+                runCatching { UserDataStore.put(this, "settings", "gameWheelMedia", media.name) }
+                    .onSuccess { activeGameWheel()?.adapter?.notifyDataSetChanged() }
+                    .onFailure(::showDataError)
+            }
+        }, back, initialSelection = gameWheelMedia().ordinal)
+    }
+
     private fun showSystemMenu(spec: SystemSpec, host:Activity=this) {
         if (startMenu?.isShowing == true) return
         val currentGame = if (library && system == spec) games.getOrNull(gameCursor) else null
         val menu = EmulatorSettings.MenuWindow(host, fullScreen = OrbitThemeArtwork.screen(host) == "top",
-            smoothSelection = currentGame != null)
+            smoothSelection = true)
         startMenu = menu.dialog
         if(host!==this) { remoteSettingsDialog=menu.dialog;remoteSettingsHost=host }
         val customArtwork = currentGame?.let { GameCustomArtworkPanel(this, menu, spec, it) }
         menu.dialog.setOnDismissListener {
             settingsWindowClosed(menu.dialog)
         }
-        val sections=if(currentGame==null)listOf("Emulator","General","Customisation","Media")
-            else listOf("Scraper","Emulator","Customisation","Media")
+        val sections = listOf("Scraper", "Emulator", "Customisation")
         var section=0
-        lateinit var showScraping: () -> Unit
-        lateinit var showGameScraper: (Int) -> Unit
+        fun showScraper(selected: Int = 0) {
+            val artworkLabel = if (customArtwork == null) "System artwork" else "View or change artwork"
+            val labels = buildList<() -> String> {
+                add { artworkLabel }
+                add { "Media types" }
+                add { "Hide Media" }
+                if (customArtwork == null) add { "Choose a game to scrape" }
+            }
+            menu.liveActions("Scraper", labels, { position ->
+                val back = { showScraper(position) }
+                when (position) {
+                    0 -> if (customArtwork != null) customArtwork.showImages(back)
+                        else SystemArtworkSettingsPanel(this, menu, spec).show(back)
+                    1 -> showScraperMediaTypes(menu, back)
+                    2 -> GameMediaSettingsPanel(this, menu).show(back)
+                    3 -> {
+                        menu.dialog.dismiss()
+                        openSystem(systems.indexOf(spec))
+                    }
+                }
+            }, menu.dialog::dismiss, initialSelection = selected)
+        }
         fun home() {
             menu.selectTab(section)
             when(sections[section]) {
                 "Emulator" -> if(currentGame!=null) EmulatorSettings.showForGame(menu,spec,currentGame) { menu.dialog.dismiss() }
                     else EmulatorSettings.showForSystemIn(menu,spec,{}, { menu.dialog.dismiss() })
-                "General" -> menu.actions("General",listOf("Scraping" to { showScraping() }))
-                "Scraper" -> showGameScraper(0)
-                "Customisation" -> if(currentGame==null)SystemArtworkSettingsPanel(this,menu,spec).show()
-                    else customArtwork?.show()
-                "Media" -> GameMediaSettingsPanel(this, menu).show(menu.dialog::dismiss)
+                "Scraper" -> showScraper()
+                "Customisation" -> menu.actions("Customisation", buildList {
+                    add("Animation" to { menu.actions("Animation", emptyList(), ::home) })
+                    if (currentGame == null) add("System views" to { showSystemViews(menu, ::home) })
+                    else add("Game Views" to { showGameViews(menu, ::home) })
+                })
             }
-        }
-        showGameScraper = { selected ->
-            val artwork = requireNotNull(customArtwork)
-            menu.liveActions("Scraper", listOf({ "View or change artwork" }, { "Media types" }), { position ->
-                if (position == 0) artwork.showImages { showGameScraper(0) }
-                else showScraperMediaTypes(menu) { showGameScraper(1) }
-            }, menu.dialog::dismiss, initialSelection = selected)
-        }
-        showScraping = {
-            val preferences=getSharedPreferences("scraper_credentials",0)
-            val categories=ScraperMediaTypes.categories
-            fun enabled()=preferences.getStringSet("media.categories",categories.map { it.folder }.toSet()).orEmpty()
-            val labels = listOf<() -> String>({ "Choose a game to scrape" }) + categories.map { category -> { "${category.title} · ${if (category.folder in enabled()) "On" else "Off"}" } }
-            menu.liveActions("Scraping", labels, { index ->
-                if (index == 0) {
-                    menu.dialog.dismiss()
-                    openSystem(systems.indexOf(spec))
-                } else {
-                    val type = categories[index - 1].folder
-                    val next=enabled().toMutableSet()
-                    if(!next.add(type))next.remove(type)
-                    preferences.edit().putStringSet("media.categories",next).apply()
-                }
-            }, ::home)
         }
         menu.tabs(if(currentGame!=null) "Game Settings" else "System Settings",currentGame?.let { "${it.title} · ${spec.title}" } ?: spec.title,sections,section) { section=it;home() }
         menu.onShoulder={ direction -> section=(section+direction+sections.size)%sections.size;home() }
@@ -3221,7 +3485,7 @@ open class MainActivity : Activity() {
                     val popup = GameScraperPopup(menu, system, game, ::onGameScraped)
                     startMenu = menu.dialog
                     menu.dialog.setOnDismissListener {
-                        popup.destroy(); startMenu = null; gameList?.requestFocus()
+                        popup.destroy(); startMenu = null; (activeGameWheel() ?: gameList)?.requestFocus()
                         DualScreenCoordinator.refreshMedia()
                     }
                     popup.show()

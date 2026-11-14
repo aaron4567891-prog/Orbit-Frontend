@@ -107,6 +107,15 @@ object ThemeMediaSettings {
             else OrbitThemeArtwork.assignSystemImage(activity,theme,system,setOf(screen),null)
         }
     }
+    fun chooseSystemLogo(activity:MainActivity,system:SystemSpec,changed:()->Unit) {
+        val theme=OrbitThemes.current()
+        pickSource(activity,"System logo","marquees",system.title,emptySet(),
+            local={ uri -> setSystemLogo(activity,theme,system,uri,changed) },
+            online={ bytes -> applyDownloaded(activity,theme,"systemLogo",emptySet(),system,bytes,changed) })
+    }
+    fun setSystemLogo(activity:MainActivity,theme:OrbitThemes.Theme,system:SystemSpec,uri:Uri?,changed:()->Unit) {
+        update(activity,theme,changed) { OrbitThemeArtwork.assignSystemLogo(activity,theme,system,uri) }
+    }
     fun setSystemImageVisible(activity:MainActivity,system:SystemSpec,screen:String,visible:Boolean,changed:()->Unit) {
         require(screen in setOf("top","bottom"))
         val theme=OrbitThemes.current()

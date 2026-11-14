@@ -30,6 +30,10 @@ object OrbitThemeArtwork {
     }
     fun systemImage(context:Context,theme:OrbitThemes.Theme,system:SystemSpec,target:String=artworkScreen(context,theme=theme)):Bitmap? =
         theme.systemImages[system.id]?.get(target)?.let { cache.get(it) }
+    fun systemLogo(theme:OrbitThemes.Theme,system:SystemSpec):Bitmap? =
+        theme.systemLogos[system.id]?.let { cache.get(it) }
+    fun requestSystemLogo(context:Context,theme:OrbitThemes.Theme,system:SystemSpec,ready:()->Unit) =
+        request(context,theme.systemLogos[system.id],ready)
     internal fun cachedImage(path:String):Bitmap? = cache.get(path)
     @Synchronized internal fun load(context:Context,path:String):Bitmap? {
         cache.get(path)?.let { return it }
@@ -75,6 +79,8 @@ object OrbitThemeArtwork {
     fun assignSystemImage(context:Context,theme:OrbitThemes.Theme,system:SystemSpec,screens:Set<String>,uri:Uri?):OrbitThemes.Theme {
         return assignPath(context,theme,"system",screens,system,uri?.let { importImage(context,it) })
     }
+    fun assignSystemLogo(context:Context,theme:OrbitThemes.Theme,system:SystemSpec,uri:Uri?) =
+        assignPath(context,theme,"systemLogo",emptySet(),system,uri?.let { importImage(context,it) })
     internal fun assignDownloaded(context:Context,theme:OrbitThemes.Theme,role:String,screens:Set<String>,system:SystemSpec?,bytes:ByteArray) =
         assignPath(context,theme,role,screens,system,storeImage(context,bytes))
 
@@ -83,11 +89,14 @@ object OrbitThemeArtwork {
         val updated=when {
             system==null -> latest.withArtwork(role,screens,path)
             role=="hero" -> latest.withSystemHero(system.id,screens,path)
+            role=="systemLogo" -> latest.withSystemLogo(system.id,path)
             else -> latest.withSystemImage(system.id,screens,path)
         }
         UserDataStore.saveNativeTheme(context,updated.id,updated.json())
         OrbitThemes.refresh(context)
-        if(system==null)prepare(context,updated) else {
+        if(system==null)prepare(context,updated) else if(role=="systemLogo") {
+            path?.let { runCatching { load(context,it) } }
+        } else {
             val images=if(role=="hero")updated.systemHeroes else updated.systemImages
             images[system.id].orEmpty().values.distinct().forEach { runCatching { load(context,it) } }
         }

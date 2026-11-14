@@ -1,11 +1,5 @@
 package au.orbit.frontend
 
-import android.graphics.Color
-import android.graphics.Rect
-import android.view.KeyEvent
-import android.widget.Button
-import android.widget.LinearLayout
-import android.widget.ScrollView
 import android.widget.Toast
 
 /** The settings page and game popup edit the same physical-screen preferences. */
@@ -36,39 +30,8 @@ internal class GameMediaSettingsPanel(private val activity:MainActivity,private 
         }
     }
     fun show(back: () -> Unit) {
-        val content=LinearLayout(activity).apply { orientation=LinearLayout.VERTICAL }
-        val viewport=ScrollView(activity).apply { defaultFocusHighlightEnabled=false;isSmoothScrollingEnabled=true;addView(content) }
-        val buttons=mutableListOf<Button>()
-        options(activity, "top", activity::refreshGameMediaOptions).forEach { option ->
-            fun label()="${option.title} · ${option.value()}"
-            val row=Button(activity).apply {
-                text=label();isAllCaps=false;textSize=16f;setTextColor(Color.WHITE);isFocusableInTouchMode=true
-                SelectionStyle.apply(this)
-                contentDescription=option.description
-                setOnFocusChangeListener { _,focused -> if(focused)menu.selectCompanionOption(label()) }
-                setOnClickListener { requestFocus();option.choose {
-                    text=label();menu.selectCompanionOption(label())
-                } }
-            }
-            buttons.add(row);content.addView(row,LinearLayout.LayoutParams(-1,-2))
-        }
-        menu.page("Media",viewport,backLabel="",back=back,handle={ key,event ->
-            val index=buttons.indexOfFirst { it.hasFocus() }.coerceAtLeast(0)
-            when(key) {
-                KeyEvent.KEYCODE_DPAD_UP,KeyEvent.KEYCODE_DPAD_DOWN -> {
-                    if(event.action==KeyEvent.ACTION_DOWN) {
-                        val row=buttons[(index+if(key==KeyEvent.KEYCODE_DPAD_DOWN)1 else -1).coerceIn(buttons.indices)]
-                        row.requestFocus();row.requestRectangleOnScreen(Rect(0,0,row.width,row.height),false)
-                    }
-                    true
-                }
-                KeyEvent.KEYCODE_BUTTON_A,KeyEvent.KEYCODE_DPAD_CENTER,KeyEvent.KEYCODE_ENTER -> {
-                    if(event.action==KeyEvent.ACTION_UP && !event.isCanceled)buttons[index].performClick()
-                    true
-                }
-                else -> false
-            }
-        })
-        buttons.first().requestFocus()
+        val options = options(activity, "top", activity::refreshGameMediaOptions)
+        val labels = options.map { option -> { "${option.title} · ${option.value()}" } }
+        menu.liveActions("Hide Media", labels, { position -> options[position].choose {} }, back)
     }
 }

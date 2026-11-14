@@ -32,7 +32,12 @@ object EmulatorSettings {
         .firstOrNull { it.activity===activity && it.dialog.isShowing }?.browseSelection()
     fun menuVisible(activity:Activity)=companionBrowse(activity)!=null
     /** The focused row owns its highlight; there is no separate ListView selector to drift. */
-    private class Rows(private val activity: Activity, private val styled:Boolean=false,private val onSelection:(String)->Unit) {
+    private class Rows(
+        private val activity: Activity,
+        private val styled: Boolean = false,
+        private val smoothSelection: Boolean = false,
+        private val onSelection: (String) -> Unit
+    ) {
         val view = ScrollView(activity).apply {
             isSmoothScrollingEnabled = false
             isFocusableInTouchMode = true
@@ -46,23 +51,39 @@ object EmulatorSettings {
         private var cursor = 0
         val selectedIndex get()=cursor
         var onLongPress:((Int)->Unit)?=null
-        private fun paint() {
-            buttons.forEachIndexed { index, row ->
-                row.background = GradientDrawable().apply {
-                    setColor(Color.TRANSPARENT)
-                    if(styled)cornerRadius=dp(12).toFloat()
-                    setStroke(dp(2), if (index == cursor) Color.rgb(5, 97, 195) else Color.rgb(38,49,65))
-                }
-            }
+        private var revealAnimation: android.animation.ValueAnimator? = null
+
+        private fun paint(index: Int) {
+            (buttons[index].background as GradientDrawable)
+                .setStroke(dp(2), if (index == cursor) Color.rgb(5, 97, 195) else Color.rgb(38,49,65))
         }
-        init { view.addView(content) }
+
+        init {
+            view.addView(content)
+            view.setOnTouchListener { _, event ->
+                if (event.actionMasked == android.view.MotionEvent.ACTION_DOWN) revealAnimation?.cancel()
+                false
+            }
+            view.addOnAttachStateChangeListener(object : android.view.View.OnAttachStateChangeListener {
+                override fun onViewAttachedToWindow(view: android.view.View) = Unit
+                override fun onViewDetachedFromWindow(view: android.view.View) {
+                    revealAnimation?.cancel()
+                }
+            })
+        }
         fun populate(labels: List<String>, choose: (Int) -> Unit) {
+            revealAnimation?.cancel()
             content.removeAllViews(); buttons.clear()
+            cursor = 0
             labels.forEachIndexed { index, label ->
                 val row = Button(activity).apply {
                     text = label; isAllCaps = false; gravity = android.view.Gravity.CENTER_VERTICAL
                     textSize = 16f; setTextColor(Color.WHITE)
                     backgroundTintList = null
+                    background = GradientDrawable().apply {
+                        setColor(Color.TRANSPARENT)
+                        if (styled) cornerRadius = dp(12).toFloat()
+                    }
                     defaultFocusHighlightEnabled = false
                     isFocusableInTouchMode = true
                     setPadding(dp(18), dp(10), dp(18), dp(10))
@@ -74,7 +95,7 @@ object EmulatorSettings {
                                 if (event.action == KeyEvent.ACTION_DOWN) {
                                     val next = (index + if (key == KeyEvent.KEYCODE_DPAD_DOWN) 1 else -1).coerceIn(buttons.indices)
                                     if (key == KeyEvent.KEYCODE_DPAD_UP && index == 0) false
-                                    else { focus(next); true }
+                                    else { focus(next, animate = true); true }
                                 } else true
                             }
                             KeyEvent.KEYCODE_BUTTON_A, KeyEvent.KEYCODE_DPAD_CENTER, KeyEvent.KEYCODE_ENTER -> {
@@ -86,22 +107,48 @@ object EmulatorSettings {
                     }
                 }
                 buttons.add(row)
+                paint(index)
                 content.addView(row, LinearLayout.LayoutParams(-1, -2).apply { bottomMargin = dp(3) })
             }
-            cursor = 0; paint()
         }
-        fun focus(index: Int) {
+
+        fun focus(index: Int, animate: Boolean = false) {
             val row = buttons.getOrNull(index) ?: return
+            val previous = cursor
             cursor = index
             view.contentDescription = row.text
-            view.requestFocus(); paint()
-            if(view.isAttachedToWindow)onSelection(row.text.toString())
-            fun reveal() {
-                if (row.top < view.scrollY) view.scrollTo(0, row.top)
-                else if (row.bottom > view.scrollY + view.height) view.scrollTo(0, row.bottom - view.height)
+            if (!view.hasFocus()) view.requestFocus()
+            if (previous != index) {
+                paint(previous)
+                paint(index)
             }
-            reveal()
-            row.post { if (cursor == index) reveal() }
+            if (view.isAttachedToWindow) onSelection(row.text.toString())
+            if (row.height == 0 || view.height == 0) {
+                row.post { if (view.isAttachedToWindow && cursor == index) reveal(row, animate = false) }
+            } else {
+                reveal(row, animate && smoothSelection)
+            }
+        }
+
+        private fun reveal(row: Button, animate: Boolean) {
+            val start = view.scrollY
+            val target = when {
+                row.top < start -> row.top
+                row.bottom > start + view.height -> row.bottom - view.height
+                else -> start
+            }
+            revealAnimation?.cancel()
+            if (start == target) return
+            if (!animate) {
+                view.scrollTo(0, target)
+                return
+            }
+            revealAnimation = android.animation.ValueAnimator.ofInt(start, target).apply {
+                duration = 120
+                interpolator = android.view.animation.DecelerateInterpolator()
+                addUpdateListener { view.scrollTo(0, it.animatedValue as Int) }
+                start()
+            }
         }
         fun updateLabels(labels: List<String>) {
             labels.forEachIndexed { index, label -> buttons.getOrNull(index)?.let { row ->
@@ -113,7 +160,10 @@ object EmulatorSettings {
             if (buttons.isEmpty()) return false
             return when (key) {
                 KeyEvent.KEYCODE_DPAD_UP, KeyEvent.KEYCODE_DPAD_DOWN -> {
-                    if (event.action == KeyEvent.ACTION_DOWN) focus((cursor + if (key == KeyEvent.KEYCODE_DPAD_DOWN) 1 else -1).coerceIn(buttons.indices))
+                    if (event.action == KeyEvent.ACTION_DOWN && !event.isCanceled) {
+                        val next = (cursor + if (key == KeyEvent.KEYCODE_DPAD_DOWN) 1 else -1).coerceIn(buttons.indices)
+                        if (next != cursor) focus(next, animate = true)
+                    }
                     true
                 }
                 KeyEvent.KEYCODE_BUTTON_A, KeyEvent.KEYCODE_DPAD_CENTER, KeyEvent.KEYCODE_ENTER -> {
@@ -128,7 +178,8 @@ object EmulatorSettings {
     class MenuWindow(
         override val activity: Activity,
         private val compact: Boolean = false,
-        private val fullScreen: Boolean = false
+        private val fullScreen: Boolean = false,
+        private val smoothSelection: Boolean = false
     ) : PageHost {
         private val browse=MenuBrowseState()
         override fun selectCompanionOption(label:String) { browse.select(label);DualScreenCoordinator.refreshMedia() }
@@ -149,6 +200,7 @@ object EmulatorSettings {
         private var tabsView:LinearLayout?=null
         private var sectionTitle:TextView?=null
         private var tabButtons=emptyList<TextView>()
+        private var tabbedLayoutApplied = false
         fun tabs(title:String,subtitle:String,labels:List<String>,selected:Int,choose:(Int)->Unit) {
             browse.scope(title)
             isTabbed=true
@@ -188,6 +240,7 @@ object EmulatorSettings {
         fun clearTabs(title:String) {
             browse.scope(title)
             isTabbed=false;tabsView=null;sectionTitle=null;tabButtons=emptyList();onShoulder=null
+            tabbedLayoutApplied = false
             dialog.setCustomTitle(null);dialog.setTitle(title)
         }
         private val frame = LinearLayout(activity).apply { orientation = LinearLayout.VERTICAL }
@@ -226,13 +279,23 @@ object EmulatorSettings {
             browse.page(title);register(this)
             revision++
             goBack = back; keys = handle
-            if(!isTabbed)dialog.setTitle(title) else sectionTitle?.text=title
-            frame.removeAllViews()
-            if(isTabbed) {
-                tabsView?.let { (it.parent as? android.view.ViewGroup)?.removeView(it);frame.addView(it) }
-                sectionTitle?.let { (it.parent as? android.view.ViewGroup)?.removeView(it);frame.addView(it) }
-                frame.addView(content,LinearLayout.LayoutParams(-1,0,1f))
-            } else frame.addView(content, LinearLayout.LayoutParams(-1, -1))
+            if (isTabbed) {
+                val tabs = checkNotNull(tabsView)
+                val heading = checkNotNull(sectionTitle)
+                heading.text = title
+                if (tabs.parent !== frame || heading.parent !== frame) {
+                    frame.removeAllViews()
+                    frame.addView(tabs)
+                    frame.addView(heading)
+                } else if (frame.getChildAt(2) !== content && frame.childCount > 2) {
+                    frame.removeViewAt(2)
+                }
+                if (content.parent !== frame) frame.addView(content, LinearLayout.LayoutParams(-1, 0, 1f))
+            } else {
+                dialog.setTitle(title)
+                frame.removeAllViews()
+                frame.addView(content, LinearLayout.LayoutParams(-1, -1))
+            }
             if (!dialog.isShowing) {
                 dialog.window?.apply {
                     if(fullScreen) {
@@ -258,7 +321,8 @@ object EmulatorSettings {
                     }
                 }
             }
-            if(isTabbed) {
+            if (isTabbed && !tabbedLayoutApplied) {
+                tabbedLayoutApplied = true
                 frame.setPadding((16*activity.resources.displayMetrics.density).toInt(),0,(16*activity.resources.displayMetrics.density).toInt(),0)
                 if(!fullScreen) {
                     frame.layoutParams=frame.layoutParams.apply { height=(activity.resources.displayMetrics.heightPixels*0.60f).toInt() }
@@ -285,8 +349,9 @@ object EmulatorSettings {
         override fun showPage(title: String, content: android.view.View, backLabel: String,
             back: () -> Unit, handle: (Int, KeyEvent) -> Boolean) = page(title, content, backLabel, back, handle)
 
-        fun liveActions(title:String,labels:List<()->String>,choose:(Int)->Unit,back:()->Unit) {
-            val rows=Rows(activity,isTabbed,::selectCompanionOption)
+        fun liveActions(title: String, labels: List<() -> String>, choose: (Int) -> Unit, back: () -> Unit,
+            initialSelection: Int = 0) {
+            val rows = Rows(activity, isTabbed, smoothSelection, ::selectCompanionOption)
             rows.populate(labels.map { it() }) { index ->
                 val expected=revision
                 choose(index)
@@ -295,11 +360,11 @@ object EmulatorSettings {
                     selectCompanionOption(labels[index]())
                 }
             }
-            page(title,rows.view,"← Back",back,rows::handle)
-            rows.focus(0)
+            page(title, rows.view, "← Back", back, rows::handle)
+            rows.focus(initialSelection)
         }
         fun actions(title: String, actions: List<Pair<String, () -> Unit>>, back: (() -> Unit)? = null) {
-            val rows = Rows(activity,isTabbed,::selectCompanionOption)
+            val rows = Rows(activity, isTabbed, smoothSelection, ::selectCompanionOption)
             rows.populate(actions.map { it.first }) { actions[it].second() }
             page(title, rows.view, if (back == null) "Close" else "← Back", back ?: { dialog.dismiss() }, rows::handle)
             if (compact && !isTabbed) {
@@ -377,7 +442,7 @@ object EmulatorSettings {
             compareBy<EmulatorProfile> { "LIBRETRO" in it.stringExtras }.thenBy { !installed.getValue(it) }
         )
         var selected=if(game==null)repository.selected(system)?.id else repository.gameOverride(system,game)?.id
-        val rows=Rows(activity,window.isTabbed,window::selectCompanionOption)
+        val rows=Rows(activity, window.isTabbed, smoothSelection = game != null, onSelection = window::selectCompanionOption)
         val offset=if(game==null)0 else 1
         fun refresh() { showPlayers(window,system,changed,back,game,showHidden) }
         fun toggleHidden(index:Int) {

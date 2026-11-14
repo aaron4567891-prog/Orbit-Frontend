@@ -1774,6 +1774,14 @@ open class MainActivity : Activity() {
         if(ready && library)artworkPanel?.show(system,games.getOrNull(gameCursor))
         DualScreenCoordinator.refreshMedia()
     }
+    private fun onGameScraped() {
+        if (!isDestroyed && !isFinishing && !showingCompanion) refreshTransferredMedia()
+        else {
+            GameArtworkPanel.clearMediaCache()
+            EsDeScene.clearMediaCache()
+            DualScreenCoordinator.refreshMedia(true)
+        }
+    }
     private fun refreshTransferredMedia() {
         discardPreparedArtwork()
         GameArtworkPanel.clearMediaCache(); EsDeScene.clearMediaCache(); gameLogos.clear(); preloadKey = null
@@ -2929,94 +2937,76 @@ open class MainActivity : Activity() {
     }
     private fun showSystemMenu(spec: SystemSpec, host:Activity=this) {
         if (startMenu?.isShowing == true) return
-        val menu = EmulatorSettings.MenuWindow(host,fullScreen=OrbitThemeArtwork.screen(host)=="top")
+        val currentGame = if (library && system == spec) games.getOrNull(gameCursor) else null
+        val menu = EmulatorSettings.MenuWindow(host, fullScreen = OrbitThemeArtwork.screen(host) == "top",
+            smoothSelection = currentGame != null)
         startMenu = menu.dialog
         if(host!==this) { remoteSettingsDialog=menu.dialog;remoteSettingsHost=host }
-        val currentGame=if(library && system==spec)games.getOrNull(gameCursor) else null
-        val scraper=currentGame?.let { game -> GameScraperPopup(menu,spec,game) {
-            artworkPanel?.show(spec,game,true);importedScene?.showGame(game,true);gameLogos.clear()
-            refreshGameTiles()
-            DualScreenCoordinator.refreshMedia(true)
-        } }
+        val customArtwork = currentGame?.let { GameCustomArtworkPanel(this, menu, spec, it) }
         menu.dialog.setOnDismissListener {
-            scraper?.destroy()
             settingsWindowClosed(menu.dialog)
         }
-        val sections=if(currentGame==null)listOf("Emulator","General","Customisation")
-            else listOf("General","Emulator","Customisation","Media")
+        val sections=if(currentGame==null)listOf("Emulator","General","Customisation","Media")
+            else listOf("Scraper","Emulator","Customisation","Media")
         var section=0
-        lateinit var showScraping:()->Unit
+        lateinit var showScraping: () -> Unit
+        lateinit var showGameScraper: (Int) -> Unit
         fun home() {
             menu.selectTab(section)
             when(sections[section]) {
                 "Emulator" -> if(currentGame!=null) EmulatorSettings.showForGame(menu,spec,currentGame) { menu.dialog.dismiss() }
                     else EmulatorSettings.showForSystemIn(menu,spec,{}, { menu.dialog.dismiss() })
-                "General" -> {
-                    val actions=mutableListOf<Pair<String,()->Unit>>("Scraping" to { showScraping() })
-                    if(currentGame==null)actions.addAll(listOf(
-                        "Add ROM folder" to {
-                            pickingSystem = spec
-                            startActivityForResult(Intent(Intent.ACTION_OPEN_DOCUMENT_TREE).addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_GRANT_WRITE_URI_PERMISSION or Intent.FLAG_GRANT_PERSISTABLE_URI_PERMISSION), 100, popupLaunchOptions())
-                        },
-                        "Manage ROM folders" to {
-                            val folders = repository.folders(spec)
-                            if (folders.isEmpty()) menu.page("ROM folders", text("No folders assigned to ${spec.title}.", 16f), back = { home() })
-                            else menu.actions("Remove ROM folder", folders.map { uri ->
-                                uri.lastPathSegment.orEmpty() to {
-                                    runCatching { repository.removeFolder(spec, uri) }.onSuccess { home() }.onFailure { showDataError(it) }
-                                }
-                            }, { home() })
-                        },
-                        "Rescan ${spec.title}" to {
-                            menu.page("Scanning ${spec.title}", text("Scanning ROM folders…", 16f), back = { home() })
-                            worker.execute {
-                                val result = runCatching { repository.scanReport(spec) }
-                                val available = runCatching { repository.populatedSystems() }.getOrDefault(populated)
-                                runOnUiThread {
-                                    if (!isDestroyed) {
-                                        result.onSuccess { report ->
-                                            pages = pages + (spec.id to page(report)); populated = available
-                                            if (system == spec) { games = pages[spec.id]!!.games; error = null }
-                                            render()
-                                            if (menu.dialog.isShowing) home()
-                                        }.onFailure { failure ->
-                                            if (menu.dialog.isShowing) menu.page("Scan failed", text(failure.message ?: "Folder unavailable", 16f), back = { home() })
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    ))
-                    menu.actions("General",actions)
-                }
+                "General" -> menu.actions("General",listOf("Scraping" to { showScraping() }))
+                "Scraper" -> showGameScraper(0)
                 "Customisation" -> if(currentGame==null)SystemArtworkSettingsPanel(this,menu,spec).show()
-                    else GameCustomArtworkPanel(this,menu,spec,currentGame).show()
+                    else customArtwork?.show()
                 "Media" -> GameMediaSettingsPanel(this,menu).show()
             }
         }
-        showScraping={
-            section=sections.indexOf("General");menu.selectTab(section)
+        showGameScraper = { selected ->
+            val artwork = requireNotNull(customArtwork)
+            menu.liveActions("Scraper", listOf({ "View or change artwork" }, { "Media types" }), { position ->
+                if (position == 0) artwork.showImages { showGameScraper(0) }
+                else showScraperMediaTypes(menu) { showGameScraper(1) }
+            }, menu.dialog::dismiss, initialSelection = selected)
+        }
+        showScraping = {
             val preferences=getSharedPreferences("scraper_credentials",0)
             val categories=ScraperMediaTypes.categories
             fun enabled()=preferences.getStringSet("media.categories",categories.map { it.folder }.toSet()).orEmpty()
-            val labels=listOf<()->String>({ if(currentGame!=null)"Scrape ${currentGame.title}" else "Choose a game to scrape" })+
-                categories.map { category -> { "${category.title} · ${if(category.folder in enabled())"On" else "Off"}" } }
-            menu.liveActions("Scraping",labels,{ index ->
-                if(index==0) {
-                    if(scraper!=null) { scraper.parentPage=showScraping;scraper.providers() }
-                    else { menu.dialog.dismiss();openSystem(systems.indexOf(spec)) }
+            val labels = listOf<() -> String>({ "Choose a game to scrape" }) + categories.map { category -> { "${category.title} · ${if (category.folder in enabled()) "On" else "Off"}" } }
+            menu.liveActions("Scraping", labels, { index ->
+                if (index == 0) {
+                    menu.dialog.dismiss()
+                    openSystem(systems.indexOf(spec))
                 } else {
+                    val type = categories[index - 1].folder
                     val next=enabled().toMutableSet()
-                    val type=categories[index-1].folder
                     if(!next.add(type))next.remove(type)
                     preferences.edit().putStringSet("media.categories",next).apply()
                 }
-            },{ home() })
+            }, ::home)
         }
         menu.tabs(if(currentGame!=null) "Game Settings" else "System Settings",currentGame?.let { "${it.title} · ${spec.title}" } ?: spec.title,sections,section) { section=it;home() }
         menu.onShoulder={ direction -> section=(section+direction+sections.size)%sections.size;home() }
         home()
     }
+    private fun showScraperMediaTypes(menu: EmulatorSettings.MenuWindow, back: () -> Unit) {
+        val preferences = getSharedPreferences("scraper_credentials", 0)
+        val categories = ScraperMediaTypes.categories
+        val defaults = categories.map { it.folder }.toSet()
+        fun enabled() = preferences.getStringSet("media.categories", defaults).orEmpty()
+        val labels = categories.map { category ->
+            { "${category.title} · ${if (category.folder in enabled()) "On" else "Off"}" }
+        }
+        menu.liveActions("Media types", labels, { position ->
+            val type = categories[position].folder
+            val next = enabled().toMutableSet()
+            if (!next.add(type)) next.remove(type)
+            preferences.edit().putStringSet("media.categories", next).apply()
+        }, back)
+    }
+
     override fun onKeyDown(keyCode: Int, event: KeyEvent): Boolean {
         if(showingCompanion)return true
         if (!ready) {
@@ -3061,13 +3051,7 @@ open class MainActivity : Activity() {
             if (ready && activeTab == 0 && library && !event.isCanceled && startMenu?.isShowing != true) {
                 games.getOrNull(gameCursor)?.let { game ->
                     val menu = EmulatorSettings.MenuWindow(this, compact = true)
-                    val popup = GameScraperPopup(menu, system, game) {
-                        artworkPanel?.show(system, game, refresh = true)
-                        importedScene?.showGame(game,true)
-                        gameLogos.clear()
-                        refreshGameTiles()
-                        DualScreenCoordinator.refreshMedia(true)
-                    }
+                    val popup = GameScraperPopup(menu, system, game, ::onGameScraped)
                     startMenu = menu.dialog
                     menu.dialog.setOnDismissListener {
                         popup.destroy(); startMenu = null; gameList?.requestFocus()

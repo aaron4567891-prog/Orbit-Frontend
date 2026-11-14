@@ -4,7 +4,7 @@ import android.content.Context
 
 internal object GameCustomArtwork {
     const val HERO = "customHero"
-    val roles = listOf(HERO, "covers", "physicalmedia", "marquees")
+    val roles = listOf(HERO, "covers", "physicalmedia", "marquees", "fanart", "screenshots")
     private const val SECTION = "gameArtwork"
     private const val CLEARED = "removed"
 

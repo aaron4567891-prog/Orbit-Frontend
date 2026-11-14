@@ -1,5 +1,7 @@
 package au.orbit.frontend
 
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.graphics.Color
 import android.graphics.Rect
 import android.graphics.Typeface
@@ -13,6 +15,7 @@ import android.widget.ScrollView
 import android.widget.TextView
 import android.widget.Toast
 import java.util.concurrent.Executors
+import org.json.JSONObject
 
 /** The game popup keeps both screens' artwork assignments on one page. */
 internal class GameCustomArtworkPanel(
@@ -27,9 +30,13 @@ internal class GameCustomArtworkPanel(
 
     private val group = GameCustomArtwork.group(system, game)
     private var selected = 0
-    private data class ArtworkRow(val image: View, val delete: Button?)
+    private data class ArtworkRow(
+        val image: View,
+        val delete: Button?,
+        val scrapedPreview: Pair<String, (Bitmap?) -> Unit>?
+    )
 
-    fun show() = menu.actions("Customisation · ${system.title}", listOf("Custom Media" to ::showImages))
+    fun show() = menu.actions("Customisation · ${system.title}", listOf("Custom Media" to { showImages(::show) }))
 
     private fun dp(value: Int) = (value * activity.resources.displayMetrics.density).toInt()
 
@@ -39,11 +46,11 @@ internal class GameCustomArtworkPanel(
         setTextColor(color)
     }
 
-    private fun showImages() {
+    fun showImages(back: () -> Unit) {
         val content = LinearLayout(activity).apply { orientation = LinearLayout.VERTICAL }
         val viewport = ScrollView(activity).apply {
             defaultFocusHighlightEnabled = false
-            isSmoothScrollingEnabled = false
+            isSmoothScrollingEnabled = true
             addView(content)
         }
         val rows = mutableListOf<ArtworkRow>()
@@ -54,7 +61,7 @@ internal class GameCustomArtworkPanel(
                 setPadding(dp(10), dp(if (screen == "top") 4 else 14), 0, dp(4))
             })
             for (role in GameCustomArtwork.roles) {
-                val row = artworkRow(screen, role, rows.size)
+                val row = artworkRow(screen, role, rows.size) { showImages(back) }
                 rows.add(row)
                 content.addView(LinearLayout(activity).apply {
                     gravity = Gravity.CENTER_VERTICAL
@@ -63,11 +70,11 @@ internal class GameCustomArtworkPanel(
                 }, LinearLayout.LayoutParams(-1, -2).apply { bottomMargin = dp(4) })
             }
         }
-        fun focus(view: View) {
+        fun focus(view: View, immediate: Boolean = false) {
             view.requestFocus()
-            view.requestRectangleOnScreen(Rect(0, 0, view.width, view.height), true)
+            view.requestRectangleOnScreen(Rect(0, 0, view.width, view.height), immediate)
         }
-        menu.page("Custom Media · ${game.title}", viewport, back = ::show, handle = { key, event ->
+        menu.page("Custom Media · ${game.title}", viewport, back = back, handle = { key, event ->
             when (key) {
                 KeyEvent.KEYCODE_DPAD_UP, KeyEvent.KEYCODE_DPAD_DOWN -> {
                     if (event.action == KeyEvent.ACTION_DOWN) {
@@ -80,7 +87,7 @@ internal class GameCustomArtworkPanel(
                     if (event.action == KeyEvent.ACTION_DOWN) {
                         val row = rows[selected]
                         val target = if (key == KeyEvent.KEYCODE_DPAD_LEFT) row.image else row.delete
-                        target?.let(::focus)
+                        target?.let { focus(it) }
                     }
                     true
                 }
@@ -96,15 +103,42 @@ internal class GameCustomArtworkPanel(
         })
         val revision = menu.revision
         val index = selected
-        focus(rows[index].image)
+        val previewTargets = rows.mapNotNull { it.scrapedPreview }
+        val loadPreviews: () -> Unit = load@ {
+            if (previewTargets.isEmpty()) return@load
+            worker.execute {
+                val images = runCatching { scrapedPreviews(previewTargets.map { it.first }.toSet()) }
+                    .getOrDefault(emptyMap())
+                activity.runOnUiThread {
+                    if (menu.dialog.isShowing && menu.revision == revision) {
+                        previewTargets.forEach { (category, show) -> show(images[category]) }
+                    }
+                }
+            }
+        }
+        viewport.addOnAttachStateChangeListener(object : View.OnAttachStateChangeListener {
+            override fun onViewAttachedToWindow(view: View) {
+                GameScraperPopup.addArtworkListener(group, loadPreviews)
+                loadPreviews()
+            }
+            override fun onViewDetachedFromWindow(view: View) {
+                GameScraperPopup.removeArtworkListener(group, loadPreviews)
+            }
+        })
+        if (viewport.isAttachedToWindow) {
+            GameScraperPopup.addArtworkListener(group, loadPreviews)
+            loadPreviews()
+        }
+        focus(rows[index].image, immediate = true)
         viewport.post {
-            if (menu.dialog.isShowing && menu.revision == revision && rows[index].image.hasFocus()) focus(rows[index].image)
+            if (menu.dialog.isShowing && menu.revision == revision && rows[index].image.hasFocus()) focus(rows[index].image, immediate = true)
         }
     }
 
-    private fun artworkRow(screen: String, role: String, index: Int): ArtworkRow {
+    private fun artworkRow(physicalScreen: String, role: String, index: Int, refresh: () -> Unit): ArtworkRow {
         val title = if (role == GameCustomArtwork.HERO) "Hero image" else ScreenMediaSettings.label(role)
-        val screenTitle = GameLaunchDisplay.label(screen)
+        val screenTitle = GameLaunchDisplay.label(physicalScreen)
+        val screen = OrbitThemeArtwork.artworkScreen(activity, physicalScreen)
         val file = GameCustomArtwork.file(group, screen, role)
         val preview = ImageView(activity).apply { scaleType = ImageView.ScaleType.FIT_CENTER }
         if (file != null) {
@@ -112,6 +146,7 @@ internal class GameCustomArtworkPanel(
             showPreview()
             OrbitThemeArtwork.request(activity, file, ::showPreview)
         }
+        val status = label(if (file == null) "Choose an image" else "Custom image", 13f, OrbitThemes.current().muted)
         val choice = LinearLayout(activity).apply {
             gravity = Gravity.CENTER_VERTICAL
             setPadding(dp(10), dp(6), dp(10), dp(6))
@@ -122,14 +157,9 @@ internal class GameCustomArtworkPanel(
             addView(LinearLayout(activity).apply {
                 orientation = LinearLayout.VERTICAL
                 addView(label(title, 16f))
-                val description = when {
-                    file != null -> "Custom image"
-                    role == GameCustomArtwork.HERO -> "Choose a full-screen image"
-                    else -> "Choose an image"
-                }
-                addView(label(description, 13f, OrbitThemes.current().muted))
+                addView(status)
             })
-            setOnClickListener { selected = index; chooseImage(screen, role, title) }
+            setOnClickListener { selected = index; chooseImage(screen, screenTitle, role, title, refresh) }
         }
         val delete = file?.let {
             Button(activity).apply {
@@ -139,7 +169,7 @@ internal class GameCustomArtworkPanel(
                 contentDescription = "Delete $screenTitle $title"
                 setTextColor(Color.WHITE)
                 SelectionStyle.apply(this)
-                setOnClickListener { selected = index; saveImage(screen, role) { null } }
+                setOnClickListener { selected = index; saveImage(screen, role, refresh) { null } }
             }
         }
         listOfNotNull(choice, delete).forEach { control ->
@@ -150,10 +180,40 @@ internal class GameCustomArtworkPanel(
                 }
             }
         }
-        return ArtworkRow(choice, delete)
+        val showScraped: ((Bitmap?) -> Unit)? = if (file != null) null else { bitmap ->
+            preview.setImageBitmap(bitmap)
+            status.text = if (bitmap != null) "Scraped image · Change" else "Choose an image"
+        }
+        val category = if (role == GameCustomArtwork.HERO) ScreenMediaSettings.background(screen) else role
+        val scrapedPreview = showScraped?.takeIf { category !in setOf("videos", "manuals", "theme", "off") }
+            ?.let { category to it }
+        return ArtworkRow(choice, delete, scrapedPreview)
     }
 
-    private fun saveImage(screen: String, role: String, image: () -> String?) {
+    private fun scrapedPreviews(categories: Set<String>): Map<String, Bitmap> {
+        val files = UserDataStore.readScrapedRecords(activity, group).flatMap { bytes ->
+            runCatching { ScraperClient.objects(JSONObject(bytes.toString(Charsets.UTF_8)).opt("files")) }
+                .getOrDefault(emptyList()).asSequence()
+        }.groupBy({ it.optString("type") }, { it.optString("file") })
+        return ScreenMediaSettings.categories.filter { it.folder in categories }.mapNotNull { category ->
+            val bitmap = category.types.asSequence().flatMap { files[it].orEmpty().asSequence() }
+                .filter { it.isNotBlank() }.firstNotNullOfOrNull { path ->
+                    runCatching {
+                        val bytes = UserDataStore.readScraped(activity, group, path) ?: return@runCatching null
+                        val bounds = BitmapFactory.Options().apply { inJustDecodeBounds = true }
+                        BitmapFactory.decodeByteArray(bytes, 0, bytes.size, bounds)
+                        var sample = 1
+                        while (maxOf(bounds.outWidth, bounds.outHeight) / sample > 360) sample *= 2
+                        BitmapFactory.decodeByteArray(bytes, 0, bytes.size, BitmapFactory.Options().apply {
+                            inSampleSize = sample
+                        })
+                    }.getOrNull()
+                }
+            bitmap?.let { category.folder to it }
+        }.toMap()
+    }
+
+    private fun saveImage(screen: String, role: String, refresh: () -> Unit, image: () -> String?) {
         val revision = menu.revision
         worker.execute {
             val result = runCatching { GameCustomArtwork.save(activity, group, screen, role, image()) }
@@ -161,7 +221,7 @@ internal class GameCustomArtworkPanel(
                 if (activity.isDestroyed || activity.isFinishing) return@runOnUiThread
                 result.onSuccess {
                     activity.refreshGameMediaOptions()
-                    if (menu.dialog.isShowing && menu.revision == revision) showImages()
+                    if (menu.dialog.isShowing && menu.revision == revision) refresh()
                 }.onFailure {
                     Toast.makeText(activity, it.message ?: "Could not save game artwork", Toast.LENGTH_LONG).show()
                 }
@@ -169,20 +229,20 @@ internal class GameCustomArtworkPanel(
         }
     }
 
-    private fun chooseImage(screen: String, role: String, title: String) {
+    private fun chooseImage(screen: String, screenTitle: String, role: String, title: String, refresh: () -> Unit) {
         val actions = listOf<Pair<String, () -> Unit>>(
             "Choose from device" to {
                 activity.pickThemeImage { uri ->
-                    if (uri != null) saveImage(screen, role) { OrbitThemeArtwork.importImage(activity, uri) }
+                    if (uri != null) saveImage(screen, role, refresh) { OrbitThemeArtwork.importImage(activity, uri) }
                 }
             },
             "Search artwork" to {
                 val searchRole = if (role == GameCustomArtwork.HERO) "hero" else role
                 ArtworkSearchPicker(activity, searchRole, game.title, setOf(screen)) { bytes ->
-                    saveImage(screen, role) { OrbitThemeArtwork.storeImage(activity, bytes) }
+                    saveImage(screen, role, refresh) { OrbitThemeArtwork.storeImage(activity, bytes) }
                 }.show()
             }
         )
-        menu.actions("${GameLaunchDisplay.label(screen)} · $title", actions, ::showImages)
+        menu.actions("$screenTitle · $title", actions, refresh)
     }
 }

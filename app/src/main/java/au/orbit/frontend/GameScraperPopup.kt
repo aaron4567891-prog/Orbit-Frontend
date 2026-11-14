@@ -4,7 +4,7 @@ import android.view.KeyEvent
 import android.widget.Button
 import android.widget.EditText
 import android.widget.LinearLayout
-import android.widget.TextView
+import android.widget.Toast
 import java.util.concurrent.Executors
 
 /** A small game menu that keeps the collection and its cursor in place. */
@@ -15,13 +15,29 @@ class GameScraperPopup(
     private val changed: () -> Unit
 ) {
     private val activity = menu.activity
-    private val worker = Executors.newSingleThreadExecutor()
-    private var generation = 0
+    private val group = GameCustomArtwork.group(system, game)
     private var closed = false
-    var parentPage:(()->Unit)?=null
+    var parentPage: (() -> Unit)? = null
+
+    internal companion object {
+        private val worker = Executors.newSingleThreadExecutor()
+        private val activeGames = mutableSetOf<String>()
+        private val artworkListeners = mutableMapOf<String, MutableSet<() -> Unit>>()
+        private val main = android.os.Handler(android.os.Looper.getMainLooper())
+
+        fun addArtworkListener(group: String, listener: () -> Unit) {
+            artworkListeners.getOrPut(group) { mutableSetOf() }.add(listener)
+        }
+
+        fun removeArtworkListener(group: String, listener: () -> Unit) {
+            artworkListeners[group]?.let {
+                it.remove(listener)
+                if (it.isEmpty()) artworkListeners.remove(group)
+            }
+        }
+    }
 
     fun show() {
-        generation++
         val actions=mutableListOf<Pair<String,()->Unit>>(
             "Scrape game" to { providers() },
             "Choose emulator" to { EmulatorSettings.showForGame(menu, system, game, ::show) }
@@ -44,25 +60,45 @@ class GameScraperPopup(
     }
 
     fun providers() {
-        generation++
         menu.actions("Scrape game", listOf("ScreenScraper", "NeoAssets", "TheGamesDB", "SteamGridDB").map { provider ->
             provider to { search(provider, game.title.replace(Regex("\\s*[\\[(][^\\])]*[\\])]"), "").trim()) }
         }, parentPage ?: ::show)
     }
 
     private fun search(provider: String, query: String) {
-        work("Searching $provider…", { ScraperClient(activity, provider).search(query) }, { edit(provider, query) }) { matches ->
-            val match = matches.firstOrNull()
-            if (match != null) {
-                download(provider, match)
-            } else {
-                menu.actions("No matches", listOf("Edit search" to { edit(provider, query) }), ::providers)
+        val context = activity.applicationContext
+        if (!activeGames.add(group)) {
+            Toast.makeText(context, "This game is already queued for scraping.", Toast.LENGTH_SHORT).show()
+            return
+        }
+        (parentPage ?: { menu.dialog.dismiss() }).invoke()
+        val revision = menu.revision
+        Toast.makeText(context, "Scraping ${game.title} in the background.", Toast.LENGTH_SHORT).show()
+        worker.execute {
+            val result = runCatching {
+                ScraperClient(context, provider).search(query).firstOrNull()?.let { match ->
+                    GameScraper.scrape(context, provider, system, game, match)
+                }
+            }
+            main.post {
+                activeGames.remove(group)
+                if (result.getOrNull() != null) {
+                    changed()
+                    artworkListeners[group]?.toList()?.forEach { it() }
+                } else if (result.isSuccess && !closed && menu.dialog.isShowing && menu.revision == revision) {
+                    menu.actions("No matches", listOf("Edit search" to { edit(provider, query) }), ::providers)
+                    return@post
+                }
+                val message = result.fold(
+                    { it?.let { summary -> "${game.title}: $summary" } ?: "No matches for ${game.title}." },
+                    { it.message ?: "Unable to scrape ${game.title}." }
+                )
+                Toast.makeText(context, message, Toast.LENGTH_LONG).show()
             }
         }
     }
 
     private fun edit(provider: String, query: String) {
-        generation++
         val panel = LinearLayout(activity).apply { orientation = LinearLayout.VERTICAL }
         val input = EditText(activity).apply { setSingleLine(); setText(query); hint = "Game title" }
         val search = Button(activity).apply {
@@ -80,35 +116,5 @@ class GameScraperPopup(
         search.requestFocus()
     }
 
-    private fun download(provider: String, match: ScraperClient.Match) {
-        work("Downloading ${match.title}…", {
-            GameScraper.scrape(activity, provider, system, game, match)
-        }, ::providers, allowBack = false) { result ->
-            changed()
-            menu.page("Scrape complete", TextView(activity).apply {
-                text = result; textSize = 16f
-            }, "Done", parentPage ?: { menu.dialog.dismiss() })
-        }
-    }
-
-    private fun <T> work(title: String, action: () -> T, back: () -> Unit, allowBack: Boolean = true, done: (T) -> Unit) {
-        val ticket = ++generation
-        // Do not allow a second download to race the same game's metadata writes.
-        menu.page("Scrape game", TextView(activity).apply { text = title; textSize = 16f },
-            if (allowBack) "Back" else "Close", if (allowBack) back else ({ menu.dialog.dismiss() }))
-        worker.execute {
-            val result = runCatching(action)
-            activity.runOnUiThread {
-                if (!closed && ticket == generation && !activity.isDestroyed && menu.dialog.isShowing) {
-                    result.onSuccess(done).onFailure { error ->
-                        menu.page("Scrape failed", TextView(activity).apply {
-                            text = error.message ?: "Unable to scrape this game."; textSize = 16f
-                        }, "Back", back)
-                    }
-                }
-            }
-        }
-    }
-
-    fun destroy() { closed = true; generation++; worker.shutdownNow() }
+    fun destroy() { closed = true }
 }

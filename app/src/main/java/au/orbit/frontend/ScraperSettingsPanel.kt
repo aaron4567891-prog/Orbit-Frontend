@@ -3,7 +3,6 @@ package au.orbit.frontend
 import android.app.Activity
 import android.app.AlertDialog
 import android.graphics.Color
-import android.net.Uri
 import android.view.ViewGroup
 import android.widget.*
 import java.util.concurrent.Executors
@@ -12,7 +11,7 @@ import java.util.concurrent.TimeUnit
 import java.util.concurrent.atomic.AtomicBoolean
 
 /** Scraping stays inside the settings detail pane, including its queue and progress. */
-class ScraperSettingsPanel(private val activity:Activity,private val selectedSystems:()->List<SystemSpec>,private val gameCount:(SystemSpec)->Int,private val changed:()->Unit) {
+class ScraperSettingsPanel(private val activity:Activity,private val selectedSystems:()->List<SystemSpec>,private val visibleGames:(SystemSpec)->List<Game>,private val changed:()->Unit) {
     private var chooseSystems: () -> Unit = {}
     val view=LinearLayout(activity).apply { orientation=LinearLayout.VERTICAL }
     private val worker=Executors.newSingleThreadExecutor()
@@ -22,17 +21,20 @@ class ScraperSettingsPanel(private val activity:Activity,private val selectedSys
     private var busy=false
     private var backgroundProgress: ScrapeProgress.Job? = null
     private var provider="ScreenScraper"
-    private var games=emptyList<Game>()
-    private var gameSystems=emptyList<SystemSpec>()
-    private val selected=mutableSetOf<Int>()
+    private var queuedGames: Int? = null
+    private var problemGames = emptyList<String>()
     private val status=TextView(activity).apply { textSize=15f;setTextColor(Color.WHITE) }
-    private data class GameProgress(val spec:SystemSpec,val game:Game,var phase:String="Searching",var mediaDone:Int=0,var mediaTotal:Int=0,var finished:Boolean=false,var issue:Boolean=false,var currentMedia:String?=null,var requested:List<String> = emptyList(),val saved:MutableMap<String,String> = linkedMapOf(),var thumbnail:android.graphics.Bitmap?=null,var thumbnailPath:String?=null)
+    private data class GameProgress(val spec:SystemSpec,val game:Game,var phase:String="Searching",var mediaTotal:Int=0,var finished:Boolean=false,var issue:Boolean=false,var currentMedia:String?=null,var requested:List<String> = emptyList(),val saved:MutableMap<String,String> = linkedMapOf(),var thumbnail:android.graphics.Bitmap?=null,var thumbnailPath:String?=null)
+    private data class ScrapeTarget(val spec: SystemSpec, val game: Game, val plan: ScrapePolicy.MediaPlan)
     private data class TaskResult(val slot:Int,val spec:SystemSpec,val game:Game,val result:Result<String>)
     private val progressRows=linkedMapOf<Int,GameProgress>()
     private var scrapedCount=0
     private var accountSlots:Int?=null
     private var workerSlots:Int?=null
     private var selectedTile=0
+    private val tileSpacing = dp(8)
+    private val gridHeight = (activity.resources.displayMetrics.heightPixels - dp(270)).coerceAtLeast(dp(248))
+    private var gridRefreshPending = false
     private val previewWorker=Executors.newSingleThreadExecutor()
     private var popup:AlertDialog?=null
     private var popupGame:GameProgress?=null
@@ -48,9 +50,14 @@ class ScraperSettingsPanel(private val activity:Activity,private val selectedSys
     private val start=Button(activity).apply {
         text="Start scraping";isFocusable=true;isFocusableInTouchMode=true;isAllCaps=false;textSize=17f;setTextColor(Color.WHITE);SelectionStyle.apply(this)
         setOnClickListener {
-            if(busy) { cancelled.set(true);status.text="Stopping; completed artwork is kept…" }
-            else scrape()
+            if (busy) cancelScraping() else scrape()
         }
+    }
+    private val resultsButton = Button(activity).apply {
+        text = "Show games with scrape issues"
+        isAllCaps = false
+        SelectionStyle.apply(this)
+        setOnClickListener { showProblems() }
     }
     private val gridAdapter=object:BaseAdapter() {
         override fun getCount()=progressRows.size
@@ -60,25 +67,49 @@ class ScraperSettingsPanel(private val activity:Activity,private val selectedSys
             val item=getItem(position)
             return LinearLayout(activity).apply {
                 orientation=LinearLayout.VERTICAL;gravity=android.view.Gravity.CENTER;isFocusable=false
-                setPadding(dp(12),dp(8),dp(12),dp(8));layoutParams=AbsListView.LayoutParams(-1,dp(205))
+                setPadding(dp(5), dp(3), dp(5), dp(4))
+                val dense = (workerSlots ?: 0) > 3
+                val tileHeight = if (dense) (gridHeight - tileSpacing) / 2 else dp(205)
+                layoutParams = AbsListView.LayoutParams(-1, tileHeight)
                 background=android.graphics.drawable.GradientDrawable().apply {
                     setColor(Color.TRANSPARENT);cornerRadius=dp(12).toFloat()
                     setStroke(dp(2),Color.rgb(38,49,65))
                 }
-                addView(ImageView(activity).apply { scaleType=ImageView.ScaleType.FIT_CENTER;setImageBitmap(item.thumbnail);contentDescription="${item.game.title} artwork" },LinearLayout.LayoutParams(-1,0,1f))
-                addView(TextView(activity).apply { text=item.game.title;textSize=16f;gravity=android.view.Gravity.CENTER;maxLines=2;ellipsize=android.text.TextUtils.TruncateAt.END;setTextColor(Color.WHITE) })
-                addView(TextView(activity).apply { text=item.spec.title;textSize=12f;gravity=android.view.Gravity.CENTER;maxLines=1;setTextColor(Color.rgb(148,161,180)) })
-                addView(TextView(activity).apply { text=if(!item.finished && item.currentMedia!=null)ScraperMediaTypes.categories.firstOrNull { it.folder==item.currentMedia }?.title ?: item.currentMedia else item.phase;textSize=14f;gravity=android.view.Gravity.CENTER;maxLines=1;setTextColor(if(item.issue)Color.rgb(255,185,110) else Color.WHITE) })
-                if(!item.finished && item.mediaTotal>0)addView(TextView(activity).apply { text="${item.mediaDone} / ${item.mediaTotal} media";textSize=12f;gravity=android.view.Gravity.CENTER;setTextColor(Color.rgb(148,161,180)) })
-                addView(ProgressBar(activity,null,android.R.attr.progressBarStyleHorizontal).apply {
-                    isIndeterminate=!item.finished && item.mediaTotal==0
-                    max=item.mediaTotal.coerceAtLeast(1);progress=if(item.finished)max else item.mediaDone
-                },LinearLayout.LayoutParams(-1,dp(10)))
+                addView(ImageView(activity).apply {
+                    scaleType = ImageView.ScaleType.FIT_CENTER
+                    setImageBitmap(item.thumbnail)
+                    contentDescription = "${item.game.title} artwork"
+                }, LinearLayout.LayoutParams(-1, 0, 1f))
+                addView(TextView(activity).apply {
+                    text = item.game.title
+                    textSize = 14f
+                    gravity = android.view.Gravity.CENTER
+                    maxLines = 1
+                    includeFontPadding = false
+                    ellipsize = android.text.TextUtils.TruncateAt.END
+                    setTextColor(Color.WHITE)
+                }, LinearLayout.LayoutParams(-1, -2))
+                val media = item.currentMedia?.takeUnless { item.finished }
+                val phase = if (media == null) item.phase
+                    else ScraperMediaTypes.categories.firstOrNull { it.folder == media }?.title ?: media
+                addView(TextView(activity).apply {
+                    text = if (item.mediaTotal > 0) "$phase · ${item.saved.size}/${item.mediaTotal} saved" else phase
+                    textSize = 12f
+                    gravity = android.view.Gravity.CENTER
+                    maxLines = 1
+                    includeFontPadding = false
+                    ellipsize = android.text.TextUtils.TruncateAt.START
+                    setTextColor(if (item.issue) Color.rgb(255,185,110) else Color.rgb(148,161,180))
+                }, LinearLayout.LayoutParams(-1, -2))
+                addView(scraperProgressBar(activity).apply {
+                    max = item.mediaTotal.coerceAtLeast(1)
+                    progress = item.saved.size
+                }, LinearLayout.LayoutParams(-1, dp(10)))
             }
         }
     }
     private val grid=ResponsiveGridView(activity, 150).apply {
-        horizontalSpacing=dp(12);verticalSpacing=dp(12);stretchMode=GridView.STRETCH_COLUMN_WIDTH
+        horizontalSpacing=dp(12);verticalSpacing=tileSpacing;stretchMode=GridView.STRETCH_COLUMN_WIDTH
         isFocusable=true;isFocusableInTouchMode=true;defaultFocusHighlightEnabled=false
         selector=android.graphics.drawable.GradientDrawable().apply { setColor(Color.TRANSPARENT);cornerRadius=dp(12).toFloat();setStroke(dp(2),Color.rgb(5,97,195)) }
         setDrawSelectorOnTop(true);adapter=gridAdapter
@@ -90,7 +121,8 @@ class ScraperSettingsPanel(private val activity:Activity,private val selectedSys
     init {
         view.addView(totalLabel);view.addView(slotLabel);view.addView(start)
         view.addView(status)
-        view.addView(grid,LinearLayout.LayoutParams(-1,(activity.resources.displayMetrics.heightPixels-dp(270)).coerceAtLeast(dp(220))))
+        view.addView(resultsButton)
+        view.addView(grid,LinearLayout.LayoutParams(-1,gridHeight))
         refreshLabels()
     }
     private fun refreshLabels() {
@@ -98,22 +130,72 @@ class ScraperSettingsPanel(private val activity:Activity,private val selectedSys
             backgroundProgress?.finish()
             backgroundProgress = null
         }
-        start.text=if(busy)"Cancel scraping" else "Start scraping"
-        start.isEnabled=true
+        val stopping = busy && cancelled.get()
+        start.text = when {
+            stopping -> "Stopping…"
+            busy -> "Cancel scraping"
+            else -> "Start scraping"
+        }
+        start.isEnabled = !stopping
+        resultsButton.visibility = if (!busy && problemGames.isNotEmpty()) android.view.View.VISIBLE else android.view.View.GONE
         grid.visibility=if(progressRows.isEmpty())android.view.View.GONE else android.view.View.VISIBLE
-        totalLabel.text="$scrapedCount / ${if(selected.isEmpty())selectedSystems().sumOf(gameCount) else selected.size} scraped"
+        totalLabel.text="$scrapedCount / ${queuedGames ?: selectedSystems().sumOf { visibleGames(it).size }} scraped"
         val active=progressRows.values.count { !it.finished }
-        slotLabel.text=accountSlots?.let { "$active / ${workerSlots ?: it} running · $it account slots" } ?: "Concurrency follows your account allowance"
-        gridAdapter.notifyDataSetChanged()
-        if(progressRows.isNotEmpty())grid.setSelection(selectedTile.coerceAtMost(progressRows.size-1))
+        slotLabel.text = accountSlots?.let { limit ->
+            val limitLabel = if (provider == "ScreenScraper") "$limit account slots" else "$limit game slots"
+            "$active / ${workerSlots ?: limit} running · $limitLabel"
+        } ?: "Concurrency follows the selected provider"
+        if (!gridRefreshPending) {
+            gridRefreshPending = true
+            grid.postOnAnimation {
+                gridRefreshPending = false
+                if (!closed) {
+                    gridAdapter.notifyDataSetChanged()
+                    if (progressRows.isNotEmpty()) grid.setSelection(selectedTile.coerceAtMost(progressRows.size - 1))
+                }
+            }
+        }
         updateGamePopup()
     }
-    private fun resetProgress() {
-        scrapedCount=0;accountSlots=null;workerSlots=null;selectedTile=0
-        selected.clear();progressRows.clear()
+    private fun cancelScraping() {
+        cancelled.set(true)
+        popup?.dismiss()
+        if (grid.hasFocus()) start.requestFocus()
+        progressRows.clear()
+        selectedTile = 0
+        gridAdapter.notifyDataSetChanged()
+        backgroundProgress?.finish()
+        backgroundProgress = null
+        status.text = "Stopping; completed artwork is kept…"
         refreshLabels()
     }
-    val navigationRows get()=listOf(start,grid)
+
+    private fun resetProgress() {
+        scrapedCount=0;accountSlots=null;workerSlots=null;selectedTile=0
+        queuedGames = null
+        problemGames = emptyList()
+        progressRows.clear()
+        refreshLabels()
+    }
+    val navigationRows get()=listOf(start,resultsButton,grid)
+
+    private fun showProblems() {
+        val host = (activity as? MainActivity)?.popupContext() ?: activity
+        val report = problemGames.sortedWith(String.CASE_INSENSITIVE_ORDER)
+        val dialog = AlertDialog.Builder(host).setTitle("Scrape issues · ${report.size}")
+            .setItems(report.toTypedArray(), null).setPositiveButton("Close", null).create()
+        dialog.styleArtworkWindow(host)
+        dialog.setOnKeyListener { _, key, event ->
+            if (key != android.view.KeyEvent.KEYCODE_BUTTON_B && key != android.view.KeyEvent.KEYCODE_BUTTON_A) false
+            else {
+                if (event.action == android.view.KeyEvent.ACTION_UP && !event.isCanceled) dialog.dismiss()
+                true
+            }
+        }
+        dialog.show()
+        (activity as? MainActivity)?.trackPopup(dialog)
+        SelectionStyle.apply(dialog.getButton(AlertDialog.BUTTON_POSITIVE))
+    }
     fun ownsGrid(candidate:GridView)=candidate===grid
     fun tilePosition()=selectedTile
     fun selectTile(position:Int) {
@@ -129,7 +211,7 @@ class ScraperSettingsPanel(private val activity:Activity,private val selectedSys
             loaded(Result.failure(IllegalStateException("Wait for the current scraper task to finish.")))
             return
         }
-        busy=true;status.text="Loading NeoAssets packs…";refreshLabels()
+        busy=true;cancelled.set(false);status.text="Loading NeoAssets packs…";refreshLabels()
         worker.execute {
             val result=runCatching { ScraperClient(activity,"NeoAssets").packs() }
             activity.runOnUiThread {
@@ -153,7 +235,7 @@ class ScraperSettingsPanel(private val activity:Activity,private val selectedSys
                     UserDataStore.writeScraped(activity,"system-packs/$folder",file.getString("file_name"),client.bytes(file.getString("url")))
                     completed++
                     val message="$completed pack files downloaded"
-                    activity.runOnUiThread { if(!closed)status.text=message }
+                    activity.runOnUiThread { if (!closed && !cancelled.get()) status.text=message }
                 }
                 if(!cancelled.get())UserDataStore.writeScraped(activity,"system-packs/$folder","pack.json",pack.toString(2).toByteArray())
                 "$completed pack files saved.${if(cancelled.get()) " Cancelled." else ""}"
@@ -165,95 +247,137 @@ class ScraperSettingsPanel(private val activity:Activity,private val selectedSys
         val targets=selectedSystems()
         if(targets.isEmpty()) { status.text="Scan your ROM folders first.";chooseSystems();return }
         backgroundProgress = ScrapeProgress.start()
-        busy=true;cancelled.set(false);status.text="Loading selected games…";resetProgress()
+        val mode = ScrapePolicy.mode(activity)
+        val source = activity.getSharedPreferences("scraper_credentials", 0)
+            .getString("scrape.provider", "ScreenScraper") ?: "ScreenScraper"
+        val snapshot = targets.map { it to visibleGames(it) }
+        busy = true
+        cancelled.set(false)
+        status.text = if (mode == "all") "Loading selected games…" else "Checking saved media…"
+        resetProgress()
         worker.execute {
-            val result=runCatching {
-                val library=LibraryRepository(activity)
-                targets.flatMap { spec ->
-                    if(closed || cancelled.get() || Thread.currentThread().isInterrupted)throw java.util.concurrent.CancellationException("Loading cancelled")
-                    library.cached(spec)?.games.orEmpty().map { spec to Game(it.title,Uri.parse(it.uri),it.fileName) }
+            val result = runCatching {
+                val planMedia = ScrapePolicy.mediaPlanner(activity, mode, source)
+                snapshot.flatMap { (spec, entries) ->
+                    activity.gamesForScraping(entries).mapNotNull { game ->
+                        if (cancelled.get() || Thread.currentThread().isInterrupted) throw InterruptedException()
+                        val plan = planMedia(spec, game)
+                        if (plan.skip) null else ScrapeTarget(spec, game, plan)
+                    }
                 }
             }
             activity.runOnUiThread {
                 if(closed)return@runOnUiThread
+                if (cancelled.get()) {
+                    busy = false
+                    status.text = "Cancelled"
+                    refreshLabels()
+                    return@runOnUiThread
+                }
                 result.onSuccess { entries ->
-                    gameSystems=entries.map { it.first };games=entries.map { it.second };selected.clear();selected.addAll(games.indices)
-                    if(cancelled.get()) { busy=false;status.text="Cancelled";refreshLabels() }
-                    else scrapeLoaded()
+                    queuedGames = entries.size
+                    if (entries.isEmpty()) {
+                        busy = false
+                        status.text = when {
+                            snapshot.all { it.second.isEmpty() } -> "No scanned games in the selected systems."
+                            mode == "missing" -> "No available missing media to scrape."
+                            else -> "All selected games already have media."
+                        }
+                        refreshLabels()
+                        changed()
+                    } else scrapeLoaded(entries, source)
                 }.onFailure { busy=false;status.text=it.message;refreshLabels() }
             }
         }
     }
-    private fun scrapeLoaded() {
-        val chosen=selected.sorted().filter { it in games.indices }
-        if(chosen.isEmpty()) { busy=false;status.text="No scanned games in the selected systems.";refreshLabels();return }
-        backgroundProgress?.update(0, chosen.size)
-        provider=activity.getSharedPreferences("scraper_credentials",0).getString("scrape.provider","ScreenScraper") ?: "ScreenScraper"
-        val source=provider;status.text="Checking $source…";refreshLabels()
+    private fun scrapeLoaded(chosen: List<ScrapeTarget>, source: String) {
+        val progressJob = backgroundProgress ?: return
+        progressJob.update(0, chosen.size)
+        var gamesWithSavedMedia = 0
+        fun postProgress(update: () -> Unit) = activity.runOnUiThread {
+            if (!closed && backgroundProgress === progressJob) update()
+        }
+        provider=source;status.text="Checking $source…";refreshLabels()
         worker.execute {
+            val problems = mutableListOf<String>()
             val result=runCatching {
+                if (cancelled.get()) return@runCatching "Cancelled; completed artwork kept."
                 val accountAllowed=ScraperClient(activity,source).accountConcurrency()
-                val allowed=ScrapePolicy.parallelism(accountAllowed,ScrapePolicy.requestedConcurrency(activity))
+                if (cancelled.get()) return@runCatching "Cancelled; completed artwork kept."
+                val allowed = minOf(chosen.size, ScrapePolicy.parallelism(accountAllowed, ScrapePolicy.requestedConcurrency(activity)))
                 val executor=Executors.newFixedThreadPool(allowed);pool=executor
-                activity.runOnUiThread { if(!closed) { accountSlots=accountAllowed;workerSlots=allowed;refreshLabels() } }
+                postProgress { accountSlots=accountAllowed;workerSlots=allowed;refreshLabels() }
                 val completion=ExecutorCompletionService<TaskResult>(executor)
-                var next=0;var completed=0;var success=0;var missing=0;var skipped=0
+                var next=0;var completed=0;var success=0;var missing=0;var unavailable=0
                 val errors=mutableListOf<String>()
                 fun submit(slot:Int) {
-                    val index=chosen[next++]
-                    val game=games[index];val spec=gameSystems[index]
+                    val (spec, game, plan) = chosen[next++]
                     completion.submit(java.util.concurrent.Callable {
-                        activity.runOnUiThread { if(!closed) { progressRows[slot]=GameProgress(spec,game);refreshLabels() } }
+                        postProgress { progressRows[slot]=GameProgress(spec,game);refreshLabels() }
                         TaskResult(slot,spec,game,runCatching {
-                            if(!ScrapePolicy.shouldScrape(activity,spec,game))return@runCatching "Skipped"
-                            val match=ScraperClient(activity,source).search(game.title).firstOrNull() ?: return@runCatching "No match"
+                            if (cancelled.get() || Thread.currentThread().isInterrupted) throw InterruptedException()
+                            val match=ScraperClient(activity,source).searchGame(spec, game) ?: return@runCatching "No match"
                             if(cancelled.get() || Thread.currentThread().isInterrupted)throw InterruptedException()
-                            activity.runOnUiThread { if(!closed) { progressRows[slot]?.phase="Fetching media";refreshLabels() } }
-                            GameScraper.scrape(activity,source,spec,game,match,parallelGames=true,onProgress={ done,total ->
-                                activity.runOnUiThread { if(!closed) {
-                                    progressRows[slot]?.takeIf { it.game.uri==game.uri }?.let { it.mediaDone=done;it.mediaTotal=total;it.phase="Media $done / $total" }
-                                    refreshLabels()
-                                } }
-                            },onMediaPlan={ types -> activity.runOnUiThread { if(!closed) {
-                                progressRows[slot]?.takeIf { it.game.uri==game.uri }?.requested=types;updateGamePopup()
-                            } } },onMediaSaved={ type,path -> activity.runOnUiThread { if(!closed) {
+                            postProgress { progressRows[slot]?.phase="Fetching media";refreshLabels() }
+                            GameScraper.scrape(activity,source,spec,game,match,parallelGames=true,plan=plan,onMediaPlan={ types -> postProgress {
+                                progressRows[slot]?.takeIf { it.game.uri==game.uri }?.let {
+                                    it.requested = types
+                                    it.mediaTotal = types.size
+                                }
+                                refreshLabels()
+                            } },onMediaSaved={ type,path -> postProgress {
                                 progressRows[slot]?.takeIf { it.game.uri==game.uri }?.let { item ->
-                                    item.saved[type]=path
-                                    if(type!="videos" && type!="manuals")loadTileArtwork(item,path)
-                                };updateGamePopup()
-                            } } },onMediaStarted={ type -> activity.runOnUiThread { if(!closed) {
+                                    if (item.saved.isEmpty()) progressJob.update(++gamesWithSavedMedia, chosen.size)
+                                    item.saved[type] = path
+                                    if (type != "videos" && type != "manuals") loadTileArtwork(item, path)
+                                }
+                                refreshLabels()
+                            } },onMediaStarted={ type -> postProgress {
                                 progressRows[slot]?.takeIf { it.game.uri==game.uri }?.let { it.currentMedia=type;it.phase="Downloading media" };refreshLabels()
-                            } } })
+                            } })
                         })
                     })
                 }
                 try {
-                    repeat(minOf(allowed,chosen.size)) { slot -> submit(slot) }
+                    repeat(allowed) { slot -> submit(slot) }
                     while(completed<chosen.size && !cancelled.get()) {
                         val future=completion.poll(250,TimeUnit.MILLISECONDS) ?: continue
                         val (slot,spec,game,outcome)=future.get();completed++
-                        val completedGames = completed
-                        outcome.onSuccess { if(it=="Skipped")skipped++ else if(it=="No match")missing++ else if(it.startsWith("Saved 0") || it.contains("downloads failed"))errors.add("${game.title}: $it") else success++ }
-                            .onFailure { errors.add("${game.title}: ${it.message}") }
-                        val progress="$completed/${chosen.size} · $success scraped · $missing not found · $skipped skipped · ${errors.size} issues · $allowed concurrent"
+                        val noAvailableMedia = outcome.getOrNull()?.startsWith(GameScraper.NO_AVAILABLE_MEDIA) == true
+                        outcome.onSuccess {
+                            when {
+                                it == "No match" -> missing++
+                                noAvailableMedia -> unavailable++
+                                it.startsWith("Saved 0") || it.contains("downloads failed") -> errors.add("${game.title}: $it")
+                                else -> success++
+                            }
+                        }.onFailure { errors.add("${game.title}: ${it.message}") }
+                        val progress="$completed/${chosen.size} · $success scraped · $missing not found · ${errors.size} issues · $allowed concurrent"
                         val issue=outcome.isFailure || outcome.getOrNull()=="No match" || outcome.getOrNull()?.contains("downloads failed")==true || outcome.getOrNull()?.startsWith("Saved 0")==true
                         val totalScraped=success
-                        val phase=when { outcome.isFailure -> "Failed";outcome.getOrNull()=="No match" -> "Not found";outcome.getOrNull()=="Skipped" -> "Skipped";issue -> "Media incomplete";else -> "Scraped" }
-                        activity.runOnUiThread { if(!closed) {
-                            backgroundProgress?.update(completedGames, chosen.size)
+                        val phase=when { outcome.isFailure -> "Failed";outcome.getOrNull()=="No match" -> "Not found";noAvailableMedia -> "Media unavailable";issue -> "Media incomplete";else -> "Scraped" }
+                        if (issue) {
+                            val detail = outcome.exceptionOrNull()?.message ?: outcome.getOrNull()
+                            problems.add("${game.title} · ${spec.title}\n$phase" +
+                                (detail?.takeUnless { it == "No match" }?.let { ": $it" } ?: ""))
+                        }
+                        postProgress {
                             status.text=progress;scrapedCount=totalScraped
                             progressRows[slot]?.takeIf { it.game.uri==game.uri }?.let { it.finished=true;it.phase=phase;it.issue=issue }
                             refreshLabels()
-                        } }
+                        }
                         if(next<chosen.size && !cancelled.get())submit(slot)
                     }
                 } finally { executor.shutdownNow();pool=null }
-                "$success games scraped · $missing not found · $skipped skipped · ${errors.size} issues.${if(cancelled.get()) " Cancelled; completed artwork kept." else ""}"+
-                    errors.take(4).joinToString("\n",prefix=if(errors.isEmpty())"" else "\n")
+                val unavailableSummary = if (unavailable == 0) "" else "$unavailable without available media · "
+                "$success games scraped · $missing not found · $unavailableSummary${errors.size} issues.${if(cancelled.get()) " Cancelled; completed artwork kept." else ""}"
             }
             activity.runOnUiThread {
                 if(closed)return@runOnUiThread
-                busy=false;progressRows.values.filter { !it.finished }.forEach { it.finished=true;it.phase="Stopped" };status.text=result.getOrElse { it.message ?: "Scrape failed" };refreshLabels();changed()
+                problemGames = problems.toList()
+                busy=false;progressRows.values.filter { !it.finished }.forEach { it.finished=true;it.phase="Stopped" };status.text=result.getOrElse {
+                    if (cancelled.get()) "Cancelled; completed artwork kept." else it.message ?: "Scrape failed"
+                };refreshLabels();changed()
             }
         }
     }
@@ -271,7 +395,7 @@ class ScraperSettingsPanel(private val activity:Activity,private val selectedSys
             }.getOrNull()
             activity.runOnUiThread {
                 if(!closed && item.thumbnailPath==path && progressRows.values.any { it===item } && bitmap!=null) {
-                    item.thumbnail=bitmap;gridAdapter.notifyDataSetChanged()
+                    item.thumbnail=bitmap;refreshLabels()
                 }
             }
         }

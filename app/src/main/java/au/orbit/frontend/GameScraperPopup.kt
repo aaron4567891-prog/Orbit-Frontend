@@ -61,7 +61,7 @@ class GameScraperPopup(
 
     fun providers() {
         menu.actions("Scrape game", listOf("ScreenScraper", "NeoAssets", "TheGamesDB", "SteamGridDB").map { provider ->
-            provider to { search(provider, game.title.replace(Regex("\\s*[\\[(][^\\])]*[\\])]"), "").trim()) }
+            provider to { search(provider, game.title) }
         }, parentPage ?: ::show)
     }
 
@@ -77,10 +77,19 @@ class GameScraperPopup(
         val progress = ScrapeProgress.start()
         worker.execute {
             val result = runCatching {
-                ScraperClient(context, provider).search(query).firstOrNull()?.let { match ->
-                    GameScraper.scrape(context, provider, system, game, match, onProgress = { done, total ->
-                        main.post { progress.update(done, total) }
-                    })
+                val client = ScraperClient(context, provider)
+                val match = if (query == game.title) client.searchGame(system, game)
+                    else client.search(query, system, game.isPlaylist).firstOrNull()
+                match?.let {
+                    var total = 0
+                    var saved = 0
+                    GameScraper.scrape(context, provider, system, game, match,
+                        onMediaPlan = { total = it.size },
+                        onMediaSaved = { _, _ ->
+                            val completed = ++saved
+                            main.post { progress.update(completed, total) }
+                        }
+                    )
                 }
             }
             main.post {

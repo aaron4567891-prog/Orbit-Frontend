@@ -41,14 +41,16 @@ internal object ScrapeProgress {
     private fun notifyListeners() = listeners.toList().forEach { it() }
 }
 
+internal fun scraperProgressBar(context: Context) = ProgressBar(context, null, android.R.attr.progressBarStyleHorizontal).apply {
+    isIndeterminate = false
+    progressTintList = ColorStateList.valueOf(Color.rgb(69, 192, 110))
+    progressBackgroundTintList = ColorStateList.valueOf(Color.rgb(65, 80, 100))
+    importantForAccessibility = android.view.View.IMPORTANT_FOR_ACCESSIBILITY_NO
+}
+
 internal class GameScrapeProgressBar(context: Context) : FrameLayout(context) {
     private fun dp(value: Int) = (value * resources.displayMetrics.density).toInt()
-    private val bar = ProgressBar(context, null, android.R.attr.progressBarStyleHorizontal).apply {
-        progressTintList = ColorStateList.valueOf(Color.rgb(82, 169, 255))
-        indeterminateTintList = progressTintList
-        progressBackgroundTintList = ColorStateList.valueOf(Color.rgb(65, 80, 100))
-        importantForAccessibility = IMPORTANT_FOR_ACCESSIBILITY_NO
-    }
+    private val bar = scraperProgressBar(context)
     private val update = { refresh() }
     var inGameView = false
         set(value) {
@@ -67,14 +69,13 @@ internal class GameScrapeProgressBar(context: Context) : FrameLayout(context) {
     }
 
     private fun refresh() {
-        val job = ScrapeProgress.current()
-        visibility = if (inGameView && job != null) VISIBLE else GONE
-        if (visibility != VISIBLE || job == null) return
-        bar.isIndeterminate = job.total <= 0
-        if (job.total > 0) {
-            bar.max = job.total
-            bar.setProgress(job.completed, true)
-        }
+        val job = ScrapeProgress.current().takeIf { inGameView }
+        val nextVisibility = if (job == null) GONE else VISIBLE
+        if (visibility != nextVisibility) visibility = nextVisibility
+        if (job == null) return
+        val maximum = job.total.coerceAtLeast(1)
+        if (bar.max != maximum) bar.max = maximum
+        if (bar.progress != job.completed) bar.progress = job.completed
         contentDescription = if (job.total > 0) "Scraping, ${job.completed} of ${job.total} complete" else "Scraping in progress"
     }
 

@@ -682,7 +682,7 @@ open class MainActivity : Activity() {
         navigateTab(4)
     }
     private fun scraperPanel():ScraperSettingsPanel = scraperSettingsPanel ?: ScraperSettingsPanel(
-        this,::selectedScrapingSystems,{ spec -> pages[spec.id]?.games?.size ?: 0 }
+        this, ::selectedScrapingSystems, { spec -> pages[spec.id]?.games.orEmpty() }
     ) {
         GameArtworkPanel.clearMediaCache();EsDeScene.clearMediaCache();gameLogos.clear();preloadKey=null
         discardPreparedArtwork()
@@ -2865,16 +2865,16 @@ open class MainActivity : Activity() {
                     val mode=ScrapePolicy.mode(this)
                     val requested=ScrapePolicy.requestedConcurrency(this)
                     val concurrencyRow = optionRows.size
-                    option("Games at once","Default: account maximum. Manual amounts are capped by the account allowance.",if(requested==0)"Account maximum" else requested.toString()) {
+                    option("Games at once","Use ScreenScraper’s account allowance or up to six games with other providers.",if(requested==0)"Account maximum" else requested.toString()) {
                         val parent = { showCategory(index, enter = true, restoreOption = concurrencyRow, subpage = subpage) }
-                        val choices = (0..6).map { count ->
+                        val choices = (0..ScrapePolicy.MAX_MANUAL_GAMES).map { count ->
                             Choice(if (count == 0) "Account maximum" else count.toString(),
                                 value = if (requested == count) "Selected" else "") {
                                 preferences.edit().putInt("scrape.gamesAtOnce", count).apply()
                                 parent()
                             }
                         }
-                        showChoices("Games at once", parent, choices, focused = requested.coerceIn(0, 6))
+                        showChoices("Games at once", parent, choices, focused = requested.coerceIn(0, ScrapePolicy.MAX_MANUAL_GAMES))
                     }
                     listOf(Triple("all","All selected games","Scrape every selected game and replace selected media."),
                         Triple("missing","Missing media only","Fill missing media types while keeping existing artwork."),

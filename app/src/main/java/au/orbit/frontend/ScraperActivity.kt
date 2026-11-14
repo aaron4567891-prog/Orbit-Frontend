@@ -137,7 +137,10 @@ class ScraperActivity : Activity() {
         }
     }
     private fun games(system:SystemSpec,message:String="") {
-        work("Loading ${system.title}…", { LibraryRepository(this).cached(system)?.games.orEmpty().map { Game(it.title,Uri.parse(it.uri),it.fileName) } }) { games ->
+        work("Loading ${system.title}…", {
+            val entries = LibraryRepository(this).cached(system)?.games.orEmpty()
+            gamesForScraping(entries.map { Game(it.title, Uri.parse(it.uri), it.fileName, it.directory) })
+        }) { games ->
             body.removeAllViews();body.addView(label(system.title,22f))
             if(provider=="ScreenScraper" && games.isNotEmpty())action("Scrape multiple games") { selectBatch(system,games) }
             val list=ListView(this).apply {
@@ -176,16 +179,18 @@ class ScraperActivity : Activity() {
             val allowed=ScrapePolicy.parallelism(ScraperClient(this,provider).accountConcurrency(),ScrapePolicy.requestedConcurrency(this))
             val pool=Executors.newFixedThreadPool(allowed);batchPool=pool
             val completion=java.util.concurrent.ExecutorCompletionService<Pair<Game,Result<String>>>(pool)
-            var next=0;var finished=0;var successful=0;var unmatched=0
+            var next=0;var finished=0;var successful=0;var unmatched=0;var skipped=0
             val failures=mutableListOf<String>()
             fun submit() {
                 val game=games[next++]
                 completion.submit(java.util.concurrent.Callable {
                     game to runCatching {
+                        val plan = ScrapePolicy.mediaPlan(this, system, game, provider)
+                        if (plan.skip) return@runCatching "Skipped"
                         val searchClient=ScraperClient(this,provider)
-                        val match=searchClient.search(game.title).firstOrNull() ?: return@runCatching "No match"
+                        val match=searchClient.searchGame(system, game) ?: return@runCatching "No match"
                         if(batchCancelled.get() || Thread.currentThread().isInterrupted)throw InterruptedException()
-                        GameScraper.scrape(this,provider,system,game,match,parallelGames=true)
+                        GameScraper.scrape(this,provider,system,game,match,parallelGames=true,plan=plan)
                     }
                 })
             }
@@ -194,13 +199,13 @@ class ScraperActivity : Activity() {
                 while(finished<games.size && !batchCancelled.get()) {
                     val future=completion.poll(250,java.util.concurrent.TimeUnit.MILLISECONDS) ?: continue
                     val (game,result)=future.get();finished++
-                    result.onSuccess { if(it=="No match")unmatched++ else if(it.startsWith("Saved 0") || it.contains("downloads failed"))failures.add("${game.title}: $it") else successful++ }
+                    result.onSuccess { if(it=="No match")unmatched++ else if(it=="Skipped" || it.startsWith(GameScraper.NO_AVAILABLE_MEDIA))skipped++ else if(it.startsWith("Saved 0") || it.contains("downloads failed"))failures.add("${game.title}: $it") else successful++ }
                         .onFailure { failures.add("${game.title}: ${it.message ?: "Scrape failed"}") }
-                    runOnUiThread { if(!isDestroyed)status.text="$finished/${games.size} games · $successful scraped · $unmatched not found · ${failures.size} issues · $allowed concurrent" }
+                    runOnUiThread { if(!isDestroyed)status.text="$finished/${games.size} games · $successful scraped · $unmatched not found · $skipped skipped · ${failures.size} issues · $allowed concurrent" }
                     if(next<games.size && !batchCancelled.get())submit()
                 }
             } finally { pool.shutdownNow();batchPool=null }
-            "$successful games scraped · $unmatched not found · ${failures.size} issues.${if(batchCancelled.get()) " Cancelled; completed artwork kept." else ""}"+
+            "$successful games scraped · $unmatched not found · $skipped skipped · ${failures.size} issues.${if(batchCancelled.get()) " Cancelled; completed artwork kept." else ""}"+
                 failures.take(5).joinToString("\n",prefix=if(failures.isEmpty())"" else "\n")
         }) { summary ->
             GameArtworkPanel.clearMediaCache();EsDeScene.clearMediaCache()
@@ -210,14 +215,18 @@ class ScraperActivity : Activity() {
     private fun search(system:SystemSpec,game:Game) {
         body.removeAllViews()
         body.addView(label("Search for ${game.title} · ${system.title}"))
+        val initialTitle = ScreenScraperMatch.cleanTitle(game.title)
         val input=EditText(this).apply {
-            setText(game.title.replace(Regex("\\s*[\\[(][^\\])]*[\\])]"), "").trim())
+            setText(initialTitle)
             setTextColor(Color.WHITE);isSingleLine=true
         }
         body.addView(input)
         action("Search $provider") {
             val title=input.text.toString().trim()
-            if(title.isNotBlank())work("Searching $provider…", {client.search(title)}) { matches ->
+            if(title.isNotBlank())work("Searching $provider…", {
+                if (title == initialTitle) listOfNotNull(client.searchGame(system, game))
+                else client.search(title, system, game.isPlaylist)
+            }) { matches ->
                 val match=matches.firstOrNull()
                 if(match!=null) scrape(system,game,match)
                 else {

@@ -1,6 +1,7 @@
 package au.orbit.frontend
 
 import android.content.Context
+import android.util.TypedValue
 import android.view.Gravity
 import android.view.KeyEvent
 import android.view.View
@@ -76,14 +77,33 @@ internal class GameWheelView(
             override fun getItemCount() = games.size
 
             override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-                val label = TextView(context).apply {
+                val label = object : TextView(context) {
+                    private var lastMaximum = 0
+
+                    override fun onMeasure(widthSpec: Int, heightSpec: Int) {
+                        val width = MeasureSpec.getSize(widthSpec) - compoundPaddingLeft - compoundPaddingRight
+                        val height = MeasureSpec.getSize(heightSpec) - compoundPaddingTop - compoundPaddingBottom
+                        if (width > 0 && height > 0) {
+                            // Fit the title into the current artwork slot. Long names can wrap
+                            // or use a smaller size without changing the slot's dimensions.
+                            val maximum = minOf(height * 0.85f, width * 0.36f).roundToInt().coerceAtLeast(2)
+                            if (maximum != lastMaximum) {
+                                lastMaximum = maximum
+                                val minimum = (maximum * 0.45f).roundToInt().coerceAtLeast(1)
+                                setAutoSizeTextTypeUniformWithConfiguration(
+                                    minimum, maximum, maxOf(1, (maximum - minimum) / 10), TypedValue.COMPLEX_UNIT_PX
+                                )
+                            }
+                        }
+                        super.onMeasure(widthSpec, heightSpec)
+                    }
+                }.apply {
                     gravity = Gravity.CENTER
                     typeface = android.graphics.Typeface.DEFAULT_BOLD
-                    setAutoSizeTextTypeUniformWithPresetSizes(intArrayOf(24, 28, 32, 36),
-                        android.util.TypedValue.COMPLEX_UNIT_SP)
+                    includeFontPadding = false
                     maxLines = 2
                     ellipsize = android.text.TextUtils.TruncateAt.END
-                    setPadding(dp(12), dp(3), dp(12), dp(3))
+                    setPadding(16, 6, 16, 6) // Match the wheel artwork's inset.
                 }
                 val cell = FrameLayout(context).apply {
                     addView(label, FrameLayout.LayoutParams(-1, -1))

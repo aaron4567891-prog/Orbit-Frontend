@@ -128,6 +128,7 @@ internal class GameWheelView(
                 }
                 val label = cell.getChildAt(0) as TextView
                 label.text = games[position].title
+                cell.setGameTileSelected(position == cursor)
                 bindArtwork(cell, label, games[position], { apply ->
                     if (moving && cell.isAttachedToWindow) {
                         if (artworkUpdates.isEmpty()) {
@@ -137,8 +138,15 @@ internal class GameWheelView(
                         artworkUpdates[cell] = apply
                     } else apply()
                 })
-                cell.isSelected = position == cursor
                 label.setTextColor(theme.text)
+            }
+
+            override fun onViewAttachedToWindow(holder: ViewHolder) {
+                holder.itemView.setGameTileSelected(holder.bindingAdapterPosition == cursor)
+            }
+
+            override fun onViewRecycled(holder: ViewHolder) {
+                holder.itemView.setGameTileSelected(false)
             }
         }
         addOnScrollListener(object : OnScrollListener() {
@@ -220,8 +228,8 @@ internal class GameWheelView(
         if (cursor == position) return
         val previous = cursor
         cursor = position
-        layout.findViewByPosition(previous)?.isSelected = false
-        layout.findViewByPosition(cursor)?.isSelected = true
+        layout.findViewByPosition(previous)?.setGameTileSelected(false)
+        layout.findViewByPosition(cursor)?.setGameTileSelected(true)
         selected(cursor)
     }
 

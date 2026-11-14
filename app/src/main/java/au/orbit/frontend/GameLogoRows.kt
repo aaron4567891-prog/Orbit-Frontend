@@ -95,7 +95,7 @@ class GameLogoRows(private val context:Context) {
             image.setImageDrawable(null);image.visibility=View.INVISIBLE;text.visibility=View.VISIBLE
         }
         row.tag=if(enabled)binding else null
-        image.isSelected=row.isSelected
+        spinView?.setSpinSelected(row.isSelected)
         row.contentDescription=game.title
         if(!enabled) {
             onArtworkPending?.invoke(false)

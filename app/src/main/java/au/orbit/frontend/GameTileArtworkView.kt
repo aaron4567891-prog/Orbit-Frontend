@@ -4,12 +4,19 @@ import android.animation.ValueAnimator
 import android.content.Context
 import android.graphics.Canvas
 import android.view.View
+import android.view.ViewGroup
 import android.view.animation.LinearInterpolator
 import android.widget.ImageView
+
+internal fun View.setGameTileSelected(selected: Boolean) {
+    isSelected = selected
+    ((this as? ViewGroup)?.getChildAt(1) as? GameTileArtworkView)?.setSpinSelected(selected)
+}
 
 /** Rotates the artwork layer while its selected tile is visible. */
 internal class GameTileArtworkView(context: Context) : ImageView(context) {
     private var disc: DiscArtwork.Center? = null
+    private var spinSelected = false
     private var animation: ValueAnimator? = null
     private var pendingStart: Runnable? = null
     private var angle = 0f
@@ -22,8 +29,8 @@ internal class GameTileArtworkView(context: Context) : ImageView(context) {
         updateSpin()
     }
 
-    override fun setSelected(selected: Boolean) {
-        super.setSelected(selected)
+    fun setSpinSelected(selected: Boolean) {
+        spinSelected = selected
         updateSpin()
     }
 
@@ -91,7 +98,7 @@ internal class GameTileArtworkView(context: Context) : ImageView(context) {
         discCenterY = paddingTop + point[1]
     }
 
-    private fun canSpin() = disc != null && isSelected && isShown && isAttachedToWindow &&
+    private fun canSpin() = disc != null && spinSelected && isShown && isAttachedToWindow &&
         windowVisibility == View.VISIBLE && ValueAnimator.areAnimatorsEnabled()
 
     private fun updateSpin() {

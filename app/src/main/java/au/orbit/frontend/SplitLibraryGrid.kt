@@ -272,6 +272,7 @@ internal class SplitLibraryGrid(
         }
 
         override fun onViewRecycled(holder: Tile) {
+            holder.cell.setGameTileSelected(false)
             resetTileMotion(holder.cell)
         }
     }
@@ -617,7 +618,7 @@ internal class SplitLibraryGrid(
     }
 
     private fun highlight(tile: View, position: Int) {
-        tile.isSelected = position == cursor
+        tile.setGameTileSelected(position == cursor)
         fun outline(width: Int, color: Int) = GradientDrawable().apply {
             setColor(Color.TRANSPARENT)
             cornerRadius = tileSize * 0.17f

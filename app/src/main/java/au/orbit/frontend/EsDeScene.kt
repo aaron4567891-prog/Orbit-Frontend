@@ -56,11 +56,17 @@ class EsDeScene(private val activity:Activity,private val entry:ImportedThemes.E
         if(game==null)return Media(emptyList(),JSONObject(),"")
         val group="${spec.id}/${ScraperClient.gameKey(game.uri.toString())}"
         val files=mutableListOf<Pair<String,String>>();var metadata:JSONObject?=null
+        val hidden = GameCustomArtwork.removed(group, OrbitThemeArtwork.artworkScreen(activity))
+        val blockedTypes = ScraperMediaTypes.categories.filter { it.folder in hidden }.flatMap { it.types }.toSet()
         for(recordName in UserDataStore.scrapedRecordNames(activity,group)) {
             val bytes=UserDataStore.readScraped(activity,group,recordName) ?: continue
             val record=runCatching { JSONObject(bytes.toString(Charsets.UTF_8)) }.getOrNull() ?: continue
+            if (!ScrapedMediaPlatform.matches(record, spec.id)) continue
             if(metadata==null)metadata=record.optJSONObject("metadata")
-            ScraperClient.objects(record.opt("files")).forEach { files.add(it.optString("type") to it.optString("file")) }
+            ScraperClient.objects(record.opt("files")).forEach {
+                val type = it.optString("type")
+                if (type !in blockedTypes) files.add(type to it.optString("file"))
+            }
         }
         return Media(files,metadata ?: JSONObject(),group)
     }

@@ -22,14 +22,14 @@ import java.util.concurrent.Future
 
 /** Reads portable scraped media on a worker; scrolling never waits for storage or image decoding. */
 class GameArtworkPanel(private val context: Activity, private val coverOnly: Boolean = false, private val theme: EsDeTheme.Model? = null, audioPriority: Int = 1, private val mediaMode: String? = null, private val videosEnabled: () -> Boolean = { true }) {
-    var backgroundMediaChanged:((Map<String,Bitmap>,android.net.Uri?)->Unit)?=null
+    internal var backgroundMediaChanged: ((Map<String, Bitmap>, android.net.Uri?, Boolean) -> Unit)? = null
     var backgroundMediaPaused:(()->Unit)?=null
     private val variant=theme?.variant.orEmpty()
     private val metadataLayout=variant.contains("metadata")
     private val nativeMediaLayout=theme==null && mediaMode==null
     private val screenMediaLayout=theme==null && (mediaMode==null || mediaMode=="screen")
     private val artworkScreen get()=OrbitThemeArtwork.artworkScreen(context)
-    private data class Artwork(val marquee: Bitmap?, val cover: Bitmap?, val screenshot: Bitmap?,val secondaryArt:Bitmap?=null,val description:String="",val details:String="",val videoUri:android.net.Uri?=null,val fanart:Bitmap?=null,val media:Map<String,Bitmap> = emptyMap())
+    private data class Artwork(val marquee: Bitmap?, val cover: Bitmap?, val screenshot: Bitmap?,val secondaryArt:Bitmap?=null,val description:String="",val details:String="",val videoUri:android.net.Uri?=null,val fanart:Bitmap?=null,val media:Map<String,Bitmap> = emptyMap(), val hideBackground: Boolean = false)
     private val worker = Executors.newSingleThreadExecutor()
     private val previewWorker = Executors.newSingleThreadExecutor()
     private var adjacentLoad: Future<*>? = null
@@ -129,10 +129,10 @@ class GameArtworkPanel(private val context: Activity, private val coverOnly: Boo
         if (!screenMediaLayout || manualVideoActive || ScreenMediaSettings.background(screen) != "fanart") return
         val group = GameCustomArtwork.group(system, game)
         val paths = GameCustomArtwork.paths(group, screen)
-        val artwork = cache.get(cacheKey(ScreenMediaSettings.signature(screen), group, paths)) ?: return
+        val artwork = cache.get(cacheKey(ScreenMediaSettings.signature(screen), group, paths, GameCustomArtwork.removed(group, screen))) ?: return
         if ("fanart" in artwork.media || GameCustomArtwork.HERO in artwork.media) {
             earlyBackgroundGroup = group
-            backgroundMediaChanged?.invoke(artwork.media, null)
+            backgroundMediaChanged?.invoke(artwork.media, null, artwork.hideBackground)
         }
     }
 
@@ -146,13 +146,15 @@ class GameArtworkPanel(private val context: Activity, private val coverOnly: Boo
         val keys = games.map { game ->
             val group = GameCustomArtwork.group(system, game)
             val paths = GameCustomArtwork.paths(group, screen)
-            Triple(group, paths, cacheKey(options, group, paths))
+            val hidden = GameCustomArtwork.removed(group, screen)
+            Triple(group, paths, hidden to cacheKey(options, group, paths, hidden))
         }
         adjacentLoad = previewWorker.submit {
-            for ((group, paths, key) in keys) {
+            for ((group, paths, request) in keys) {
                 if (ticket != generation || Thread.currentThread().isInterrupted) break
+                val (hidden, key) = request
                 if (cache.get(key) != null) continue
-                val artwork = runCatching { load(group, ticket, screen, paths) }.getOrNull() ?: continue
+                val artwork = runCatching { load(group, ticket, screen, paths, hidden) }.getOrNull() ?: continue
                 if (ticket != generation || Thread.currentThread().isInterrupted) break
                 artwork.media.values.forEach(Bitmap::prepareToDraw)
                 handler.post { if (ticket == generation && cache.get(key) == null) cache.put(key, artwork) }
@@ -160,8 +162,8 @@ class GameArtworkPanel(private val context: Activity, private val coverOnly: Boo
         }
     }
 
-    private fun cacheKey(options: String, group: String, customPaths: Map<String, String>) =
-        "${UserDataStore.location(context)}/$variant/$coverOnly/$mediaMode/$options/$group/$customPaths"
+    private fun cacheKey(options: String, group: String, customPaths: Map<String, String>, hidden: Set<String>) =
+        "${UserDataStore.location(context)}/$variant/$coverOnly/$mediaMode/$options/$group/$customPaths/$hidden"
 
     private fun requestArtwork(system:SystemSpec,game:Game?,refresh:Boolean,showNow:Boolean) {
         val previewedBackground = earlyBackgroundGroup
@@ -178,14 +180,15 @@ class GameArtworkPanel(private val context: Activity, private val coverOnly: Boo
         if (screenMediaLayout && showNow) layoutScreenMedia(screen)
         val options=if(screenMediaLayout)ScreenMediaSettings.signature(screen) else ""
         val customPaths=if(screenMediaLayout)GameCustomArtwork.paths(group,screen) else emptyMap()
-        val key=cacheKey(options, group, customPaths)
+        val hidden = GameCustomArtwork.removed(group, screen)
+        val key=cacheKey(options, group, customPaths, hidden)
         if(!changed && currentCacheKey==key && !refresh) {
             if(pending!=null || job!=null)return
             currentArtwork?.let { artwork ->
                 if (showNow && previewPaused) display(artwork)
                 else if (showNow && previewedBackground != null && previewedBackground != group) {
                     // The wheel can preview another game and settle back on the one already loaded.
-                    backgroundMediaChanged?.invoke(artwork.media, artwork.videoUri)
+                    backgroundMediaChanged?.invoke(artwork.media, artwork.videoUri, artwork.hideBackground)
                 }
                 return
             }
@@ -211,12 +214,12 @@ class GameArtworkPanel(private val context: Activity, private val coverOnly: Boo
             pending=null
             job=worker.submit {
                 val artwork=runCatching {
-                    load(group, ticket, screen, customPaths) { media ->
+                    load(group, ticket, screen, customPaths, hidden) { media ->
                         media.values.forEach(Bitmap::prepareToDraw)
                         handler.post {
                             if (ticket == generation && displayWhenReady && earlyBackgroundGroup == null && artworkScreen == screen &&
                                 ScreenMediaSettings.background(screen) == "fanart" && !manualVideoActive) {
-                                backgroundMediaChanged?.invoke(media, null)
+                                backgroundMediaChanged?.invoke(media, null, GameCustomArtwork.HERO in hidden)
                             }
                         }
                     }
@@ -256,7 +259,7 @@ class GameArtworkPanel(private val context: Activity, private val coverOnly: Boo
         foregroundVideoUri=null
         previewPaused=true
     }
-    private fun load(group: String, ticket: Int, screen:String, customPaths:Map<String,String>,
+    private fun load(group: String, ticket: Int, screen:String, customPaths:Map<String,String>, hidden: Set<String>,
         showBackground: ((Map<String, Bitmap>) -> Unit)? = null): Artwork {
         val files = mutableListOf<Pair<String,String>>()
         var metadata:JSONObject?=null
@@ -264,13 +267,15 @@ class GameArtworkPanel(private val context: Activity, private val coverOnly: Boo
             if (ticket != generation) return Artwork(null,null,null)
             val bytes = UserDataStore.readScraped(context,group,recordName) ?: continue
             val record = runCatching { JSONObject(bytes.toString(Charsets.UTF_8)) }.getOrNull() ?: continue
+            if (!ScrapedMediaPlatform.matches(record, group.substringBefore('/'))) continue
             if(metadata==null)metadata=record.optJSONObject("metadata")
             ScraperClient.objects(record.opt("files")).forEach { file -> files.add(file.optString("type") to file.optString("file")) }
         }
+        val blockedTypes = ScraperMediaTypes.categories.filter { it.folder in hidden }.flatMap { it.types }.toSet()
         fun bitmap(types: List<String>): Bitmap? {
             for (type in types) for ((kind,path) in files) {
                 if (ticket != generation) return null
-                if (kind != type || path.isBlank()) continue
+                if (kind != type || kind in blockedTypes || path.isBlank()) continue
                 val decoded = runCatching {
                     val bytes = UserDataStore.readScraped(context,group,path) ?: return@runCatching null
                     val bounds = BitmapFactory.Options().apply { inJustDecodeBounds = true }
@@ -286,7 +291,7 @@ class GameArtworkPanel(private val context: Activity, private val coverOnly: Boo
             return null
         }
         val videoUri by lazy {
-            files.asSequence().filter { it.first in listOf("video-normalized","video","videos") }
+            if ("videos" in hidden) null else files.asSequence().filter { it.first in listOf("video-normalized","video","videos") }
                 .mapNotNull { (_,path) -> runCatching { UserDataStore.scrapedUri(context,group,path) }.getOrNull() }.firstOrNull()
         }
         if(screenMediaLayout) {
@@ -317,8 +322,8 @@ class GameArtworkPanel(private val context: Activity, private val coverOnly: Boo
                 }
                 return null
             }
-            val hero=customImage(GameCustomArtwork.HERO)
-            val fanArt = if (background == "fanart") {
+            val hero=if (GameCustomArtwork.HERO in hidden) null else customImage(GameCustomArtwork.HERO)
+            val fanArt = if (background == "fanart" && "fanart" !in hidden) {
                 val category = ScreenMediaSettings.categories.first { it.folder == "fanart" }
                 customImage(category.folder) ?: bitmap(category.types)
             } else null
@@ -326,13 +331,13 @@ class GameArtworkPanel(private val context: Activity, private val coverOnly: Boo
                 if (hero != null) showBackground(mapOf(GameCustomArtwork.HERO to hero))
                 else if (fanArt != null) showBackground(mapOf("fanart" to fanArt))
             }
-            val images=ScreenMediaSettings.categories.filter { it.folder in needed && it.folder!="videos" }.mapNotNull { category ->
+            val images=ScreenMediaSettings.categories.filter { it.folder in needed && it.folder!="videos" && it.folder !in hidden }.mapNotNull { category ->
                 val image = if (category.folder == "fanart" && background == "fanart") fanArt
                     else customImage(category.folder) ?: bitmap(category.types) ?: if(category.folder=="manuals")manual() else null
                 image?.let { category.folder to it }
             }.toMap()
-            val media=if(hero==null)images else images+(GameCustomArtwork.HERO to hero)
-            return Artwork(null,null,null,videoUri=videoUri,media=media)
+            val media = if (hero == null) images else images + (GameCustomArtwork.HERO to hero)
+            return Artwork(null,null,null,videoUri=videoUri,media=media, hideBackground = GameCustomArtwork.HERO in hidden)
         }
         if(mediaMode!=null) {
             val image=when(mediaMode) {
@@ -347,7 +352,7 @@ class GameArtworkPanel(private val context: Activity, private val coverOnly: Boo
         val screenshot = bitmap(listOf("ss-hd","ss","screenshot","screenshots"))
         val fanart = bitmap(listOf("fanart","heroes"))
         val secondary = screenshot ?: fanart
-        val physical=if(variant.contains("physicalmedia"))bitmap(listOf("support-2D","physicalmedia")) else null
+        val physical=if(variant.contains("physicalmedia") && "physicalmedia" !in hidden)bitmap(listOf("support-2D","physicalmedia")) else null
         val selected=when {
             metadataLayout || variant.contains("screenshot") -> secondary ?: primary
             variant.endsWith("titlescreen") -> bitmap(listOf("sstitle","titlescreen")) ?: secondary ?: primary
@@ -413,11 +418,11 @@ class GameArtworkPanel(private val context: Activity, private val coverOnly: Boo
             android.widget.Toast.makeText(context,"No video has been scraped for this game.",android.widget.Toast.LENGTH_SHORT).show()
         }
         if (earlyBackgroundGroup == null || earlyBackgroundGroup == currentGroup) {
-            backgroundMediaChanged?.invoke(artwork.media,artwork.videoUri)
+            backgroundMediaChanged?.invoke(artwork.media, artwork.videoUri, artwork.hideBackground)
         }
         if(screenMediaLayout) {
             val screen=artworkScreen
-            val videoBackground=GameCustomArtwork.HERO !in artwork.media && ScreenMediaSettings.background(screen)=="videos"
+            val videoBackground = !artwork.hideBackground && GameCustomArtwork.HERO !in artwork.media && ScreenMediaSettings.background(screen) == "videos"
             layoutScreenMedia(screen,videoBackground)
             screenImages.forEach { (type,image) ->
                 val bitmap=artwork.media[type]
@@ -440,7 +445,8 @@ class GameArtworkPanel(private val context: Activity, private val coverOnly: Boo
                     image.visibility = View.VISIBLE
                 }
             }
-            val showVideo=ScreenMediaSettings.visible(screen,"videos") && videosEnabled() && !videoBackground
+            val showVideo=ScreenMediaSettings.visible(screen,"videos") && videosEnabled() && !videoBackground &&
+                "videos" !in GameCustomArtwork.removed(currentGroup.orEmpty(), screen)
             if(!showVideo) { video.stop();foregroundVideoUri=null }
             else if(previewPaused || foregroundVideoUri!=artwork.videoUri) {
                 if (artwork.videoUri == null) video.fadeOut()

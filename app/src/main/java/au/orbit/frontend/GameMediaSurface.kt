@@ -54,13 +54,13 @@ internal class GameMediaSurface(context:Context,val content:View, audioPriority:
         if (shown === backdrop) background = backdrop
     }
 
-    fun update(media:Map<String,Bitmap>,videoUri:Uri?) {
+    fun update(media:Map<String,Bitmap>,videoUri:Uri?,hideBackground:Boolean) {
         prepareGameView()
         val next=videoUri.takeIf {
-            GameCustomArtwork.HERO !in media && ScreenMediaSettings.background(OrbitThemeArtwork.artworkScreen(context))=="videos"
+            !hideBackground && GameCustomArtwork.HERO !in media && ScreenMediaSettings.background(OrbitThemeArtwork.artworkScreen(context))=="videos"
         }
         show(backdrop, TransitionSettings.View.GAMES)
-        backdrop.update(media)
+        backdrop.update(if (hideBackground) emptyMap() else media)
         if (next != playing) {
             playing = next
             if (next == null) {

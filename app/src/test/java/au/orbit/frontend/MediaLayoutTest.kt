@@ -16,4 +16,15 @@ class MediaLayoutTest {
         assertFalse(MediaLayout.validPart(".."))
         assertFalse(MediaLayout.validPart("covers/file.png"))
     }
+
+    @Test fun gameMediaDeletionAcceptsOwnedPathsAndRejectsTraversal() {
+        val id = "a".repeat(64)
+        val group = "psx/$id"
+        org.junit.Assert.assertEquals(listOf("media", "psx", "videos", "Game.mp4"),
+            MediaLayout.gameMediaPath(group, "@/psx/videos/Game.mp4"))
+        org.junit.Assert.assertEquals(listOf("media", "psx", id, "covers", "old.png"),
+            MediaLayout.gameMediaPath(group, "covers/old.png"))
+        org.junit.Assert.assertNull(MediaLayout.gameMediaPath(group, "@/gba/covers/Game.png"))
+        org.junit.Assert.assertNull(MediaLayout.gameMediaPath(group, "../covers/Game.png"))
+    }
 }

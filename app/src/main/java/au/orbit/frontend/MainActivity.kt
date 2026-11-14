@@ -2125,6 +2125,8 @@ open class MainActivity : Activity() {
         if(ready && library)artworkPanel?.show(system,games.getOrNull(gameCursor))
         DualScreenCoordinator.refreshMedia()
     }
+    internal fun refreshGameArtwork() = refreshTransferredMedia()
+
     private fun onGameScraped() {
         if (!isDestroyed && !isFinishing && !showingCompanion) refreshTransferredMedia()
         else {

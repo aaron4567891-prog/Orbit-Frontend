@@ -146,9 +146,19 @@ class GameLogoRows(private val context:Context) {
     }
 
     private fun load(key:ArtworkKey):Artwork? {
-        val preferred=mediaTypes(key.mediaType)
-        val types=preferred+key.fallbackMediaType?.let(::mediaTypes).orEmpty()
-        val best=types.first()
+        val hidden = GameCustomArtwork.removed(key.group, OrbitThemeArtwork.artworkScreen(context))
+        fun visibleTypes(mediaType: String): List<String> {
+            val role = when (mediaType) {
+                "cover" -> "covers"
+                "3dbox" -> "3dboxes"
+                "physicalmedia" -> "physicalmedia"
+                else -> "marquees"
+            }
+            return if (role in hidden) emptyList() else mediaTypes(mediaType)
+        }
+        val preferred = visibleTypes(key.mediaType)
+        val types = preferred + key.fallbackMediaType?.let(::visibleTypes).orEmpty()
+        val best=types.firstOrNull() ?: return null
         val remaining=types.drop(1)
         val alternatives=mutableListOf<Pair<String,String>>()
         fun find(type:String,files:List<Pair<String,String>>)=files.firstNotNullOfOrNull { (kind,path) ->
@@ -157,6 +167,7 @@ class GameLogoRows(private val context:Context) {
         }
         for(bytes in UserDataStore.readScrapedRecords(context,key.group)) {
             val record=runCatching { JSONObject(bytes.toString(Charsets.UTF_8)) }.getOrNull() ?: continue
+            if (!ScrapedMediaPlatform.matches(record, key.group.substringBefore('/'))) continue
             val files=ScraperClient.objects(record.opt("files")).map { it.optString("type") to it.optString("file") }
             find(best,files)?.let { return it }
             files.filterTo(alternatives) { it.first in remaining }

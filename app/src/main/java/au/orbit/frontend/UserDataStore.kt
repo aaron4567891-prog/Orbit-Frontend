@@ -22,9 +22,8 @@ object UserDataStore {
     }
     @Synchronized fun mediaTypeFolder(context:Context,system:String,type:String,sourcePath:List<String> = emptyList()):String {
         initialize(context)
-        val parent=root!!.directory("media",false)?.directory(system,false)
         val aliases=mediaAliases(type)
-        return aliases.firstOrNull { parent?.directory(it,false)!=null }
+        return aliases.firstOrNull { resolveMediaFolder(listOf("media",system,it))!=null }
             ?: sourcePath.dropLast(1).asReversed().firstOrNull { it in aliases } ?: type
     }
     private fun mediaFolder(context:Context,group:String):DataFolder {
@@ -140,18 +139,107 @@ object UserDataStore {
         initialize(context); check(accessError == null) { accessError!! }
         val parts = group.split('/')
         require(parts.all { it.matches(Regex("[a-zA-Z0-9_-]+")) } && MediaLayout.validPart(name))
-        var folder = root!!.directory(if(MediaLayout.isRecordGroup(group))"media-index" else "media", true)!!
-        parts.forEach { folder = folder.directory(it, true)!! }
-        folder.write(name, bytes)
-        mediaDirectories.evictAll()
+        val base = if (MediaLayout.isRecordGroup(group)) "media-index" else "media"
+        try {
+            requireNotNull(resolveMediaFolder(listOf(base) + parts, create = true)).write(name, bytes)
+        } catch (error: Exception) {
+            mediaDirectories.evictAll()
+            throw error
+        }
     }
-    private fun resolveMediaFolder(parts:List<String>):DataFolder? {
+
+    /** Deletes only files referenced by this game's records, preserving files shared with other games. */
+    @Synchronized
+    internal fun deleteGameMedia(context: Context, group: String, types: Set<String>?) {
+        initialize(context)
+        check(accessError == null) { accessError!! }
+        require(MediaLayout.isRecordGroup(group) && group.split('/').all(MediaLayout::validPart))
+        val system = group.substringBefore('/')
+        val game = group.substringAfter('/')
+        val records = listOf("media-index", "media").mapNotNull { base ->
+            resolveMediaFolder(listOf(base, system, game))
+        }.flatMap { folder -> mediaRecords(folder).map { (name, record) -> Triple(folder, name, record) } }
+        val candidates = linkedSetOf<List<String>>()
+        val stillUsed = mutableSetOf<List<String>>()
+        for ((_, _, record) in records) {
+            for (file in ScraperClient.objects(record.opt("files"))) {
+                val path = MediaLayout.gameMediaPath(group, file.optString("file")) ?: continue
+                if (types == null || file.optString("type") in types) candidates.add(path) else stillUsed.add(path)
+            }
+        }
+        val mayBeShared = candidates.filter { it.getOrNull(2) != game }.toMutableSet()
+        if (mayBeShared.isNotEmpty()) {
+            for (base in listOf("media-index", "media")) {
+                val parent = resolveMediaFolder(listOf(base, system)) ?: continue
+                for ((other, directory) in parent.entries()) {
+                    if (!directory || other == game || !MediaLayout.isRecordGroup("$system/$other")) continue
+                    val folder = parent.directory(other, false) ?: continue
+                    for ((_, record) in mediaRecords(folder)) {
+                        for (file in ScraperClient.objects(record.opt("files"))) {
+                            val path = MediaLayout.gameMediaPath("$system/$other", file.optString("file"))
+                            if (path != null && mayBeShared.remove(path)) stillUsed.add(path)
+                        }
+                    }
+                    if (mayBeShared.isEmpty()) break
+                }
+                if (mayBeShared.isEmpty()) break
+            }
+        }
+        val failures = mutableSetOf<List<String>>()
+        for (path in candidates - stillUsed) {
+            val success = runCatching {
+                val folder = resolveMediaFolder(path.dropLast(1))
+                folder == null || folder.fileUri(path.last()) == null || folder.deleteFile(path.last())
+            }.getOrDefault(false)
+            if (!success) failures.add(path)
+        }
+        for ((folder, name, record) in records) {
+            val files = ScraperClient.objects(record.opt("files"))
+            val remaining = files.filter { file ->
+                (types != null && file.optString("type") !in types) ||
+                    MediaLayout.gameMediaPath(group, file.optString("file")) in failures
+            }
+            if (files.size != remaining.size) {
+                record.put("files", org.json.JSONArray(remaining))
+                folder.write(name, record.toString(2).toByteArray())
+            }
+        }
+        check(failures.isEmpty()) { "Could not delete ${failures.size} media file(s). Check folder access and try again." }
+    }
+
+    private fun mediaRecords(folder: DataFolder): List<Pair<String, JSONObject>> = folder.entries().mapNotNull { (name, directory) ->
+        if (directory || (name !in scraperRecords && !(name.startsWith("import-") && name.endsWith(".json")))) {
+            return@mapNotNull null
+        }
+        val bytes = folder.read(name) ?: return@mapNotNull null
+        name to JSONObject(bytes.toString(Charsets.UTF_8))
+    }
+
+    @Synchronized
+    internal fun deleteGameArtworkFile(context: Context, path: String) {
+        initialize(context)
+        check(accessError == null) { accessError!! }
+        require(OrbitThemes.validArtworkPath(path))
+        val otherArtwork = state?.optJSONObject("gameArtwork")
+        if (otherArtwork != null && otherArtwork.keys().asSequence().count { otherArtwork.optString(it) == path } > 1) return
+        val usedByTheme = nativeThemeSources(context).any { source ->
+            val theme = OrbitThemes.parse(source)
+            theme.artwork.any { it.file == path } || path in theme.systemLogos.values ||
+                theme.systemHeroes.values.any { path in it.values } || theme.systemImages.values.any { path in it.values }
+        }
+        if (usedByTheme) return
+        val folder = root!!.directory("themes", false)?.directory("native", false)?.directory("artwork", false) ?: return
+        val name = path.removePrefix("artwork/")
+        check(folder.fileUri(name) == null || folder.deleteFile(name)) { "Could not delete custom artwork." }
+    }
+
+    private fun resolveMediaFolder(parts:List<String>, create: Boolean = false):DataFolder? {
         val key=parts.joinToString("/")
         mediaDirectories.get(key)?.let { return it }
         var folder:DataFolder?=root
         for(index in parts.indices) {
             val prefix=parts.take(index+1).joinToString("/")
-            folder=mediaDirectories.get(prefix) ?: folder?.directory(parts[index],false)?.also { mediaDirectories.put(prefix,it) }
+            folder=mediaDirectories.get(prefix) ?: folder?.directory(parts[index],create)?.also { mediaDirectories.put(prefix,it) }
             if(folder==null)return null
         }
         return folder
@@ -502,6 +590,7 @@ private class TreeFolder(private val context: Context, val uri: Uri) : DataFolde
         val target = child?.second ?: Docs.createDocument(context.contentResolver, document(), mime, name) ?: error("Cannot create $name")
         if (child == null) childCache?.add(Triple(name, target, false))
         context.contentResolver.openOutputStream(target, "wt")?.use { it.write(bytes) } ?: error("Cannot write $name")
+        revisions.remove(name)
     }
     override fun entries() = children().map { it.first to it.third }
     override fun directory(name: String, create: Boolean): DataFolder? {

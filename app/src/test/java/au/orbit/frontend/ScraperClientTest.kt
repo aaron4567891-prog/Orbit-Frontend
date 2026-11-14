@@ -48,7 +48,9 @@ class ScraperClientTest {
         val types=listOf("wheel","wheel-hd","video","video-normalized","support-2D","ss","fanart","box-2D","manuel","bezel-16-9","mixrbv1","icons","box-3D")
         val media=types.map { ScraperClient.Media(it,"https://example.com/$it","png") }
         val selected=ScraperMediaTypes.select(media,ScraperMediaTypes.categories.map { it.folder }.toSet())
-        assertEquals(7,selected.size)
+        assertEquals(8,selected.size)
+        assertEquals("box-2D", selected.first { it.first.folder == "covers" }.second.type)
+        assertEquals("box-3D", selected.first { it.first.folder == "3dboxes" }.second.type)
         assertEquals("wheel-hd",selected.first { it.first.folder=="marquees" }.second.type)
         assertEquals("video-normalized",selected.first { it.first.folder=="videos" }.second.type)
         assertEquals(listOf("manuel"),ScraperMediaTypes.select(media,setOf("manuals")).map { it.second.type })

@@ -1,8 +1,9 @@
 package au.orbit.frontend
 
-/** The seven supported media categories, shared by every scraper. */
+/** Media categories shared by the scrapers. */
 object ScraperMediaTypes {
     data class Category(val folder: String, val title: String, val types: List<String>)
+    val boxArt3D = Category("3dboxes", "3D box art", listOf("box-3D", "3dbox", "3dboxes", "box3d"))
     val categories = listOf(
         Category("physicalmedia", "Physical media", listOf("support-2D", "physicalmedia")),
         Category("marquees", "Marquees", listOf("wheel-hd", "wheel", "logo", "logos", "marquee")),
@@ -10,6 +11,7 @@ object ScraperMediaTypes {
         Category("fanart", "Fan art", listOf("fanart", "heroes")),
         Category("screenshots", "Screenshots", listOf("ss-hd", "ss", "screenshot", "screenshots")),
         Category("covers", "Box art", listOf("box-2D", "boxart", "cover", "grids")),
+        boxArt3D,
         Category("manuals", "Manuals", listOf("manuel", "manual", "manuals"))
     )
     private fun languageRank(media:ScraperClient.Media,preferredRegion:String,preferredLanguage:String):Int {

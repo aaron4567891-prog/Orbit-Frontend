@@ -2,7 +2,7 @@ package au.orbit.frontend
 
 /** Media preferences for the artwork slot assigned to each display by the active theme. */
 internal object ScreenMediaSettings {
-    val categories=ScraperMediaTypes.categories
+    val categories = ScraperMediaTypes.categories.filterNot { it == ScraperMediaTypes.boxArt3D }
     val backgrounds=listOf("fanart","screenshots","covers","physicalmedia","marquees","videos","manuals","theme","off")
     fun key(screen:String,option:String):String {
         require(screen in setOf("top","bottom"))

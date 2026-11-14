@@ -24,7 +24,8 @@ open class MainActivity : Activity() {
     private fun updateSystemsMusic() {
         systemsMusic.setBrowsing(
             musicVisible && !showingCompanion && (musicDuringStartup || ready && activeTab == 0 && !library && !scanning) &&
-                startMenu?.isShowing != true && UserDataStore.cachedInt("systemsMusic", 1) != 0
+                startMenu?.isShowing != true && UserDataStore.cachedInt("systemsMusic", 1) != 0,
+            visible = musicVisible && !showingCompanion
         )
     }
     private var gameMediaRoot:View?=null
@@ -920,6 +921,7 @@ open class MainActivity : Activity() {
             DualScreenCoordinator.companionResumed(this)
             return
         }
+        updateSystemsMusic()
         refreshLibraryDock()
         if(ready)FrontendRefreshRate.apply(this)
         if(ready && activeTab==1)appsPanel?.resume()
@@ -928,7 +930,13 @@ open class MainActivity : Activity() {
             importedScene?.showGame(games.getOrNull(gameCursor),true)
         }
     }
-    override fun onWindowFocusChanged(hasFocus:Boolean) { super.onWindowFocusChanged(hasFocus);if(hasFocus)FrontendNavigationBar.apply(this) }
+    override fun onWindowFocusChanged(hasFocus: Boolean) {
+        super.onWindowFocusChanged(hasFocus)
+        if (hasFocus) {
+            FrontendNavigationBar.apply(this)
+            if (!showingCompanion) updateSystemsMusic()
+        }
+    }
     override fun onPause() {
         pendingSplitSystemOpen=null;cancelSwapKey();artworkPanel?.pause();importedScene?.pause()
         if(!showingCompanion)DualScreenCoordinator.finishCompanionVideo()
@@ -941,7 +949,7 @@ open class MainActivity : Activity() {
         DualScreenCoordinator.detach(this)
         super.onStop()
     }
-    override fun onDestroy() { remoteSettingsDialog?.dismiss();mediaTransferPanel?.destroy();scraperSettingsPanel?.destroy();themeBackdrop?.destroy();gamePreloader?.destroy();importedSystems?.destroy();importedScene?.destroy();gameLogos.destroy();companionPanel?.destroy();if(showingCompanion)DualScreenCoordinator.panelDestroyed(this);colorfulSystems?.destroy(); artworkPanel?.destroy(); discardPreparedArtwork(); appsPanel?.destroy(); skipStartup.set(true); generation++; libraryRefreshWorker.shutdownNow();worker.shutdownNow(); super.onDestroy() }
+    override fun onDestroy() { remoteSettingsDialog?.dismiss();systemsMusic.destroy();mediaTransferPanel?.destroy();scraperSettingsPanel?.destroy();themeBackdrop?.destroy();gamePreloader?.destroy();importedSystems?.destroy();importedScene?.destroy();gameLogos.destroy();companionPanel?.destroy();if(showingCompanion)DualScreenCoordinator.panelDestroyed(this);colorfulSystems?.destroy(); artworkPanel?.destroy(); discardPreparedArtwork(); appsPanel?.destroy(); skipStartup.set(true); generation++; libraryRefreshWorker.shutdownNow();worker.shutdownNow(); super.onDestroy() }
     private fun dp(n: Int) = (n * resources.displayMetrics.density).toInt()
     private fun text(value: String, size: Float, color: Int = Color.WHITE) = TextView(this).apply {
         text = value; textSize = size; setTextColor(color); setPadding(0, dp(5), 0, dp(5))

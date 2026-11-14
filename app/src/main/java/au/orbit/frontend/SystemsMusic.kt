@@ -9,6 +9,8 @@ import android.media.AudioFocusRequest
 import android.media.AudioManager
 import android.media.MediaPlayer
 import android.os.Build
+import android.os.Handler
+import android.os.Looper
 import android.os.PowerManager
 import android.util.Log
 
@@ -22,9 +24,16 @@ internal class SystemsMusic(private val context: Context) {
 
     private val audio = context.getSystemService(AudioManager::class.java)
     private val power = context.getSystemService(PowerManager::class.java)
+    private val isThor = Build.MANUFACTURER.equals("AYN", ignoreCase = true) &&
+        Build.MODEL.contains("Thor", ignoreCase = true)
     private var prepared = false
     private var focusPaused = false
+    private var paused = false
+    private var visible = false
+    private val handler = Handler(Looper.getMainLooper())
+    private val releaseIfHidden = Runnable { if (!visible && power.isInteractive) stop() }
     private var browsing = false
+    private var listening = false
     private var hasFocus = false
     private var player: MediaPlayer? = null
 
@@ -45,7 +54,11 @@ internal class SystemsMusic(private val context: Context) {
                         focusPaused = true
                         if (prepared) player?.pause()
                     }
-                    AudioManager.AUDIOFOCUS_LOSS -> stop()
+                    AudioManager.AUDIOFOCUS_LOSS -> {
+                        if (prepared) player?.pause()
+                        paused = true
+                        releaseFocus()
+                    }
                 }
             }
         }
@@ -53,8 +66,7 @@ internal class SystemsMusic(private val context: Context) {
     private val receiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
             when (intent.action) {
-                Intent.ACTION_SCREEN_OFF -> stop()
-                Intent.ACTION_SCREEN_ON -> updatePlayback()
+                Intent.ACTION_SCREEN_OFF, Intent.ACTION_SCREEN_ON -> updatePlayback()
                 VOLUME_CHANGED -> {
                     if (intent.getIntExtra(VOLUME_STREAM_TYPE, -1) == AudioManager.STREAM_MUSIC) {
                         player?.let(::applyMediaVolume)
@@ -64,10 +76,14 @@ internal class SystemsMusic(private val context: Context) {
         }
     }
 
-    fun setBrowsing(active: Boolean) {
-        if (browsing != active) {
-            browsing = active
-            if (active) {
+    fun setBrowsing(active: Boolean, visible: Boolean) {
+        this.visible = visible
+        handler.removeCallbacks(releaseIfHidden)
+        if (!visible && player != null) handler.postDelayed(releaseIfHidden, 750L)
+        browsing = active
+        if (listening != visible) {
+            listening = visible
+            if (visible) {
                 val filter = IntentFilter(Intent.ACTION_SCREEN_OFF).apply {
                     addAction(Intent.ACTION_SCREEN_ON)
                     addAction(VOLUME_CHANGED)
@@ -89,12 +105,24 @@ internal class SystemsMusic(private val context: Context) {
 
     private fun updatePlayback() {
         if (!canPlay()) {
-            stop()
+            // Keep the track allocated across Games and sleep. Thor can assign a new
+            // track to the bottom-screen volume when both Orbit windows wake.
+            if (!paused && prepared) player?.pause()
+            paused = true
+            if (!isThor && power.isInteractive) stop()
             return
         }
-        if (player != null) return
-        hasFocus = audio.requestAudioFocus(focus) == AudioManager.AUDIOFOCUS_REQUEST_GRANTED
+        if (hasFocus && player != null && !paused) return
+        paused = false
+        if (!hasFocus) hasFocus = audio.requestAudioFocus(focus) == AudioManager.AUDIOFOCUS_REQUEST_GRANTED
         if (!hasFocus) return
+        player?.let {
+            if (prepared) {
+                applyMediaVolume(it)
+                if (!focusPaused) it.start()
+            }
+            return
+        }
 
         val next = MediaPlayer()
         player = next
@@ -129,22 +157,32 @@ internal class SystemsMusic(private val context: Context) {
         val level = audio.getStreamVolume(stream)
         val maximum = audio.getStreamMaxVolume(stream).coerceAtLeast(1)
         val fraction = level.coerceIn(0, maximum).toFloat() / maximum
-        // Balance the louder master before adding a boost at the quietest steps.
         val normalGain = MAX_TRACK_GAIN * (0.85f + 0.15f * fraction)
+        // Give the quietest steps more gain while keeping the original track intact.
         val gain = when (level) {
             0 -> 0f
-            1 -> normalGain * 1.585f
-            2 -> normalGain * 1.413f
-            3 -> normalGain * 1.259f
+            in 1..3 -> 1f
+            4 -> 0.9f
             else -> normalGain
         }
         target.setVolume(gain, gain)
+    }
+
+    fun destroy() {
+        setBrowsing(false, false)
+        handler.removeCallbacks(releaseIfHidden)
+        stop()
     }
 
     private fun stop() {
         player?.release()
         player = null
         prepared = false
+        paused = false
+        releaseFocus()
+    }
+
+    private fun releaseFocus() {
         focusPaused = false
         if (hasFocus) {
             hasFocus = false

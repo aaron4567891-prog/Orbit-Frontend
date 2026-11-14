@@ -45,7 +45,24 @@ object SystemCatalog {
         entries = catalogue.sortedWith(compareBy<SystemSpec> { order.indexOf(it.id).let { position -> if (position < 0) Int.MAX_VALUE else position } }.thenBy { it.title })
     }
 }
-data class Game(val title: String, val uri: Uri, val fileName: String = title,val directory:Boolean=false)
+data class Game(val title: String, val uri: Uri, val fileName: String = title,val directory:Boolean=false) {
+    val isPlaylist get() = fileName.substringAfterLast('.').equals("m3u", ignoreCase = true)
+}
+
+internal fun Context.readRomPlaylist(record: RomRecord): List<String> = try {
+    contentResolver.openInputStream(Uri.parse(record.uri))?.bufferedReader()?.use { it.readLines() }.orEmpty()
+} catch (_: java.io.IOException) {
+    emptyList()
+} catch (_: SecurityException) {
+    emptyList()
+}
+
+internal fun Context.gamesForScraping(games: List<Game>): List<Game> {
+    if (games.none { it.isPlaylist }) return games
+    val records = games.map { RomRecord(it.title, it.uri.toString(), it.fileName, it.directory) }
+    val eligible = RomScanner.hidePlaylistDiscs(records, ::readRomPlaylist).mapTo(mutableSetOf()) { it.uri }
+    return games.filter { it.uri.toString() in eligible }
+}
 
 class LibraryRepository(private val context: Context) {
     companion object {
@@ -83,7 +100,8 @@ class LibraryRepository(private val context: Context) {
         val sourceErrors = mutableListOf<String>()
         val sources = paths.mapNotNull { uri -> runCatching { DocumentRomSource(context, uri) }.onFailure { sourceErrors.add("$uri: ${it.message}") }.getOrNull() }
         val extensions = system.extensions + EmulatorProfileRepository(context).forSystem(system).flatMap { it.extensions }
-        val result = ArcadeNames.apply(context, system, RomScanner.scan(sources, extensions, cancelled, progress,detectPs3Folders=system.id=="ps3").let { it.copy(errors = sourceErrors + it.errors) })
+        val result = ArcadeNames.apply(context, system, RomScanner.scan(sources, extensions, cancelled, progress,detectPs3Folders=system.id=="ps3",
+            readPlaylist = context::readRomPlaylist).let { it.copy(errors = sourceErrors + it.errors) })
         if (cancelled()) throw java.util.concurrent.CancellationException()
         val json = org.json.JSONObject().put("folders", org.json.JSONArray(paths.map { it.toString() })).put("scannedAt", System.currentTimeMillis())
             .put("errors", org.json.JSONArray(result.errors)).put("games", org.json.JSONArray(result.games.map { org.json.JSONObject().put("title", it.title).put("uri", it.uri).put("fileName", it.fileName).put("directory",it.directory) }))

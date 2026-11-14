@@ -21,6 +21,17 @@ class PlaylistDiscsTest {
         val playlist = game("GAME.m3u")
         assertEquals(listOf(playlist), RomScanner.hidePlaylistDiscs(listOf(playlist, game("game - Disc 1.chd", "psx/discs"), game("Game (Disk II).iso"))))
     }
+    @Test fun hidesReferencedDiscsWithDifferentNamesAndKeepsUnrelatedFiles() {
+        val playlist = RomRecord("Final Fantasy IX (USA)", "content://provider/tree/primary%3AROMs/document/primary%3AROMs%2Fpsx%2FGame.m3u", "Game.m3u")
+        val disc = RomRecord("Final Fantasy IX", "content://provider/tree/primary%3AROMs%2Fpsx/document/primary%3AROMs%2Fpsx%2Fdiscs%2FDisc%202%20(Rev%201)%20(1).chd", "Disc 2 (Rev 1) (1).chd")
+        val otherDisc = game(disc.fileName, "other")
+        val records = listOf(playlist, disc, otherDisc)
+        val visible = RomScanner.hidePlaylistDiscs(records) {
+            listOf("\uFEFF#EXTM3U", "", "discs\\disc 2 (rev 1) (1).chd")
+        }
+        assertEquals(listOf(playlist, otherDisc), visible)
+    }
+
     @Test fun noPlaylistLeavesDiscsVisible() {
         val disc = game("Game (Disc 1).chd")
         assertEquals(listOf(disc), RomScanner.hidePlaylistDiscs(listOf(disc)))

@@ -19,23 +19,47 @@ object RomScanner {
     private val discExtensions = setOf("cue", "bin", "img", "iso", "chd", "pbp", "cso", "gdi", "ccd", "mds", "mdf", "nrg")
     private val discTag = Regex("[\\[(]\\s*(?:disc|disk|cd)\\s*[-_. ]*\\s*(?:[0-9]+|[ivx]+)(?:\\s+of\\s+[0-9]+)?\\s*[\\])]", RegexOption.IGNORE_CASE)
     private val discSuffix = Regex("[\\s._-]+(?:disc|disk|cd)[\\s._-]*(?:[0-9]+|[ivx]+)$", RegexOption.IGNORE_CASE)
+    internal fun hasDiscMarker(name: String): Boolean = discTag.containsMatchIn(name) || discSuffix.containsMatchIn(name)
     private fun playlistName(name: String) = name.substringBeforeLast('.').replace(discTag, " ").replace(discSuffix, "")
         .trim().lowercase(java.util.Locale.ROOT).replace(Regex("\\s+"), " ")
-    private fun parent(record: RomRecord): String {
+    private fun documentPath(record: RomRecord): String {
         val decoded = java.net.URLDecoder.decode(record.uri.replace("+", "%2B"), "UTF-8")
         // SAF trees may differ for the same document, so use the document identity.
-        val identity = if ("/document/" in decoded) decoded.substringBefore("/tree/") + "/document/" + decoded.substringAfter("/document/") else decoded
-        return identity.substringBeforeLast('/', identity)
+        return if ("/document/" in decoded) decoded.substringBefore("/tree/") + "/document/" + decoded.substringAfter("/document/") else decoded
     }
-    fun hidePlaylistDiscs(records: List<RomRecord>): List<RomRecord> {
+    private fun parent(record: RomRecord): String = documentPath(record).substringBeforeLast('/')
+
+    private fun playlistDiscPath(folder: String, entry: String): String? {
+        val path = entry.trim().removePrefix("\uFEFF").trim().trim('"').replace('\\', '/')
+        if (path.isEmpty() || path.startsWith('#') || path.startsWith('/') || ':' in path) return null
+        val segments = folder.split('/').toMutableList()
+        val rootSize = if ("/document/" in folder) folder.substringBefore("/document/").split('/').size + 2 else 3
+        for (segment in path.split('/')) {
+            when (segment) {
+                "", "." -> Unit
+                ".." -> if (segments.size > rootSize) segments.removeAt(segments.lastIndex) else return null
+                else -> segments.add(segment)
+            }
+        }
+        return segments.joinToString("/").lowercase(java.util.Locale.ROOT)
+    }
+
+    fun hidePlaylistDiscs(records: List<RomRecord>, readPlaylist: (RomRecord) -> List<String> = { emptyList() }): List<RomRecord> {
         val playlists = records.filter { it.fileName.substringAfterLast('.').equals("m3u", true) }
-            .groupBy { playlistName(it.fileName) }.mapValues { (_, entries) -> entries.map(::parent) }
         if (playlists.isEmpty()) return records
+        val foldersByName = playlists.groupBy { playlistName(it.fileName) }
+            .mapValues { (_, entries) -> entries.map(::parent) }
+        val listedDiscs = playlists.flatMapTo(mutableSetOf()) { playlist ->
+            val folder = parent(playlist)
+            readPlaylist(playlist).mapNotNull { playlistDiscPath(folder, it) }
+        }
         return records.filter { game ->
             if (game.fileName.substringAfterLast('.').lowercase(java.util.Locale.ROOT) !in discExtensions) true
             else {
-                val folder = parent(game)
-                playlists[playlistName(game.fileName)].orEmpty().none { folder == it || folder.startsWith("$it/") }
+                val path = documentPath(game)
+                val folder = path.substringBeforeLast('/')
+                path.lowercase(java.util.Locale.ROOT) !in listedDiscs &&
+                    foldersByName[playlistName(game.fileName)].orEmpty().none { folder == it || folder.startsWith("$it/") }
             }
         }
     }
@@ -63,7 +87,8 @@ object RomScanner {
         }
         return Discovery(matches, notes)
     }
-    fun scan(sources: List<RomSource>, extensions: Set<String>, cancelled: () -> Boolean = { false }, progress: (Int) -> Unit = {},detectPs3Folders:Boolean=false): RomScanResult {
+    fun scan(sources: List<RomSource>, extensions: Set<String>, cancelled: () -> Boolean = { false }, progress: (Int) -> Unit = {},detectPs3Folders:Boolean=false,
+        readPlaylist: (RomRecord) -> List<String> = { emptyList() }): RomScanResult {
         val supported = if (extensions.any { it.lowercase() in discExtensions }) extensions + "m3u" else extensions
         val games = linkedMapOf<String, RomRecord>()
         val errors = mutableListOf<String>()
@@ -103,7 +128,7 @@ object RomScanner {
                 }
             }
         }
-        val visible = hidePlaylistDiscs(games.values.toList())
+        val visible = hidePlaylistDiscs(games.values.toList(), readPlaylist)
         progress(visible.size)
         return RomScanResult(visible.sortedWith(compareBy<RomRecord> { it.title.lowercase() }.thenBy { it.uri }), errors)
     }

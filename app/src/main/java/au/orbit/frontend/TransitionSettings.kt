@@ -12,6 +12,38 @@ internal object TransitionSettings {
 
     enum class View(val id: String) { SYSTEMS("systems"), GAMES("games") }
 
+    enum class ArtworkAnimation(val id: Int, val label: String) {
+        DEFAULT(0, "Default"),
+        INSTANT(1, "Instant"),
+        FADE(2, "Fade"),
+        SLIDE(3, "Slide up"),
+        ZOOM(4, "Zoom in");
+
+        companion object {
+            const val KEY = "artworkAnimation"
+            fun selected(): ArtworkAnimation {
+                val id = int(KEY, DEFAULT.id, View.GAMES)
+                return entries.firstOrNull { it.id == id } ?: DEFAULT
+            }
+        }
+    }
+
+    enum class LaunchAnimation(val id: Int, val label: String, val enter: Int, val exit: Int) {
+        DEFAULT(0, "Android default", 0, 0),
+        INSTANT(1, "Instant", R.anim.screen_swap_hold, R.anim.screen_swap_hold),
+        FADE(2, "Fade", R.anim.game_launch_fade, R.anim.game_launch_hold),
+        SLIDE(3, "Slide up", R.anim.game_launch_slide, R.anim.game_launch_hold),
+        ZOOM(4, "Zoom in", R.anim.game_launch_zoom, R.anim.game_launch_hold);
+
+        companion object {
+            const val KEY = "launchAnimation"
+            fun selected(): LaunchAnimation {
+                val id = int(KEY, DEFAULT.id, View.GAMES)
+                return entries.firstOrNull { it.id == id } ?: DEFAULT
+            }
+        }
+    }
+
     private fun scoped(key: String, view: View) = "animation.${view.id}.$key"
     private fun themed(key: String) = "$key.${OrbitThemes.current().id}"
 

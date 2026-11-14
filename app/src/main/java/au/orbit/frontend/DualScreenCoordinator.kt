@@ -80,6 +80,12 @@ object DualScreenCoordinator : DisplayManager.DisplayListener {
         if(mainHost.get()===host)panel.get()?.takeIf { !it.isDestroyed && !it.isFinishing }
             ?.showCompanionGame(system,game)
     }
+    internal fun showCachedFanArt(host: MainActivity, system: SystemSpec, game: Game) {
+        if (mainHost.get() === host) panel.get()?.showCachedCompanionFanArt(system, game)
+    }
+    internal fun setWheelScrolling(host: MainActivity, scrolling: Boolean) {
+        if (mainHost.get() === host) panel.get()?.setCompanionWheelScrolling(scrolling)
+    }
     internal fun toggleCompanionVideo(system:SystemSpec,game:Game):Boolean = panel.get()
         ?.takeIf { it.showingCompanion && !it.isDestroyed && !it.isFinishing }
         ?.toggleCompanionVideo(system,game)==true

@@ -45,6 +45,8 @@ class GameVideoPreview(
     private var source: Uri? = null
     private var pending: Runnable? = null
     private var ready = false
+    private var prepared = false
+    private var navigationPaused = false
     private var renderingStarted = false
     private var textureUpdated = false
     internal var hasVisibleFrame = false
@@ -106,6 +108,7 @@ class GameVideoPreview(
     private fun canPlay() = power.isInteractive && windowVisibility == View.VISIBLE && isShown
 
     private fun releasePlayback() {
+        prepared = false
         renderingStarted = false
         textureUpdated = false
         hasVisibleFrame = false
@@ -133,6 +136,28 @@ class GameVideoPreview(
         releaseAudio()
     }
 
+    internal fun setNavigationPaused(paused: Boolean) {
+        if (navigationPaused == paused) return
+        navigationPaused = paused
+        if (paused) {
+            val current = player
+            if (prepared && current?.isPlaying == true) current.pause()
+            releaseAudio()
+        } else {
+            val current = player
+            if (current != null && prepared && source != null && canPlay()) playPrepared(current)
+            else startVideo()
+        }
+    }
+
+    private fun playPrepared(media: MediaPlayer) {
+        media.start()
+        if (media.trackInfo.any { it.trackType == MediaPlayer.TrackInfo.MEDIA_TRACK_TYPE_AUDIO }) {
+            playingPreviews.add(this)
+            selectAudiblePreview()
+        }
+    }
+
     private fun requestPreviewAudio() {
         audioFocused = audio.requestAudioFocus(focus) == AudioManager.AUDIOFOCUS_REQUEST_GRANTED
         if (audioFocused) player?.setVolume(1f, 1f)
@@ -158,7 +183,7 @@ class GameVideoPreview(
     private fun startVideo() {
         val uri=source ?: return
         val texture=surfaceTexture ?: return
-        if(!ready || player!=null || !canPlay())return
+        if(!ready || navigationPaused || player!=null || !canPlay())return
         val next=MediaPlayer()
         player=next
         runCatching {
@@ -171,11 +196,8 @@ class GameVideoPreview(
                 if (player === it) {
                     if (canPlay()) {
                         it.isLooping = true
-                        it.start()
-                        if (it.trackInfo.any { track -> track.trackType == MediaPlayer.TrackInfo.MEDIA_TRACK_TYPE_AUDIO }) {
-                            playingPreviews.add(this)
-                            selectAudiblePreview()
-                        }
+                        prepared = true
+                        if (!navigationPaused) playPrepared(it)
                     } else releasePlayback()
                 }
             }

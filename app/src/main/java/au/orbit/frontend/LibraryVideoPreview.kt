@@ -15,13 +15,40 @@ internal class LibraryVideoPreview(
     private var active: GameVideoPreview? = null
     private var held: GameVideoPreview? = null
     private val blendEase = DecelerateInterpolator()
+    private var navigationPaused = false
+    private var waitingToResume = false
+    private var pendingClip: Pair<Uri, Long>? = null
+    private val resumePreview = Runnable {
+        waitingToResume = false
+        if (!navigationPaused) {
+            val next = pendingClip
+            pendingClip = null
+            if (next != null) show(next.first, next.second)
+            else active?.setNavigationPaused(false)
+        }
+    }
     var frameReadyChanged: ((Boolean) -> Unit)? = null
+
+    fun setWheelScrolling(scrolling: Boolean) {
+        if (!keepFrame || navigationPaused == scrolling) return
+        navigationPaused = scrolling
+        removeCallbacks(resumePreview)
+        waitingToResume = !scrolling
+        if (scrolling) active?.setNavigationPaused(true)
+        else postDelayed(resumePreview, 100L)
+    }
 
     fun show(uri: Uri?, delay: Long) {
         if (uri == null) {
             stop()
             return
         }
+        if (navigationPaused || waitingToResume) {
+            pendingClip = uri to delay
+            return
+        }
+        pendingClip = null
+        removeCallbacks(resumePreview)
         val current = active
         if (!keepFrame && current != null) {
             current.show(uri, delay)
@@ -89,6 +116,8 @@ internal class LibraryVideoPreview(
     }
 
     fun fadeOut() {
+        pendingClip = null
+        removeCallbacks(resumePreview)
         val current = active
         val outgoing = current?.takeIf { it.hasVisibleFrame && (held?.hasVisibleFrame != true || it.alpha >= 0.5f) }
             ?: held?.takeIf { it.hasVisibleFrame }
@@ -111,6 +140,9 @@ internal class LibraryVideoPreview(
     }
 
     fun stop() {
+        pendingClip = null
+        removeCallbacks(resumePreview)
+        waitingToResume = false
         val current = active
         active = null
         current?.animate()?.cancel()

@@ -20,10 +20,13 @@ internal class GameWheelView(
     context: Context,
     private val games: List<Game>,
     private val vertical: Boolean,
+    private val artworkScale: Float,
     initial: Int,
     private val theme: OrbitThemes.Theme,
-    private val bindArtwork: (FrameLayout, TextView, Game) -> Unit,
+    private val bindArtwork: (FrameLayout, TextView, Game, ((() -> Unit) -> Unit)?) -> Unit,
     private val selected: (Int) -> Unit,
+    private val settled: () -> Unit,
+    private val motionChanged: (Boolean) -> Unit,
     private val open: (Int) -> Unit
 ) : RecyclerView(context) {
     private val layout = object : LinearLayoutManager(context, if (vertical) VERTICAL else HORIZONTAL, false) {
@@ -38,6 +41,7 @@ internal class GameWheelView(
     private var itemExtent = 0
     private var cursor = initial.coerceIn(games.indices)
     private var touchScrolling = false
+    private var moving = false
     private var stepInFlight = false
     private var confirmDownTime: Long? = null
     private var controllerTarget: Int? = null
@@ -46,7 +50,17 @@ internal class GameWheelView(
     private var lastFrameNanos = 0L
     private var pixelRemainder = 0f
     private val controllerFrame = android.view.Choreographer.FrameCallback(::moveControllerFrame)
-    internal val isWheelMoving get() = controllerTarget != null || scrollState != SCROLL_STATE_IDLE
+    private val artworkUpdates = LinkedHashMap<View, () -> Unit>()
+    private val applyNextArtwork = object : Runnable {
+        override fun run() {
+            val next = artworkUpdates.entries.firstOrNull() ?: return
+            val view = next.key
+            val apply = next.value
+            artworkUpdates.remove(view)
+            apply()
+            if (artworkUpdates.isNotEmpty()) postOnAnimation(this)
+        }
+    }
 
     private fun dp(value: Int) = (value * resources.displayMetrics.density).toInt()
 
@@ -85,10 +99,24 @@ internal class GameWheelView(
 
             override fun onBindViewHolder(holder: ViewHolder, position: Int) {
                 val cell = holder.itemView as FrameLayout
-                cell.layoutParams = LayoutParams(if (vertical) -1 else itemExtent, if (vertical) itemExtent else -1)
+                artworkUpdates.remove(cell)
+                val width = if (vertical) -1 else itemExtent
+                val height = if (vertical) itemExtent else -1
+                val params = cell.layoutParams
+                if (params == null || params.width != width || params.height != height) {
+                    cell.layoutParams = LayoutParams(width, height)
+                }
                 val label = cell.getChildAt(0) as TextView
                 label.text = games[position].title
-                bindArtwork(cell, label, games[position])
+                bindArtwork(cell, label, games[position], { apply ->
+                    if (moving && cell.isAttachedToWindow) {
+                        if (artworkUpdates.isEmpty()) {
+                            removeCallbacks(applyNextArtwork)
+                            postOnAnimation(applyNextArtwork)
+                        }
+                        artworkUpdates[cell] = apply
+                    } else apply()
+                })
                 cell.isSelected = position == cursor
                 label.setTextColor(theme.text)
             }
@@ -98,14 +126,18 @@ internal class GameWheelView(
                 if (newState == SCROLL_STATE_DRAGGING) {
                     clearSteps()
                     touchScrolling = true
+                    setMoving(true)
                 } else if (newState == SCROLL_STATE_IDLE) {
                     if (touchScrolling) {
                         touchScrolling = false
                         followCenter()
-                        postOnAnimation { if (scrollState == SCROLL_STATE_IDLE && !stepInFlight) center(cursor) }
+                        postOnAnimation {
+                            if (scrollState == SCROLL_STATE_IDLE && controllerTarget == null && !stepInFlight) center(cursor)
+                        }
                     } else if (stepInFlight) {
                         stepInFlight = false
                         followCenter()
+                        finishMotion()
                     }
                 }
             }
@@ -120,9 +152,12 @@ internal class GameWheelView(
     override fun onMeasure(widthSpec: Int, heightSpec: Int) {
         val extent = MeasureSpec.getSize(if (vertical) heightSpec else widthSpec)
         if (extent > 0) {
-            val nextExtent = (extent / if (vertical) 5 else 3).coerceAtLeast(dp(48)).coerceAtMost(extent)
+            val visibleSlots = if (vertical) 5 else 3
+            val nextExtent = (extent * artworkScale / visibleSlots).roundToInt()
+                .coerceAtLeast(dp(48)).coerceAtMost(extent)
             if (nextExtent != itemExtent) {
                 clearSteps()
+                setMoving(false)
                 itemExtent = nextExtent
                 val inset = (extent - itemExtent) / 2
                 val trailingInset = extent - itemExtent - inset
@@ -145,16 +180,19 @@ internal class GameWheelView(
 
     private fun updateWheelPositions() {
         if (itemExtent <= 0) return
+        val viewport = if (vertical) height else width
+        val center = viewportCenter
         for (index in 0 until childCount) {
             val item = getChildAt(index)
-            val distance = abs(itemCenter(item) - viewportCenter - pixelRemainder) / itemExtent
+            val position = itemCenter(item) - pixelRemainder
+            if (position < -itemExtent / 2f || position > viewport + itemExtent / 2f) continue
+            val distance = abs(position - center) / itemExtent
             val emphasis = (1f - distance * 0.30f).coerceIn(0.4f, 1f)
             val scale = 0.65f + 0.35f * emphasis
             item.scaleX = scale
             item.scaleY = scale
             item.alpha = emphasis
-            item.translationX = if (vertical) 0f else -pixelRemainder
-            item.translationY = if (vertical) -pixelRemainder else 0f
+            if (vertical) item.translationY = -pixelRemainder else item.translationX = -pixelRemainder
         }
     }
 
@@ -182,6 +220,7 @@ internal class GameWheelView(
         else {
             moveCursor(target)
             layout.scrollToPositionWithOffset(target, 0)
+            finishMotion()
         }
     }
 
@@ -193,6 +232,7 @@ internal class GameWheelView(
         if (anchor == null || anchorPosition == NO_POSITION || itemExtent <= 0) {
             moveCursor(target)
             layout.scrollToPositionWithOffset(target, 0)
+            finishMotion()
             return
         }
         val item = layout.findViewByPosition(target)
@@ -201,9 +241,11 @@ internal class GameWheelView(
         val delta = targetCenter - viewportCenter
         if (delta == 0) {
             moveCursor(target)
+            finishMotion()
             return
         }
         stepInFlight = true
+        setMoving(true)
         val duration = (abs(delta) * 185f / itemExtent).toInt().coerceIn(90, 280)
         smoothScrollBy(if (vertical) 0 else delta, if (vertical) delta else 0, scrollEase, duration)
     }
@@ -232,12 +274,13 @@ internal class GameWheelView(
             android.view.Choreographer.getInstance().postFrameCallback(controllerFrame)
         }
         controllerTarget = target
+        setMoving(true)
     }
 
     private fun moveControllerFrame(frameNanos: Long) {
         val target = controllerTarget ?: return
         if (!isShown) {
-            clearSteps()
+            endMotion()
             return
         }
         val dt = if (lastFrameNanos == 0L) 1f / 90f
@@ -268,6 +311,7 @@ internal class GameWheelView(
             if (correction != 0) scrollBy(if (vertical) 0 else correction, if (vertical) correction else 0)
             moveCursor(target)
             updateWheelPositions()
+            finishMotion()
         }
     }
 
@@ -280,9 +324,30 @@ internal class GameWheelView(
         stepInFlight = false
     }
 
-    override fun onDetachedFromWindow() {
+    private fun setMoving(value: Boolean) {
+        if (moving == value) return
+        moving = value
+        motionChanged(value)
+    }
+
+    private fun finishMotion() {
+        settled()
+        setMoving(false)
+    }
+
+    fun endMotion() {
         clearSteps()
         touchScrolling = false
+        stopScroll()
+        setMoving(false)
+    }
+
+    override fun onDetachedFromWindow() {
+        removeCallbacks(applyNextArtwork)
+        // Cached holders can be reused when the wheel is shown again.
+        artworkUpdates.values.forEach { it() }
+        artworkUpdates.clear()
+        endMotion()
         confirmDownTime = null
         super.onDetachedFromWindow()
     }

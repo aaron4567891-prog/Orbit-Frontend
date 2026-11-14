@@ -71,6 +71,15 @@ class CompanionPanel(private val activity:MainActivity) {
         if(mediaActive)prepareArtwork().preload(system,game)
     }
 
+    internal fun showCachedFanArt(system: SystemSpec, game: Game) {
+        if (mediaActive && mediaHost.isShown) artwork?.showCachedFanArt(system, game)
+    }
+
+    internal fun setWheelScrolling(scrolling: Boolean) {
+        view.setWheelScrolling(scrolling)
+        artwork?.setWheelScrolling(scrolling)
+    }
+
     internal fun showGame(system:SystemSpec,game:Game,refresh:Boolean=false) {
         if(!mediaActive)return
         view.prepareGameView()

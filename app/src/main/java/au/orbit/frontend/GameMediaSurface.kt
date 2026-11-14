@@ -73,6 +73,7 @@ internal class GameMediaSurface(context:Context,val content:View, audioPriority:
         }
     }
     fun pause() { video.stop();playing=null }
+    fun setWheelScrolling(scrolling: Boolean) = video.setWheelScrolling(scrolling)
     fun showBrowse(drawable: Drawable, systemArtwork: Boolean = false) {
         pause();video.visibility=GONE;shade.visibility=GONE
         show(drawable, TransitionSettings.View.SYSTEMS.takeIf { systemArtwork })

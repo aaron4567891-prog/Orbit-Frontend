@@ -6,6 +6,7 @@ import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.ColorFilter
 import android.graphics.PixelFormat
+import android.graphics.Paint
 import android.graphics.RectF
 import android.graphics.drawable.Drawable
 
@@ -21,6 +22,10 @@ internal class GameMediaBackground(private val context:Context):Drawable() {
     private var fadingFromPhysicalMedia = false
     private var fadeProgress=1f
     private var fadeAnimator:android.animation.ValueAnimator?=null
+    private var animation = TransitionSettings.ArtworkAnimation.DEFAULT
+    private val artworkBounds = RectF()
+    private val layerBounds = RectF()
+    private val artworkPaint = Paint(Paint.FILTER_BITMAP_FLAG)
     private fun currentBitmap():Bitmap? {
         val custom=media[GameCustomArtwork.HERO]
         if(custom==null && mode=="off")return null
@@ -38,15 +43,22 @@ internal class GameMediaBackground(private val context:Context):Drawable() {
         if (before === after) return
         val enteringMedia = before == null && after != null
         val leavingMedia = before != null && after == null
+        animation = TransitionSettings.ArtworkAnimation.selected()
         val blendArtwork = mode != "fanart" && before != null &&
             GameMediaSurface.artCrossfadeEnabled(TransitionSettings.View.GAMES)
         fadeAnimator?.cancel()
-        if (enteringMedia || leavingMedia || blendArtwork) {
+        val shouldAnimate = when (animation) {
+            TransitionSettings.ArtworkAnimation.DEFAULT -> enteringMedia || leavingMedia || blendArtwork
+            TransitionSettings.ArtworkAnimation.INSTANT -> false
+            else -> true
+        }
+        if (shouldAnimate) {
             fadingFrom=before;fadeProgress=0f
             fadingFromTheme = enteringMedia
             fadingFromPhysicalMedia = wasPhysicalMedia
             fadeAnimator=android.animation.ValueAnimator.ofFloat(0f,1f).apply {
-                duration=if (enteringMedia || leavingMedia) 140L else GameMediaSurface.ART_CROSSFADE_MS.toLong()
+                duration=if (animation == TransitionSettings.ArtworkAnimation.DEFAULT && (enteringMedia || leavingMedia))
+                    140L else GameMediaSurface.ART_CROSSFADE_MS.toLong()
                 addUpdateListener { fadeProgress=it.animatedValue as Float;invalidateSelf() }
                 addListener(object:android.animation.AnimatorListenerAdapter() {
                     override fun onAnimationEnd(animation:android.animation.Animator) {
@@ -72,13 +84,33 @@ internal class GameMediaBackground(private val context:Context):Drawable() {
         return true
     }
     override fun draw(canvas:Canvas) {
+        if (fadeProgress < 1f && (fadingFrom != null || fadingFromTheme) && currentBitmap() != null &&
+            (animation == TransitionSettings.ArtworkAnimation.SLIDE || animation == TransitionSettings.ArtworkAnimation.ZOOM)) {
+            drawPrevious(canvas)
+            layerBounds.set(bounds)
+            val layer = canvas.saveLayerAlpha(layerBounds, (fadeProgress * 255).toInt())
+            canvas.clipRect(bounds)
+            if (animation == TransitionSettings.ArtworkAnimation.SLIDE) {
+                canvas.translate(0f, bounds.height() * 0.15f * (1f - fadeProgress))
+            } else {
+                val scale = 0.90f + fadeProgress * 0.10f
+                canvas.scale(scale, scale, bounds.exactCenterX(), bounds.exactCenterY())
+            }
+            drawMedia(canvas)
+            canvas.restoreToCount(layer)
+            return
+        }
         drawMedia(canvas)
         if (fadeProgress >= 1f || (fadingFrom == null && !fadingFromTheme)) return
-        val layer=canvas.saveLayerAlpha(RectF(bounds),((1f-fadeProgress)*255).toInt())
+        layerBounds.set(bounds)
+        val layer=canvas.saveLayerAlpha(layerBounds,((1f-fadeProgress)*255).toInt())
+        drawPrevious(canvas)
+        canvas.restoreToCount(layer)
+    }
+    private fun drawPrevious(canvas: Canvas) {
         if (fadingFromTheme) {
             if (mode=="off") canvas.drawColor(OrbitThemes.current().background) else drawFallback(canvas)
         } else fadingFrom?.let { drawArtwork(canvas, it, fadingFromPhysicalMedia) }
-        canvas.restoreToCount(layer)
     }
     private fun drawMedia(canvas:Canvas) {
         val custom=media[GameCustomArtwork.HERO]
@@ -96,7 +128,16 @@ internal class GameMediaBackground(private val context:Context):Drawable() {
         if (physicalMedia) {
             drawFallback(canvas)
         }
-        OrbitThemeArtwork.drawImage(canvas, bitmap, RectF(bounds), cover = true)
+        val area = bounds
+        val scale = maxOf(area.width().toFloat() / bitmap.width, area.height().toFloat() / bitmap.height)
+        val halfWidth = bitmap.width * scale / 2f
+        val halfHeight = bitmap.height * scale / 2f
+        artworkBounds.set(area.exactCenterX() - halfWidth, area.exactCenterY() - halfHeight,
+            area.exactCenterX() + halfWidth, area.exactCenterY() + halfHeight)
+        val save = canvas.save()
+        canvas.clipRect(area)
+        canvas.drawBitmap(bitmap, null, artworkBounds, artworkPaint)
+        canvas.restoreToCount(save)
         if (!physicalMedia) canvas.drawColor(Color.argb(85, 0, 0, 0))
     }
     override fun setAlpha(alpha:Int)=Unit

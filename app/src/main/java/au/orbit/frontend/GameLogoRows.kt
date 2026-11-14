@@ -75,7 +75,7 @@ class GameLogoRows(private val context:Context) {
         row:FrameLayout,text:TextView,system:SystemSpec,game:Game,enabled:Boolean,
         mediaType:String="marquee",fallbackMediaType:String?=null,spinDiscs:Boolean=false,
         showTitleWhileLoading:Boolean=true,onArtworkPending:((Boolean)->Unit)?=null,
-        blendFromTitle:Boolean=false
+        blendFromTitle:Boolean=false, scheduleArtwork: ((() -> Unit) -> Unit)? = null
     ) {
         val image=(row.getChildAt(1) as? ImageView) ?: GameTileArtworkView(context).apply {
             scaleType=ImageView.ScaleType.FIT_CENTER;isFocusable=false
@@ -122,7 +122,12 @@ class GameLogoRows(private val context:Context) {
         val awaitingArtwork=image.drawable==null
         if(!showTitleWhileLoading && awaitingArtwork)text.visibility=View.INVISIBLE
         onArtworkPending?.invoke(awaitingArtwork)
-        request(key) { display(it, loadedAsync = true) }
+        request(key) { artwork ->
+            if (row.tag === binding) {
+                if (scheduleArtwork == null) display(artwork, loadedAsync = true)
+                else scheduleArtwork { display(artwork, loadedAsync = true) }
+            }
+        }
     }
 
     private fun request(key:ArtworkKey,callback:(Artwork?)->Unit) {

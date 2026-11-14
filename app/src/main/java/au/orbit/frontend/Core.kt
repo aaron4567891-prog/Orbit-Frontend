@@ -179,7 +179,10 @@ class EmulatorLaunchManager(private val activity: Activity) {
     }
     private fun open(game:Game,displayId:Int,intent:Intent) {
         val source=DualScreenCoordinator.launchSource(activity,displayId)
-        source.startActivity(intent, DualScreenManager(source).options(displayId))
+        val animation = TransitionSettings.LaunchAnimation.selected()
+        val options = if (animation == TransitionSettings.LaunchAnimation.DEFAULT) ActivityOptions.makeBasic()
+            else ActivityOptions.makeCustomAnimation(source, animation.enter, animation.exit)
+        source.startActivity(intent, options.setLaunchDisplayId(displayId).toBundle())
         DualScreenCoordinator.gameLaunched(activity,displayId)
         GameSessionManager.lastGame = game.title
         GameSessionManager.displayName = "Display $displayId"

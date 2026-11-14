@@ -42,6 +42,12 @@ open class MainActivity : Activity() {
     fun refreshCompanionMedia(refresh:Boolean=false) { companionPanel?.refreshMedia(refresh) }
     internal fun preloadCompanionGame(system:SystemSpec,game:Game) { companionPanel?.preloadGame(system,game) }
     internal fun showCompanionGame(system:SystemSpec,game:Game) { companionPanel?.showGame(system,game) }
+    internal fun showCachedCompanionFanArt(system: SystemSpec, game: Game) {
+        companionPanel?.showCachedFanArt(system, game)
+    }
+    internal fun setCompanionWheelScrolling(scrolling: Boolean) {
+        companionPanel?.setWheelScrolling(scrolling)
+    }
     internal fun toggleCompanionVideo(system:SystemSpec,game:Game)=companionPanel?.toggleVideoPreview(system,game)==true
     internal fun finishCompanionVideo() { companionPanel?.finishVideoPreview() }
     internal val companionVideoActive get()=companionPanel?.manualVideoActive==true
@@ -290,6 +296,10 @@ open class MainActivity : Activity() {
             super.setContentView(shell)
         }
         val previousLibraryPage = tabViews[if (library) 0 else 6]
+        val systemSwitch = pendingGameListSwitch.takeIf { !warmingTabs && activeTab == 0 && library }
+        if (!warmingTabs) pendingGameListSwitch = null
+        val switchOutgoing = systemSwitch?.let { tabViews[6] }?.takeIf { it !== view && it.isShown && it.parent === host }
+        val switchBackground = host.background
         val switchingLibraryViews = !warmingTabs && activeTab == 0 &&
             previousLibraryPage != null && previousLibraryPage !== view && previousLibraryPage.isShown
         if(!warmingTabs) {
@@ -346,7 +356,7 @@ open class MainActivity : Activity() {
         }
         val slot = if (!ready) -1 else if (activeTab == 0 && library) 6 else activeTab
         val previous = tabViews.put(slot, view)
-        if (previous != null && previous !== view) host.removeView(previous)
+        if (previous != null && previous !== view && previous !== switchOutgoing) host.removeView(previous)
         if (view.parent == null) host.addView(view, FrameLayout.LayoutParams(-1, -1))
         if (!warmingTabs) {
             updateSystemsMusic()
@@ -363,7 +373,11 @@ open class MainActivity : Activity() {
         }
         val outgoing=crossfadeOutgoing
         crossfadeOutgoing=null
-        if(!warmingTabs && outgoing!=null && outgoing.parent===host)startCrossfade(host,outgoing,crossfadeBackground,view,opening=crossfadeOpening)
+        if (switchOutgoing != null) {
+            startCrossfade(host, switchOutgoing, switchBackground, view, opening = true, systemSwitch = systemSwitch)
+        } else if(!warmingTabs && outgoing!=null && outgoing.parent===host) {
+            startCrossfade(host,outgoing,crossfadeBackground,view,opening=crossfadeOpening)
+        }
         crossfadeBackground=null
     }
     // 150 ms reads as a background fade on the Thor; 90 ms already reads as a flash.
@@ -386,6 +400,26 @@ open class MainActivity : Activity() {
     private val pageTransitionOrder=listOf(0,1,4,5,6,7,3)
     private val instantTransition=3
     private object Transition { const val FADE=0; const val SLIDE_X=1; const val SLIDE_Y=2; const val ZOOM=4; const val SCALE=5; const val FLIP=6; const val DIP=7 }
+    private enum class SystemSwitchAnimation(val label: String, val transition: Int) {
+        INSTANT("Instant", 3),
+        FADE("Fade", Transition.FADE),
+        SLIDE("Slide", Transition.SLIDE_X),
+        ZOOM("Zoom", Transition.ZOOM)
+    }
+    private data class GameListSwitch(val animation: SystemSwitchAnimation, val speed: Int, val slideDirection: Int)
+    private var pendingGameListSwitch: GameListSwitch? = null
+    private val systemSwitchAnimationKey = "gameListSystemSwitchAnimation"
+    private val systemSwitchSpeedKey = "gameListSystemSwitchSpeed"
+    private val systemSwitchDirectionKey = "gameListSystemSwitchDirection"
+    private val slideDirectionLabels = listOf("From right", "From left", "From bottom", "From top")
+    private val systemSwitchDirectionLabels = listOf("Follow L/R") + slideDirectionLabels
+    private fun systemSwitchAnimation() = SystemSwitchAnimation.entries.getOrElse(
+        TransitionSettings.int(systemSwitchAnimationKey, 0, TransitionSettings.View.GAMES)
+    ) { SystemSwitchAnimation.INSTANT }
+    private fun systemSwitchSpeed() = TransitionSettings.int(systemSwitchSpeedKey, 1, TransitionSettings.View.GAMES)
+        .coerceIn(transitionSpeedLabels.indices)
+    private fun systemSwitchDirection() = TransitionSettings.int(systemSwitchDirectionKey, 0, TransitionSettings.View.GAMES)
+        .coerceIn(systemSwitchDirectionLabels.indices)
     // Dip: the old page fades away, the background holds briefly, then the new page fades in.
     // Systems fading out is the big brightness drop, so it keeps 100 ms; the blank and the game list
     // fading in (mostly background) can be shorter.
@@ -418,7 +452,7 @@ open class MainActivity : Activity() {
     }
     /** The Direction choices for a style, or null when the style has no direction. */
     private fun transitionDirectionLabels(style:Int):List<String>? = when(style) {
-        Transition.SLIDE_X,Transition.SLIDE_Y -> listOf("From right","From left","From bottom","From top")
+        Transition.SLIDE_X,Transition.SLIDE_Y -> slideDirectionLabels
         Transition.FLIP -> flipDirectionLabels
         Transition.ZOOM -> listOf("From tile","From centre")
         Transition.SCALE -> listOf("Grow in","Shrink in")
@@ -465,9 +499,9 @@ open class MainActivity : Activity() {
      * while the old one fades. Flip: the page turns over like a card.
      */
     private fun startCrossfade(host:FrameLayout,outgoing:View,background:android.graphics.drawable.Drawable?,
-        incoming:View,opening:Boolean) {
+        incoming:View,opening:Boolean, systemSwitch: GameListSwitch? = null) {
         val animationView = libraryTransitionView(opening)
-        val style = pageTransition(animationView)
+        val style = systemSwitch?.animation?.transition ?: pageTransition(animationView)
         val params=outgoing.layoutParams
         host.removeView(outgoing)
         host.addView(outgoing,params)
@@ -484,7 +518,7 @@ open class MainActivity : Activity() {
         } }
         // Slide Direction: 0 from right, 1 from left, 2 from bottom, 3 from top.
         val slideDirection = if (style == Transition.SLIDE_X || style == Transition.SLIDE_Y) {
-            transitionDirection(style, animationView)
+            systemSwitch?.slideDirection ?: transitionDirection(style, animationView)
         } else 0
         val vertical=slideDirection>=2
         val slideSign=if(slideDirection==1 || slideDirection==3)-1f else 1f
@@ -496,10 +530,11 @@ open class MainActivity : Activity() {
         val gamePage=if(opening)incoming else outgoing
         val systemsPage=if(opening)outgoing else incoming
         // Zoom Direction: 0 grows out of the selected tile, 1 grows from the centre.
-        val tile=if(style==Transition.ZOOM && transitionDirection(style, animationView)==0)selectedTileRect(systemsPage,host) else null
+        val tile=if(systemSwitch==null && style==Transition.ZOOM && transitionDirection(style, animationView)==0)selectedTileRect(systemsPage,host) else null
         // Scale Direction: 0 grows in from slightly smaller, 1 shrinks in from slightly larger.
         val scaleFrom=if(transitionDirection(Transition.SCALE, animationView)==0)0.92f else 1.08f
-        val zoomFrom=tile?.let { maxOf(it.width()/host.width,it.height()/host.height).coerceIn(0.05f,1f) } ?: 0.3f
+        val zoomFrom=tile?.let { maxOf(it.width()/host.width,it.height()/host.height).coerceIn(0.05f,1f) }
+            ?: if (systemSwitch != null) 0.88f else 0.3f
         when(style) {
             Transition.SLIDE_X,Transition.SLIDE_Y -> {
                 incoming.offset(distance*direction)
@@ -531,13 +566,14 @@ open class MainActivity : Activity() {
                 if(style==Transition.FLIP || style==Transition.SLIDE_X || style==Transition.SLIDE_Y)
                     for(page in pages)page.setLayerType(View.LAYER_TYPE_NONE,null)
                 // Stays in the page host, hidden unless it became the current page meanwhile.
-                outgoing.visibility=if(outgoing===activeHostPage())View.VISIBLE else View.INVISIBLE
+                if (systemSwitch != null) host.removeView(outgoing)
+                else outgoing.visibility=if(outgoing===activeHostPage())View.VISIBLE else View.INVISIBLE
             }
         }
         crossfadeEnd=end
         // Speed scales every duration. Fades keep a floor, because fading faster than about 100 ms
         // brought the Thor's flash back; motion (slide, zoom, scale, flip) can go all the way.
-        val speed = transitionSpeedFactors[transitionSpeed(animationView)]
+        val speed = transitionSpeedFactors[systemSwitch?.speed ?: transitionSpeed(animationView)]
         fun scaled(ms:Long,floor:Long=0L)=maxOf(floor,(ms*speed).toLong())
         val fadeMs=scaled(pageCrossfadeMs,100L)
         val dipOut=scaled(if(opening)dipOutMs else dipBackOutMs,if(opening)100L else 80L)
@@ -763,6 +799,24 @@ open class MainActivity : Activity() {
         generation++; scanning = false; games = cached.games
         error = cached.errors.takeIf { it.isNotEmpty() }?.let { "${games.size} games · ${it.size} folder errors. Check ROM library settings." }
         render()
+    }
+
+    private fun switchGameListSystem(step: Int) {
+        if (populated.size < 2) return
+        val current = populated.indexOf(system)
+        val next = if (current < 0) {
+            if (step < 0) populated.last() else populated.first()
+        } else populated[Math.floorMod(current + step, populated.size)]
+        val index = systems.indexOf(next)
+        if (index < 0 || index == selected) return
+        activeGameWheel()?.endMotion()
+        focusedSystemIndex = index
+        val animation = systemSwitchAnimation()
+        val direction = systemSwitchDirection()
+        val slideDirection = if (direction == 0) (if (step < 0) 1 else 0) else direction - 1
+        pendingGameListSwitch = if (animation == SystemSwitchAnimation.INSTANT) null
+            else GameListSwitch(animation, systemSwitchSpeed(), slideDirection)
+        openSystem(index)
     }
 
     private var pendingSplitSystemOpen:Any?=null
@@ -1262,7 +1316,7 @@ open class MainActivity : Activity() {
             if(externalTheme!=null) {
                 val scene=EsDeScene(this,externalTheme,"gamelist",list,backgroundLayer=false)
                 val preparedRoot=root
-                scene.onReady={ if(!isDestroyed && activeTab==0 && library)present(preparedRoot) }
+                scene.onReady={ if(!isDestroyed && activeTab==0 && library && root === preparedRoot)present(preparedRoot) }
                 importedScene=scene
                 root.addView(scene,LinearLayout.LayoutParams(-1,0,1f))
                 scene.initialise(system,entries.size,entries.firstOrNull())
@@ -1344,8 +1398,26 @@ open class MainActivity : Activity() {
         MARQUEES("Marquees", "marquee"),
         BOX_ART("2D box art", "cover"),
         BOX_ART_3D("3D box art", "3dbox"),
-        PHYSICAL_MEDIA("Physical media", "physicalmedia")
+        PHYSICAL_MEDIA("Physical media", "physicalmedia");
+
+        val sizeKey get() = "gameWheelSize.$name"
+        val defaultSize get() = if (this == MARQUEES) GameWheelSize.MEDIUM else GameWheelSize.LARGE
     }
+
+    private enum class GameWheelSize(val label: String, val scale: Float) {
+        SMALL("Small", 0.75f),
+        MEDIUM("Medium", 1f),
+        LARGE("Large", 1.35f),
+        EXTRA_LARGE("Extra large", 1.60f)
+    }
+
+    private fun gameWheelSize(media: GameWheelMedia): GameWheelSize {
+        val stored = UserDataStore.cachedString("settings", media.sizeKey)
+        return GameWheelSize.entries.firstOrNull { it.name == stored } ?: media.defaultSize
+    }
+
+    private val discSpinKey = "splitGameDiscSpin"
+    private fun spinDiscsEnabled() = UserDataStore.cachedInt(discSpinKey, 0) == 1
 
     private fun gameWheelMedia(): GameWheelMedia {
         val stored = UserDataStore.cachedString("settings", "gameWheelMedia")
@@ -1370,31 +1442,43 @@ open class MainActivity : Activity() {
             }
         }
         val vertical = appearance == GameAppearance.VERTICAL_WHEEL
+        val media = gameWheelMedia()
+        val artworkScale = gameWheelSize(media).scale
         lateinit var wheel: GameWheelView
-        val showSelectedMedia = object : Runnable {
-            override fun run() {
-                if (activeTab != 0 || !library || !wheel.isShown || activeGameWheel() !== wheel) return
-                if (wheel.isWheelMoving) {
-                    wheel.postDelayed(this, 60L)
-                    return
-                }
+        val showSelectedMedia = {
+            if (activeTab == 0 && library && wheel.isShown && activeGameWheel() === wheel) {
                 val game = entries[gameCursor]
                 panel?.show(spec, game)
                 panel?.warmAdjacentFanArt(spec, adjacentGames(game))
                 DualScreenCoordinator.refreshMedia()
             }
         }
-        wheel = GameWheelView(this, entries, vertical, gameCursor, theme,
-            bindArtwork = { cell, label, game ->
-                val media = gameWheelMedia()
+        val showWheelBackground = Runnable {
+            if (activeTab == 0 && library && wheel.isShown && activeGameWheel() === wheel) {
+                val game = entries[gameCursor]
+                panel?.showCachedFanArt(spec, game)
+                DualScreenCoordinator.showCachedFanArt(this, spec, game)
+            }
+        }
+        wheel = GameWheelView(this, entries, vertical, artworkScale, gameCursor, theme,
+            bindArtwork = { cell, label, game, scheduleArtwork ->
                 gameLogos.bind(cell, label, spec, game, true, mediaType = media.artworkType,
-                    spinDiscs = media == GameWheelMedia.PHYSICAL_MEDIA && UserDataStore.cachedInt("splitGameDiscSpin", 0) == 1,
-                    blendFromTitle = true)
+                    spinDiscs = media == GameWheelMedia.PHYSICAL_MEDIA && spinDiscsEnabled(),
+                    blendFromTitle = true, scheduleArtwork = scheduleArtwork)
             },
             selected = { index ->
                 gameCursor = index
-                wheel.removeCallbacks(showSelectedMedia)
-                wheel.postDelayed(showSelectedMedia, 100L)
+                wheel.removeCallbacks(showWheelBackground)
+                wheel.postOnAnimation(showWheelBackground)
+            },
+            motionChanged = { scrolling ->
+                gameMediaSurface?.takeIf { activeGameWheel() === wheel }?.setWheelScrolling(scrolling)
+                panel?.setWheelScrolling(scrolling)
+                DualScreenCoordinator.setWheelScrolling(this, scrolling)
+            },
+            settled = {
+                wheel.removeCallbacks(showWheelBackground)
+                showSelectedMedia()
             },
             open = { index -> chooseEmulator(entries[index]) }
         ).apply { tag = "orbit-game-wheel" }
@@ -1406,8 +1490,9 @@ open class MainActivity : Activity() {
                 addView(wheel, LinearLayout.LayoutParams(0, -1, theme.listFraction))
                 addView(panel.view, LinearLayout.LayoutParams(0, -1, 1f - theme.listFraction))
             } else {
-                addView(panel.view, LinearLayout.LayoutParams(-1, 0, 0.65f))
-                addView(wheel, LinearLayout.LayoutParams(-1, 0, 0.35f))
+                val wheelShare = if (vertical) 0.35f else (0.35f * artworkScale).coerceAtMost(0.85f)
+                addView(panel.view, LinearLayout.LayoutParams(-1, 0, 1f - wheelShare))
+                addView(wheel, LinearLayout.LayoutParams(-1, 0, wheelShare))
             }
         }
         if (panel != null) {
@@ -1420,7 +1505,7 @@ open class MainActivity : Activity() {
         present(root)
         tabFocus[6] = wheel
         if (startMenu?.isShowing != true) wheel.requestFocus()
-        showSelectedMedia.run()
+        showSelectedMedia()
     }
 
     private val systemsAppearanceKey = "systemsAppearance"
@@ -1566,8 +1651,7 @@ open class MainActivity : Activity() {
             else -> "splitSystemTile"
         }
         val scaleKey=prefix+"Scale"
-        val discSpinKey="splitGameDiscSpin"
-        fun spinDiscs()=UserDataStore.cachedInt(discSpinKey,0)==1
+        fun spinDiscs() = spinDiscsEnabled()
         val defaultLayout = if (verticalScroll) SplitLibraryGrid.Arrangement.FOUR_ROWS else SplitLibraryGrid.Arrangement.TWO_ROWS
         val legacyLayout=splitTileArrangement(prefix,"Size",defaultLayout)
         val initialLayout=splitTileArrangement(prefix,"Layout",legacyLayout)
@@ -1964,6 +2048,8 @@ open class MainActivity : Activity() {
         showPage(destination)
     }
     private fun showPage(destination:PageDestination) {
+        pendingGameListSwitch = null
+        activeGameWheel()?.endMotion()
         activeSplitTileMenu()?.close()
         activeSplitGrid()?.cancelMove()
         val tab=destination.tab
@@ -1981,7 +2067,11 @@ open class MainActivity : Activity() {
         if (cached != null) {
             if(slot==6)gameList=cached.findViewWithTag<View>("orbit-game-list") as? AbsListView
             present(cached)
-            if(slot==0)activeSplitGrid()?.let(::preloadSplitGames)
+            if (slot == 0) activeSplitGrid()?.let { grid ->
+                val index = populated.indexOf(systems.getOrNull(focusedSystemIndex))
+                if (index >= 0 && index != grid.selectedLibraryIndex) grid.selectLibrary(index)
+                else preloadSplitGames(grid)
+            }
             if(tab==3)themeGallery?.initialFocus?.requestFocus()
             else if (tabFocus[slot]?.requestFocus() != true) cached.requestFocus()
             if(slot==6) {
@@ -3207,6 +3297,19 @@ open class MainActivity : Activity() {
         return dispatchFrontendKeyEvent(event)
     }
     private fun dispatchFrontendKeyEvent(event:KeyEvent):Boolean {
+        if (ready && activeTab == 0 && library && startMenu?.isShowing != true && activeSplitTileMenu()?.isOpen != true) {
+            val step = when (event.keyCode) {
+                KeyEvent.KEYCODE_BUTTON_L2 -> -1
+                KeyEvent.KEYCODE_BUTTON_R2 -> 1
+                else -> NavigationTabs.direction(event.keyCode)
+            }
+            if (step != 0) {
+                if (event.action == KeyEvent.ACTION_DOWN && event.repeatCount == 0 && !event.isCanceled && !scanning) {
+                    switchGameListSystem(step)
+                }
+                return true
+            }
+        }
         if(ready && activeTab==0 && library && event.keyCode==KeyEvent.KEYCODE_BUTTON_X &&
             startMenu?.isShowing!=true && activeSplitTileMenu()?.isOpen!=true) {
             if(activeSplitTileMenu()?.shortcutSelected==true)return true
@@ -3318,7 +3421,102 @@ open class MainActivity : Activity() {
             toggle("Gliding selection", "The selection outline slides from tile to tile.", SplitLibraryGrid.GLIDING_SELECTION_KEY,
                 refreshSelection = true),
             toggle("Artwork crossfade", "Blend between artwork as you browse this view.", GameMediaSurface.ART_CROSSFADE_KEY)
+        ) + if (systems) emptyList() else listOf(artworkAnimationOption(), launchAnimationOption())
+    }
+
+    private fun artworkAnimationOption() = AnimationOption(
+        "Background animation", "Choose how the game artwork background appears.", { TransitionSettings.ArtworkAnimation.selected().label }
+    ) {
+        val styles = TransitionSettings.ArtworkAnimation.entries
+        val next = styles[(TransitionSettings.ArtworkAnimation.selected().ordinal + 1) % styles.size]
+        saveArtworkAnimation(next)
+    }
+
+    private fun saveArtworkAnimation(style: TransitionSettings.ArtworkAnimation) {
+        runCatching {
+            TransitionSettings.put(this, TransitionSettings.ArtworkAnimation.KEY, style.id, TransitionSettings.View.GAMES)
+        }.onFailure(::showDataError)
+    }
+
+    private fun showGameArtworkAnimations(menu: EmulatorSettings.MenuWindow, back: () -> Unit) {
+        val styles = TransitionSettings.ArtworkAnimation.entries
+        val labels = styles.map { style ->
+            { if (style == TransitionSettings.ArtworkAnimation.selected()) "✓  ${style.label}" else style.label }
+        }
+        menu.liveActions("Background animation", labels, { saveArtworkAnimation(styles[it]) },
+            back, initialSelection = TransitionSettings.ArtworkAnimation.selected().ordinal)
+    }
+
+    private fun launchAnimationOption() = AnimationOption(
+        "Launch animation", "Choose the transition when a game opens.", { TransitionSettings.LaunchAnimation.selected().label }
+    ) {
+        val styles = TransitionSettings.LaunchAnimation.entries
+        val next = styles[(TransitionSettings.LaunchAnimation.selected().ordinal + 1) % styles.size]
+        saveLaunchAnimation(next)
+    }
+
+    private fun saveLaunchAnimation(style: TransitionSettings.LaunchAnimation) {
+        runCatching {
+            TransitionSettings.put(this, TransitionSettings.LaunchAnimation.KEY, style.id, TransitionSettings.View.GAMES)
+        }.onFailure(::showDataError)
+    }
+
+    private fun showGameAnimations(menu: EmulatorSettings.MenuWindow, back: () -> Unit, focused: Int = 0) {
+        val labels = listOf<() -> String>(
+            { "Background animation · ${TransitionSettings.ArtworkAnimation.selected().label}" },
+            { "Launch animation · ${TransitionSettings.LaunchAnimation.selected().label}" },
+            { "System switching · ${systemSwitchAnimation().label}" },
+            { "Spin discs · ${if (spinDiscsEnabled()) "On" else "Off"}" }
         )
+        menu.liveActions("Animation", labels, { index ->
+            val backToAnimations = { showGameAnimations(menu, back, index) }
+            if (index == 0) showGameArtworkAnimations(menu, backToAnimations)
+            else if (index == 1) {
+                val styles = TransitionSettings.LaunchAnimation.entries
+                val styleLabels = styles.map { style ->
+                    { if (style == TransitionSettings.LaunchAnimation.selected()) "✓  ${style.label}" else style.label }
+                }
+                menu.liveActions("Launch animation", styleLabels, { saveLaunchAnimation(styles[it]) },
+                    backToAnimations, initialSelection = TransitionSettings.LaunchAnimation.selected().ordinal)
+            } else if (index == 2) {
+                showSystemSwitchAnimations(menu, backToAnimations)
+            } else {
+                runCatching { UserDataStore.put(this, "settings", discSpinKey, if (spinDiscsEnabled()) 0 else 1) }
+                    .onSuccess { refreshGameTiles() }
+                    .onFailure(::showDataError)
+            }
+        }, back, initialSelection = focused)
+    }
+
+    private fun showSystemSwitchAnimations(menu: EmulatorSettings.MenuWindow, back: () -> Unit) {
+        val labels = listOf<() -> String>(
+            { "Animation · ${systemSwitchAnimation().label}" },
+            {
+                val direction = if (systemSwitchAnimation() == SystemSwitchAnimation.SLIDE)
+                    systemSwitchDirectionLabels[systemSwitchDirection()] else "Not used"
+                "Direction · $direction"
+            },
+            { "Speed · ${transitionSpeedLabels[systemSwitchSpeed()]}" }
+        )
+        menu.liveActions("System switching", labels, { index ->
+            runCatching {
+                when (index) {
+                    0 -> {
+                        val next = (systemSwitchAnimation().ordinal + 1) % SystemSwitchAnimation.entries.size
+                        TransitionSettings.put(this, systemSwitchAnimationKey, next, TransitionSettings.View.GAMES)
+                    }
+                    1 -> if (systemSwitchAnimation() == SystemSwitchAnimation.SLIDE) {
+                        val next = (systemSwitchDirection() + 1) % systemSwitchDirectionLabels.size
+                        TransitionSettings.put(this, systemSwitchDirectionKey, next, TransitionSettings.View.GAMES)
+                    }
+                    2 -> {
+                        val next = (systemSwitchSpeed() + 1) % transitionSpeedLabels.size
+                        TransitionSettings.put(this, systemSwitchSpeedKey, next, TransitionSettings.View.GAMES)
+                    }
+                }
+                Unit
+            }.onFailure(::showDataError)
+        }, back)
     }
 
     private fun showSystemViews(menu: EmulatorSettings.MenuWindow, back: () -> Unit) {
@@ -3336,15 +3534,20 @@ open class MainActivity : Activity() {
         }, back, initialSelection = systemsAppearance().ordinal)
     }
 
-    private fun showGameViews(menu: EmulatorSettings.MenuWindow, back: () -> Unit) {
+    private fun showGameViews(menu: EmulatorSettings.MenuWindow, back: () -> Unit, focused: Int = gameAppearance().ordinal) {
         val appearances = GameAppearance.entries
         val labels = appearances.map { appearance ->
             { if (appearance == gameAppearance()) "✓  ${appearance.label}" else appearance.label }
-        } + listOf<() -> String>({ "Game media · ${gameWheelMedia().label}" })
+        } + listOf<() -> String>(
+            { "Game media · ${gameWheelMedia().label}" },
+            { "Artwork sizes" }
+        )
         menu.liveActions("Game Views", labels, { position ->
             val appearance = appearances.getOrNull(position)
-            if (appearance == null) {
-                showGameWheelMedia(menu) { showGameViews(menu, back) }
+            if (position == appearances.size) {
+                showGameWheelMedia(menu) { showGameViews(menu, back, position) }
+            } else if (appearance == null) {
+                showGameWheelSizes(menu, { showGameViews(menu, back, position) })
             } else if (appearance != gameAppearance()) {
                 runCatching { UserDataStore.put(this, "settings", "gameAppearance", appearance.name) }
                     .onSuccess {
@@ -3357,7 +3560,22 @@ open class MainActivity : Activity() {
                     }
                     .onFailure(::showDataError)
             }
-        }, back, initialSelection = gameAppearance().ordinal)
+        }, back, initialSelection = focused)
+    }
+
+    private fun showGameWheelSizes(menu: EmulatorSettings.MenuWindow, back: () -> Unit, focused: Int = gameWheelMedia().ordinal) {
+        val mediaTypes = GameWheelMedia.entries
+        val labels = mediaTypes.map { media -> { "${media.label} · ${gameWheelSize(media).label}" } }
+        menu.liveActions("Artwork sizes", labels, { position ->
+            val media = mediaTypes[position]
+            val sizes = GameWheelSize.entries
+            val next = sizes[(gameWheelSize(media).ordinal + 1) % sizes.size]
+            runCatching { UserDataStore.put(this, "settings", media.sizeKey, next.name) }
+                .onSuccess {
+                    if (media == gameWheelMedia() && activeTab == 0 && library && activeGameWheel() != null) render()
+                }
+                .onFailure(::showDataError)
+        }, back, initialSelection = focused)
     }
 
     private fun showGameWheelMedia(menu: EmulatorSettings.MenuWindow, back: () -> Unit) {
@@ -3369,7 +3587,7 @@ open class MainActivity : Activity() {
             val media = mediaOptions[position]
             if (media != gameWheelMedia()) {
                 runCatching { UserDataStore.put(this, "settings", "gameWheelMedia", media.name) }
-                    .onSuccess { activeGameWheel()?.adapter?.notifyDataSetChanged() }
+                    .onSuccess { if (activeTab == 0 && library && activeGameWheel() != null) render() }
                     .onFailure(::showDataError)
             }
         }, back, initialSelection = gameWheelMedia().ordinal)
@@ -3417,7 +3635,10 @@ open class MainActivity : Activity() {
                     else EmulatorSettings.showForSystemIn(menu,spec,{}, { menu.dialog.dismiss() })
                 "Scraper" -> showScraper()
                 "Customisation" -> menu.actions("Customisation", buildList {
-                    add("Animation" to { menu.actions("Animation", emptyList(), ::home) })
+                    add("Animation" to {
+                        if (currentGame != null) showGameAnimations(menu, ::home)
+                        else menu.actions("Animation", emptyList(), ::home)
+                    })
                     if (currentGame == null) add("System views" to { showSystemViews(menu, ::home) })
                     else add("Game Views" to { showGameViews(menu, ::home) })
                 })

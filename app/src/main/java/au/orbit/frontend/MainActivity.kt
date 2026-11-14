@@ -3313,6 +3313,7 @@ open class MainActivity : Activity() {
         if(ready && activeTab==0 && library && event.keyCode==KeyEvent.KEYCODE_BUTTON_X &&
             startMenu?.isShowing!=true && activeSplitTileMenu()?.isOpen!=true) {
             if(activeSplitTileMenu()?.shortcutSelected==true)return true
+            if (OrbitThemes.current().id != OrbitThemes.SPLIT_THEME) return true
             if(event.action==KeyEvent.ACTION_UP && !event.isCanceled)games.getOrNull(gameCursor)?.let { game ->
                 val local=artworkPanel
                 if(local!=null)local.toggleVideoPreview(system,game)

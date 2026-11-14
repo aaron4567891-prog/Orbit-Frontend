@@ -5,7 +5,7 @@ import org.json.JSONObject
 
 /** Orbit's own theme format. Rendering and navigation stay native on both displays. */
 object OrbitThemes {
-    private const val SPLIT_THEME="orbit-split"
+    internal const val SPLIT_THEME="orbit-split"
     private val retiredThemes=setOf("orbit","mono")
     data class Artwork(val role:String,val screen:String,val file:String)
     /** Theme-wide images; the page backgrounds override "background" behind one bottom-grid page. */

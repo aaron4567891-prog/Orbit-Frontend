@@ -474,9 +474,13 @@ internal class SplitLibraryGrid(
         val glideStart = if (glideEnabled && animate) glideRect() else null
         val previous = cursor
         cursor = position.coerceIn(0, slotCount - 1)
-        if (previous != cursor) layout.findViewByPosition(previous)?.let { highlight(it, previous) }
-        cursorTile?.let { highlight(it, cursor) }
-        if (glideEnabled) startGlide(if (previous != cursor) glideStart else null)
+        if (previous != cursor) {
+            layout.findViewByPosition(previous)?.let { highlight(it, previous) }
+            cursorTile?.let { highlight(it, cursor) }
+            if (glideEnabled) startGlide(glideStart)
+        } else if (!animate && glideEnabled) {
+            startGlide(null)
+        }
         if (reveal) revealCursor(animate)
         onSelected(cursor)
     }

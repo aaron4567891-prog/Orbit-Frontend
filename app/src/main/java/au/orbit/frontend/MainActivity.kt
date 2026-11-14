@@ -657,7 +657,9 @@ open class MainActivity : Activity() {
         if(library)activeSplitGrid()?.let { it.selectLibrary(position);return }
         val list = gameList ?: return
         if (list.count == 0) return
+        val previous = gameCursor
         gameCursor = position.coerceIn(0, list.count - 1)
+        if (gameCursor == previous) return
         // Keep the viewport anchored while the highlight moves between visible rows.
         // ListView.setSelection() and adapter notifications can otherwise pull each game
         // toward Android's preferred selection position even when it is already visible.
@@ -671,11 +673,9 @@ open class MainActivity : Activity() {
             gameCursor<first -> top
             else -> bottom
         }
-        list.setSelectionFromTop(gameCursor,targetTop-top)
-        for(index in 0 until list.childCount) {
-            val position=first+index
-            if(position<list.count)list.adapter.getView(position,list.getChildAt(index),list)
-        }
+        if (row == null || row.top != targetTop) list.setSelectionFromTop(gameCursor, targetTop - top)
+        list.getChildAt(previous - first)?.let { list.adapter.getView(previous, it, list) }
+        row?.let { list.adapter.getView(gameCursor, it, list) }
         artworkPanel?.show(system, games.getOrNull(gameCursor))
         importedScene?.showGame(games.getOrNull(gameCursor))
         DualScreenCoordinator.refreshMedia()
@@ -1369,7 +1369,7 @@ open class MainActivity : Activity() {
                     inGames -> chooseEmulator(entries[index])
                     else -> openSplitSystem(grid,systems.indexOf(systemsHere[index]))
                 }
-            },hold={ tileMenu.show() },changeLayout={ changeLayout(it,true) })
+            }, hold = { tileMenu.show() }, changeLayout = { changeLayout(it, true) })
         grid.tag=if(inGames)"orbit-game-list" else "orbit-systems-grid"
         if(!inGames)grid.addOnScrollListener(object:RecyclerView.OnScrollListener() {
             override fun onScrollStateChanged(recyclerView:RecyclerView,newState:Int) {

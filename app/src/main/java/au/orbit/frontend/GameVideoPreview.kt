@@ -18,7 +18,24 @@ import android.view.TextureView
 import android.view.View
 
 /** Local previews. The static artwork remains underneath until a video frame is ready. */
-class GameVideoPreview(context: Context, private val soundEnabled: Boolean = true,private val cropToFill:Boolean=false) : TextureView(context), TextureView.SurfaceTextureListener {
+class GameVideoPreview(
+    context: Context,
+    private val cropToFill: Boolean = false,
+    private val audioPriority: Int = 1
+) : TextureView(context), TextureView.SurfaceTextureListener {
+    private companion object {
+        // All previews run on the UI thread, including the companion display.
+        val playingPreviews = linkedSetOf<GameVideoPreview>()
+        var audiblePreview: GameVideoPreview? = null
+
+        fun selectAudiblePreview() {
+            val next = playingPreviews.maxByOrNull { it.audioPriority }
+            if (audiblePreview === next && next?.audioFocused == true) return
+            audiblePreview?.mutePreview()
+            audiblePreview = next
+            next?.requestPreviewAudio()
+        }
+    }
     var frameReadyChanged:((Boolean)->Unit)?=null
     var playbackFailed:(()->Unit)?=null
     var playbackInterrupted:(()->Unit)?=null
@@ -29,7 +46,6 @@ class GameVideoPreview(context: Context, private val soundEnabled: Boolean = tru
     private var ready = false
     private var videoWidth = 0
     private var videoHeight = 0
-    private var playSound = soundEnabled
     private var audioFocused = false
     private val audio=context.getSystemService(AudioManager::class.java)
     private val power=context.getSystemService(PowerManager::class.java)
@@ -54,10 +70,9 @@ class GameVideoPreview(context: Context, private val soundEnabled: Boolean = tru
 
     init { isOpaque=false; alpha=0f; isFocusable=false; surfaceTextureListener=this }
 
-    fun show(uri: Uri?, delay: Long, withSound: Boolean = soundEnabled) {
+    fun show(uri: Uri?, delay: Long) {
         stop()
         source=uri
-        playSound=withSound
         if(uri==null)return
         observePower()
         pending=Runnable { ready=true; startVideo() }.also { postDelayed(it,delay) }
@@ -88,8 +103,23 @@ class GameVideoPreview(context: Context, private val soundEnabled: Boolean = tru
     private fun releasePlayback() {
         alpha=0f
         frameReadyChanged?.invoke(false)
+        val wasPlaying = playingPreviews.remove(this)
+        if (audiblePreview === this) {
+            mutePreview()
+            audiblePreview = null
+        }
         player?.release();player=null
         surface?.release();surface=null
+        if (wasPlaying && audiblePreview == null) selectAudiblePreview()
+    }
+
+    private fun requestPreviewAudio() {
+        audioFocused = audio.requestAudioFocus(focus) == AudioManager.AUDIOFOCUS_REQUEST_GRANTED
+        if (audioFocused) player?.setVolume(1f, 1f)
+    }
+
+    private fun mutePreview() {
+        player?.setVolume(0f, 0f)
         if(audioFocused) {
             audioFocused=false
             audio.abandonAudioFocusRequest(focus)
@@ -108,14 +138,18 @@ class GameVideoPreview(context: Context, private val soundEnabled: Boolean = tru
             surface=Surface(texture)
             next.setSurface(surface)
             next.setAudioAttributes(audioAttributes)
-            audioFocused=playSound && audio.requestAudioFocus(focus)==AudioManager.AUDIOFOCUS_REQUEST_GRANTED
-            val volume=if(audioFocused)1f else 0f
-            next.setVolume(volume,volume)
+            next.setVolume(0f, 0f)
             next.setOnVideoSizeChangedListener { _,w,h -> videoWidth=w;videoHeight=h;fit() }
             next.setOnPreparedListener {
                 if (player === it) {
-                    if (canPlay()) { it.isLooping = true; it.start() }
-                    else releasePlayback()
+                    if (canPlay()) {
+                        it.isLooping = true
+                        it.start()
+                        if (it.trackInfo.any { track -> track.trackType == MediaPlayer.TrackInfo.MEDIA_TRACK_TYPE_AUDIO }) {
+                            playingPreviews.add(this)
+                            selectAudiblePreview()
+                        }
+                    } else releasePlayback()
                 }
             }
             next.setOnInfoListener { media,what,_ ->

@@ -21,7 +21,7 @@ import java.util.concurrent.Executors
 import java.util.concurrent.Future
 
 /** Reads portable scraped media on a worker; scrolling never waits for storage or image decoding. */
-class GameArtworkPanel(private val context: Activity, private val coverOnly: Boolean = false, private val theme: EsDeTheme.Model? = null, soundEnabled: Boolean = true, private val mediaMode: String? = null, private val videosEnabled: () -> Boolean = { true }) {
+class GameArtworkPanel(private val context: Activity, private val coverOnly: Boolean = false, private val theme: EsDeTheme.Model? = null, audioPriority: Int = 1, private val mediaMode: String? = null, private val videosEnabled: () -> Boolean = { true }) {
     var backgroundMediaChanged:((Map<String,Bitmap>,android.net.Uri?)->Unit)?=null
     var backgroundMediaPaused:(()->Unit)?=null
     private val variant=theme?.variant.orEmpty()
@@ -56,7 +56,7 @@ class GameArtworkPanel(private val context: Activity, private val coverOnly: Boo
     private fun image() = ImageView(context).apply { scaleType = ImageView.ScaleType.FIT_CENTER; isFocusable = false }
     private val marquee = image()
     private val cover = image()
-    private val video=GameVideoPreview(context,soundEnabled)
+    private val video=GameVideoPreview(context, audioPriority = audioPriority)
     private val primaryArea=FrameLayout(context).apply {
         addView(cover,FrameLayout.LayoutParams(-1,-1))
         if(!screenMediaLayout)addView(video,FrameLayout.LayoutParams(-1,-1))

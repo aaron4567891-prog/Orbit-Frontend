@@ -9,7 +9,7 @@ import android.view.View
 import android.widget.FrameLayout
 
 /** A background layer covers the complete window while controls keep their own insets. */
-internal class GameMediaSurface(context:Context,val content:View):FrameLayout(context) {
+internal class GameMediaSurface(context:Context,val content:View, audioPriority: Int = 1):FrameLayout(context) {
     companion object {
         /** Setting (0/1, off by default): the top screen's art blends into the next instead of cutting. */
         const val ART_CROSSFADE_KEY="topArtCrossfade"
@@ -17,7 +17,7 @@ internal class GameMediaSurface(context:Context,val content:View):FrameLayout(co
         fun artCrossfadeEnabled()=TransitionSettings.flag(ART_CROSSFADE_KEY)
     }
     private val backdrop=GameMediaBackground(context)
-    private val video=GameVideoPreview(context,soundEnabled=false,cropToFill=true)
+    private val video=GameVideoPreview(context, cropToFill = true, audioPriority = audioPriority)
     private val shade=View(context).apply { setBackgroundColor(Color.argb(85,0,0,0));visibility=GONE }
     private var playing:Uri?=null
     /** The background currently shown (or being faded to), separate from a transition wrapper. */

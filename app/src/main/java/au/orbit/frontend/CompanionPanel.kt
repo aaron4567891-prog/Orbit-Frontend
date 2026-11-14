@@ -30,7 +30,7 @@ class CompanionPanel(private val activity:Activity) {
     fun finishVideoPreview() { artwork?.finishVideoPreview() }
 
     private fun prepareArtwork():GameArtworkPanel = artwork ?: GameArtworkPanel(
-        activity,coverOnly=true,soundEnabled=false,mediaMode="screen"
+        activity,coverOnly=true, audioPriority = 0, mediaMode="screen"
     ).also {
         it.backgroundMediaChanged=view::update
         it.backgroundMediaPaused=view::pause
@@ -94,7 +94,7 @@ class CompanionPanel(private val activity:Activity) {
                 insets
             }
         }
-        view=GameMediaSurface(activity,content)
+        view=GameMediaSurface(activity, content, audioPriority = 0)
         browse.backdropChanged={ if(browse.visibility==android.view.View.VISIBLE)view.showBrowse(it) }
         heading=TextView(activity).apply { text = "◉  ORBIT  /  SECOND SCREEN"; textSize = 20f; maxLines=1;ellipsize=android.text.TextUtils.TruncateAt.END;setTextColor(Color.rgb(113, 177, 255)) }
         content.addView(heading)

@@ -18,7 +18,7 @@ internal class FullScreenGameVideo(
     private var restoreNonFocusable = false
     private var restoreBars = 0
     private var restoreStatusBar = false
-    private val video = GameVideoPreview(activity).apply {
+    private val video = GameVideoPreview(activity, audioPriority = 2).apply {
         frameReadyChanged = { ready ->
             if (ready && this@FullScreenGameVideo.alpha == 0f) {
                 hideSystemBars()

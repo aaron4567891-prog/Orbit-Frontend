@@ -76,8 +76,8 @@ class ScraperSettingsPanel(private val activity:Activity,private val selectedSys
             }
         }
     }
-    private val grid=GridView(activity).apply {
-        numColumns=3;horizontalSpacing=dp(12);verticalSpacing=dp(12);stretchMode=GridView.STRETCH_COLUMN_WIDTH
+    private val grid=ResponsiveGridView(activity, 150).apply {
+        horizontalSpacing=dp(12);verticalSpacing=dp(12);stretchMode=GridView.STRETCH_COLUMN_WIDTH
         isFocusable=true;isFocusableInTouchMode=true;defaultFocusHighlightEnabled=false
         selector=android.graphics.drawable.GradientDrawable().apply { setColor(Color.TRANSPARENT);cornerRadius=dp(12).toFloat();setStroke(dp(2),Color.rgb(5,97,195)) }
         setDrawSelectorOnTop(true);adapter=gridAdapter

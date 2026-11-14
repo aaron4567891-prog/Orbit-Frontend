@@ -19,6 +19,7 @@ object EmulatorSettings {
     interface PageHost {
         val activity: Activity
         val isTabbed: Boolean
+        val smoothSelection: Boolean get() = false
         fun selectCompanionOption(label: String)
         fun showPage(title: String, content: android.view.View, backLabel: String = "Back",
             back: () -> Unit, handle: (Int, KeyEvent) -> Boolean = { _, _ -> false })
@@ -179,7 +180,7 @@ object EmulatorSettings {
         override val activity: Activity,
         private val compact: Boolean = false,
         private val fullScreen: Boolean = false,
-        private val smoothSelection: Boolean = false
+        override val smoothSelection: Boolean = false
     ) : PageHost {
         private val browse=MenuBrowseState()
         override fun selectCompanionOption(label:String) { browse.select(label);DualScreenCoordinator.refreshMedia() }
@@ -442,7 +443,8 @@ object EmulatorSettings {
             compareBy<EmulatorProfile> { "LIBRETRO" in it.stringExtras }.thenBy { !installed.getValue(it) }
         )
         var selected=if(game==null)repository.selected(system)?.id else repository.gameOverride(system,game)?.id
-        val rows=Rows(activity, window.isTabbed, smoothSelection = game != null, onSelection = window::selectCompanionOption)
+        val rows=Rows(activity, window.isTabbed, smoothSelection = window.smoothSelection || game != null,
+            onSelection = window::selectCompanionOption)
         val offset=if(game==null)0 else 1
         fun refresh() { showPlayers(window,system,changed,back,game,showHidden) }
         fun toggleHidden(index:Int) {

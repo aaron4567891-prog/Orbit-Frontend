@@ -10,6 +10,7 @@ import android.graphics.drawable.GradientDrawable
 import android.os.Bundle
 import android.view.*
 import android.widget.*
+import androidx.core.view.OneShotPreDrawListener
 import androidx.recyclerview.widget.RecyclerView
 import java.util.concurrent.Executors
 
@@ -56,8 +57,8 @@ open class MainActivity : Activity() {
         }
         if(activeTab==2) {
             val names=settingsCategories
-            val icons = listOf(android.R.drawable.ic_menu_preferences, android.R.drawable.ic_menu_gallery,
-                android.R.drawable.ic_menu_edit, android.R.drawable.ic_menu_search)
+            val icons = listOf(android.R.drawable.ic_menu_preferences, android.R.drawable.ic_menu_edit,
+                android.R.drawable.ic_menu_search)
             return CompanionBrowse("settings/$settingsCategory",names[settingsCategory.coerceIn(names.indices)],"Settings",iconResource=icons[settingsCategory.coerceIn(icons.indices)])
         }
         if(activeTab==4)return CompanionBrowse("scraping","Scraping","Game media and metadata",iconResource=android.R.drawable.ic_menu_search)
@@ -130,7 +131,7 @@ open class MainActivity : Activity() {
     private var activeTab = 0
     private data class PageDestination(val tab:Int,val library:Boolean=false)
     private val pageHistory=mutableListOf<PageDestination>()
-    private val settingsCategories = listOf("General", "Media", "Customisation", "Scraping")
+    private val settingsCategories = listOf("General", "Customisation", "Scraping")
     private var appsPanel: AppsPanel? = null
     private var scraperSettingsPanel:ScraperSettingsPanel?=null
     private var screenHost: FrameLayout? = null
@@ -1210,7 +1211,30 @@ open class MainActivity : Activity() {
                 content.place(artwork.view,colorfulModel,"gamelist","orbit-cover-area",if(colorfulModel.variant.contains("metadata")) "0.401 0 0.599 1" else "0.401 0.08 0.599 0.84")
                 root.addView(content,LinearLayout.LayoutParams(-1,0,1f))
             } else {
-                val content = LinearLayout(this)
+                val content = object : LinearLayout(this) {
+                    override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
+                        val width = MeasureSpec.getSize(widthMeasureSpec)
+                        val height = MeasureSpec.getSize(heightMeasureSpec)
+                        val stacked = !usesThorLayout && height >= dp(480) && width < height && width < dp(600)
+                        orientation = if (stacked) VERTICAL else HORIZONTAL
+                        (list.layoutParams as LayoutParams).apply {
+                            this.width = if (stacked) -1 else 0
+                            this.height = if (stacked) 0 else -1
+                            weight = when {
+                                stacked -> 0.58f
+                                usesThorLayout -> nativeTheme.listFraction
+                                else -> nativeTheme.listFraction.coerceAtLeast(
+                                    minOf(0.5f, dp(145).toFloat() / width.coerceAtLeast(1)))
+                            }
+                        }
+                        (artwork.view.layoutParams as LayoutParams).apply {
+                            this.width = if (stacked) -1 else 0
+                            this.height = if (stacked) 0 else -1
+                            weight = 1f - (list.layoutParams as LayoutParams).weight
+                        }
+                        super.onMeasure(widthMeasureSpec, heightMeasureSpec)
+                    }
+                }
                 content.addView(list, LinearLayout.LayoutParams(0, -1, nativeTheme.listFraction))
                 content.addView(artwork.view, LinearLayout.LayoutParams(0, -1, 1f-nativeTheme.listFraction))
                 root.addView(content, LinearLayout.LayoutParams(-1, 0, 1f))
@@ -1853,7 +1877,7 @@ open class MainActivity : Activity() {
     private fun renderSettingsPage(popup:EmulatorSettings.MenuWindow?=null,back:()->Unit={},bottomOnly:Boolean=false) {
         val scrapingPage=popup==null && activeTab==4
         val topTabs = !scrapingPage
-        val wideOptions = topTabs && (popup?.activity ?: this).resources.configuration.screenWidthDp >= 680
+        val originalWideOptions = (popup?.activity ?: this).resources.configuration.screenWidthDp >= 680
         val pageTab=activeTab
         var pageCategory = when {
             bottomOnly -> 0
@@ -1906,6 +1930,16 @@ open class MainActivity : Activity() {
         }
         val categoryButtons = mutableListOf<Button>()
         val optionRows = mutableListOf<View>()
+        fun firstOption() = optionRows.firstOrNull { it.isEnabled && it.visibility == View.VISIBLE }
+        fun scrollDetailToTop() {
+            detailScroll.scrollTo(0, 0)
+            // ScrollView captures its current offset when starting a fling.
+            detailScroll.fling(0)
+        }
+        fun revealOption(row: View) {
+            if (row === firstOption()) scrollDetailToTop()
+            else row.requestRectangleOnScreen(android.graphics.Rect(0, 0, row.width, row.height), true)
+        }
         var updatingCategory=false
         data class Choice(val title: String, val description: String = "", val value: String = "",
             val section: String? = null, val choose: () -> Unit)
@@ -1976,7 +2010,8 @@ open class MainActivity : Activity() {
                     row.background = surface(Color.TRANSPARENT, if (i == index) blue else Color.rgb(38,49,65))
                 }
             }
-            detail.removeAllViews(); detailScroll.scrollTo(0, 0)
+            detail.removeAllViews()
+            scrollDetailToTop()
             detailScroll.visibility=View.VISIBLE
             optionRows.clear()
             val heading = when {
@@ -1997,8 +2032,24 @@ open class MainActivity : Activity() {
             var first: View? = null
             fun option(title: String, description: String, value: String = "", compact: Boolean = false,
                 action: () -> Unit): LinearLayout {
-                val row = LinearLayout(this).apply {
-                    orientation = if (wideOptions && description.isNotBlank()) LinearLayout.HORIZONTAL else LinearLayout.VERTICAL
+                val row = object : LinearLayout(this) {
+                    override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
+                        if (topTabs && childCount == 2) {
+                            val wide = if (usesThorLayout) originalWideOptions
+                                else MeasureSpec.getSize(widthMeasureSpec) >= dp(620)
+                            orientation = if (wide) HORIZONTAL else VERTICAL
+                            for (childIndex in 0 until childCount) {
+                                (getChildAt(childIndex).layoutParams as LayoutParams).apply {
+                                    width = if (wide) 0 else -1
+                                    weight = if (wide) 1f else 0f
+                                    marginEnd = if (wide && childIndex == 0) dp(12) else 0
+                                }
+                            }
+                        }
+                        super.onMeasure(widthMeasureSpec, heightMeasureSpec)
+                    }
+                }.apply {
+                    orientation = LinearLayout.VERTICAL
                     gravity = Gravity.CENTER_VERTICAL
                     isFocusable = true; isFocusableInTouchMode = true; isClickable = true
                     defaultFocusHighlightEnabled = false
@@ -2013,13 +2064,8 @@ open class MainActivity : Activity() {
                         titleView.setPadding(0, 0, 0, 0)
                         descriptionView?.setPadding(0, 0, 0, 0)
                     }
-                    if (orientation == LinearLayout.HORIZONTAL && descriptionView != null) {
-                        addView(titleView, LinearLayout.LayoutParams(0, -2, 1f).apply { marginEnd = dp(12) })
-                        addView(descriptionView, LinearLayout.LayoutParams(0, -2, 1f))
-                    } else {
-                        addView(titleView)
-                        descriptionView?.let { addView(it) }
-                    }
+                    addView(titleView, LinearLayout.LayoutParams(-1, -2))
+                    descriptionView?.let { addView(it, LinearLayout.LayoutParams(-1, -2)) }
                     setOnFocusChangeListener { v, focus -> v.background = surface(Color.TRANSPARENT, if (focus) blue else Color.rgb(38,49,65)) }
                     setOnClickListener { action() }
                 }
@@ -2049,7 +2095,8 @@ open class MainActivity : Activity() {
                 focused: Int? = null) {
                 showCategory(index, enter = true, restoreOption = focused, subpage = Subpage(title, parent, choices, description))
             }
-            fun returnToParent(row: Int): () -> Unit = { showCategory(index, enter = true, restoreOption = row) }
+            fun returnToParent(row: Int, parentPage: Subpage? = null): () -> Unit =
+                { showCategory(index, enter = true, restoreOption = row, subpage = parentPage) }
             fun isCurrent(parent: () -> Unit): Boolean =
                 activeTab == pageTab && root.isShown && returnFromSubpage === parent
             fun showArtworkImages(parent: () -> Unit, focused: Int? = null) {
@@ -2160,7 +2207,7 @@ open class MainActivity : Activity() {
             }
             fun artworkLinks() {
                 val imagesRow = optionRows.size
-                option("Artwork images", "Set background and hero images for this screen.") {
+                option("Artwork images", "Set backgrounds, hero images and system logos.") {
                     showArtworkImages(returnToParent(imagesRow))
                 }
                 val theme = OrbitThemes.current()
@@ -2310,7 +2357,7 @@ open class MainActivity : Activity() {
                         showCategory(index, enter = true, romFoldersOption = romFoldersRow)
                     }
                     val displayRow = optionRows.size
-                    option("Display", "Set the refresh rate and choose where settings open.") {
+                    option("Display", "See screen sizes, set the refresh rate and choose where settings open.") {
                         showCategory(index, enter = true, subpage = Subpage("Display", returnToParent(displayRow)))
                     }
                     detail.addView(text("Emulators", 18f).apply { setPadding(0, dp(8), 0, dp(2)); typeface = Typeface.DEFAULT_BOLD })
@@ -2354,6 +2401,26 @@ open class MainActivity : Activity() {
                         runCatching { UserDataStore.put(this, "settings", "settingsShortcutScreen", next) }
                             .onSuccess { redrawSection() }.onFailure(::showDataError)
                     }
+                    val sizesRow = optionRows.size
+                    option("Display sizes", "See the detected resolution of each screen.") {
+                        showCategory(index, enter = true,
+                            subpage = Subpage("Display sizes", returnToParent(sizesRow, subpage)))
+                    }
+                }
+                "Display sizes" -> {
+                    val displays = DualScreenManager(this).displays().sortedBy { it.displayId }
+                    val bottomId = displays.firstOrNull { it.displayId != Display.DEFAULT_DISPLAY }?.displayId
+                    for (display in displays) {
+                        val title = when {
+                            displays.size == 1 -> "Screen"
+                            display.displayId == Display.DEFAULT_DISPLAY -> "Top screen"
+                            display.displayId == bottomId -> "Bottom screen"
+                            else -> display.name
+                        }
+                        val mode = display.mode
+                        detail.addView(text("$title  ·  ${mode.physicalWidth} × ${mode.physicalHeight} px", 16f))
+                    }
+                    if (displays.isEmpty()) detail.addView(text("No displays detected.", 16f))
                 }
                 "Customisation" -> if (bottomOnly) {
                     artworkLinks()
@@ -2453,6 +2520,10 @@ open class MainActivity : Activity() {
                                 showCategory(index, enter = true, subpage = Subpage(label, returnToParent(row)))
                             }
                         }
+                        val mediaRow = optionRows.size
+                        option("Media", "Manage top-screen media, artwork packs and media transfers.") {
+                            showCategory(index, enter = true, subpage = Subpage("Media", returnToParent(mediaRow)))
+                        }
                     }
                 }
                 "Media" -> if (bottomOnly) {
@@ -2462,12 +2533,12 @@ open class MainActivity : Activity() {
                     val mediaTypesRow = optionRows.size
                     option("Media types", "Choose which media to show on the top screen.") {
                         showCategory(index, enter = true,
-                            subpage = Subpage("Media types", returnToParent(mediaTypesRow), screenMediaTypes = true))
+                            subpage = Subpage("Media types", returnToParent(mediaTypesRow, subpage), screenMediaTypes = true))
                     }
                     detail.addView(text("Media library", 21f).apply { typeface = Typeface.DEFAULT_BOLD })
                     val packsRow = optionRows.size
                     option("NeoAssets artwork packs","Browse downloadable system artwork packs.") {
-                        val parent = returnToParent(packsRow)
+                        val parent = returnToParent(packsRow, subpage)
                         val scraper = scraperPanel()
                         showChoices("NeoAssets artwork packs", parent, emptyList(), "Loading packs…")
                         scraper.loadPacks { result ->
@@ -2484,7 +2555,7 @@ open class MainActivity : Activity() {
                     }
                     val transferRow = optionRows.size
                     option("Media transfer", "Copy or move media from NeoStation, your personal NeoStation build or ES-DE into Orbit.") {
-                        mediaTransferBack = returnToParent(transferRow)
+                        mediaTransferBack = returnToParent(transferRow, subpage)
                         val panel = mediaTransferPanel ?: MediaTransferPanel(
                             this, { populated }, { mediaTransferBack?.invoke() }, ::refreshTransferredMedia
                         ) { picker -> startActivityForResult(picker, 151, popupLaunchOptions()) }.also { mediaTransferPanel = it }
@@ -2562,8 +2633,8 @@ open class MainActivity : Activity() {
                     else {
                         val tileArt=mutableMapOf<String,android.graphics.Bitmap?>()
                         val loadingArt=mutableSetOf<String>()
-                        val grid=GridView(this).apply {
-                            numColumns=3;horizontalSpacing=dp(12);verticalSpacing=dp(12)
+                        val grid=ResponsiveGridView(this, 140).apply {
+                            horizontalSpacing=dp(12);verticalSpacing=dp(12)
                             stretchMode=GridView.STRETCH_COLUMN_WIDTH;isFocusable=true;isFocusableInTouchMode=true
                             defaultFocusHighlightEnabled=false;setDrawSelectorOnTop(true)
                             selector=GradientDrawable().apply { setColor(Color.TRANSPARENT);cornerRadius=dp(12).toFloat();setStroke(dp(2),blue) }
@@ -2578,7 +2649,8 @@ open class MainActivity : Activity() {
                                         layoutParams=AbsListView.LayoutParams(-1,dp(124));setPadding(dp(2),dp(2),dp(2),dp(2))
                                         background=surface(Color.TRANSPARENT,Color.rgb(38,49,65))
                                         addView(ImageView(this@MainActivity).apply {
-                                            scaleType=ImageView.ScaleType.FIT_XY;contentDescription="${spec.title} artwork"
+                                            scaleType=if(usesThorLayout)ImageView.ScaleType.FIT_XY else ImageView.ScaleType.FIT_CENTER
+                                            contentDescription="${spec.title} artwork"
                                             tag="system-art:${spec.id}"
                                             setImageBitmap(tileArt[spec.id])
                                         },FrameLayout.LayoutParams(-1,-1))
@@ -2627,14 +2699,14 @@ open class MainActivity : Activity() {
             if (enter) {
                 val preferred = restoreOption ?: focusedOption.takeIf { sameCategory }
                 val target = preferred?.let(optionRows::getOrNull)?.takeIf { it.isEnabled && it.visibility==View.VISIBLE } ?: first
-                val destination=target ?: optionRows.firstOrNull { it.isEnabled && it.visibility==View.VISIBLE }
+                val destination = target ?: firstOption()
                 if (sameCategory && restoreOption == null) detailScroll.scrollTo(0, previousScroll)
                 destination?.requestFocus()
-                if (restoreOption != null) destination?.post {
-                    if (pageCategory == index && activeTab == pageTab && destination.hasFocus()) {
-                        destination.requestRectangleOnScreen(
-                            android.graphics.Rect(0, 0, destination.width, destination.height), true
-                        )
+                if (destination != null && (restoreOption != null || destination === firstOption())) {
+                    OneShotPreDrawListener.add(detailScroll) {
+                        if (detailScroll.isShown && destination.hasFocus() && destination in optionRows) {
+                            revealOption(destination)
+                        }
                     }
                 }
             }
@@ -2655,18 +2727,15 @@ open class MainActivity : Activity() {
             categoryButtons.add(row)
         }
         showCategory(pageCategory.coerceIn(names.indices))
-        fun reveal(scroll: ScrollView, row: View) {
+        fun focusOption(row: View) {
             row.requestFocus()
-            scroll.fling(0)
-            row.requestRectangleOnScreen(android.graphics.Rect(0, 0, row.width, row.height), true)
+            revealOption(row)
         }
         fun focusCategory(index: Int) {
             val row = categoryButtons[index]
-            if (sidebar != null) reveal(sidebar, row)
-            else {
-                row.requestFocus()
-                row.requestRectangleOnScreen(android.graphics.Rect(0, 0, row.width, row.height), true)
-            }
+            row.requestFocus()
+            sidebar?.fling(0)
+            row.requestRectangleOnScreen(android.graphics.Rect(0, 0, row.width, row.height), true)
         }
         fun returnToCategory() {
             updatingCategory=true
@@ -2677,7 +2746,7 @@ open class MainActivity : Activity() {
             val embedded = embeddedView
             if (embedded != null) {
                 if (embeddedFocus?.requestFocus() != true) embedded.requestFocus()
-            } else optionRows.firstOrNull { it.isEnabled && it.visibility == View.VISIBLE }?.let { reveal(detailScroll, it) }
+            } else firstOption()?.let(::focusOption)
         }
         fun focusedView()=popup?.dialog?.currentFocus ?: currentFocus
         val handleSettings: (KeyEvent)->Boolean = { event ->
@@ -2733,22 +2802,27 @@ open class MainActivity : Activity() {
             } else if(focusedGrid!=null && key in listOf(KeyEvent.KEYCODE_DPAD_UP,KeyEvent.KEYCODE_DPAD_DOWN,KeyEvent.KEYCODE_DPAD_LEFT,KeyEvent.KEYCODE_DPAD_RIGHT)) {
                 if(event.action==KeyEvent.ACTION_DOWN) {
                     val position=if(scraperSettingsPanel?.ownsGrid(focusedGrid)==true)scraperSettingsPanel!!.tilePosition() else focusedGrid.selectedItemPosition.coerceAtLeast(0)
-                    if(key==KeyEvent.KEYCODE_DPAD_UP && position<3) {
+                    val columns = focusedGrid.numColumns.coerceAtLeast(1)
+                    if(key==KeyEvent.KEYCODE_DPAD_UP && position<columns) {
                         val previous=optionRows.takeWhile { it!==focusedGrid }.lastOrNull { it.isEnabled && it.visibility==View.VISIBLE }
-                        if(previous!=null)reveal(detailScroll,previous) else returnToCategory()
-                    } else if(key==KeyEvent.KEYCODE_DPAD_DOWN && position / 3 == (focusedGrid.count - 1) / 3) {
+                        if (previous != null) focusOption(previous)
+                        else {
+                            revealOption(focusedGrid)
+                            returnToCategory()
+                        }
+                    } else if(key==KeyEvent.KEYCODE_DPAD_DOWN && position / columns == (focusedGrid.count - 1) / columns) {
                         val next = optionRows.dropWhile { it !== focusedGrid }.drop(1)
                             .firstOrNull { it.isEnabled && it.visibility == View.VISIBLE }
-                        if (next != null) reveal(detailScroll, next)
-                    } else if(key==KeyEvent.KEYCODE_DPAD_LEFT && position%3==0) {
+                        if (next != null) focusOption(next)
+                    } else if(key==KeyEvent.KEYCODE_DPAD_LEFT && position%columns==0) {
                         if (!topTabs) returnToCategory()
                     }
                     else {
                         val next=when(key) {
-                            KeyEvent.KEYCODE_DPAD_UP -> if(position>=3)position-3 else position
-                            KeyEvent.KEYCODE_DPAD_DOWN -> (position+3).coerceAtMost(focusedGrid.count-1)
+                            KeyEvent.KEYCODE_DPAD_UP -> position-columns
+                            KeyEvent.KEYCODE_DPAD_DOWN -> (position+columns).coerceAtMost(focusedGrid.count-1)
                             KeyEvent.KEYCODE_DPAD_LEFT -> position-1
-                            else -> if(position%3<2 && position+1<focusedGrid.count)position+1 else position
+                            else -> if(position%columns<columns-1 && position+1<focusedGrid.count)position+1 else position
                         }
                         if(scraperSettingsPanel?.ownsGrid(focusedGrid)==true)scraperSettingsPanel!!.selectTile(next)
                         else focusedGrid.onKeyDown(key,event)
@@ -2763,13 +2837,15 @@ open class MainActivity : Activity() {
                     val inOptions = detailScroll.hasFocus()
                     when (key) {
                         KeyEvent.KEYCODE_DPAD_LEFT -> returnToCategory()
-                        KeyEvent.KEYCODE_DPAD_RIGHT -> navigableRows.firstOrNull()?.let { reveal(detailScroll, it) }
+                        KeyEvent.KEYCODE_DPAD_RIGHT -> navigableRows.firstOrNull()?.let(::focusOption)
                         else -> {
                             val step = if (key == KeyEvent.KEYCODE_DPAD_DOWN) 1 else -1
                             if (inOptions && navigableRows.isNotEmpty()) {
                                 val current = navigableRows.indexOfFirst { it.hasFocus() }.coerceAtLeast(0)
-                                if (topTabs && step < 0 && current == 0) returnToCategory()
-                                else reveal(detailScroll, navigableRows[(current + step).coerceIn(navigableRows.indices)])
+                                if (topTabs && step < 0 && current == 0) {
+                                    revealOption(navigableRows.first())
+                                    returnToCategory()
+                                } else focusOption(navigableRows[(current + step).coerceIn(navigableRows.indices)])
                             } else if (!topTabs) {
                                 val next = (pageCategory + step).coerceIn(categoryButtons.indices)
                                 focusCategory(next)

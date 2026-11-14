@@ -27,6 +27,7 @@ class ThemeGalleryPanel(private val activity:Activity,private val columns:Int=3,
         private set
     private val controls=mutableListOf<View>()
     private var scroll:ScrollView?=null
+    private var galleryColumns = columns
     init { gallery(false) }
     private fun dp(value:Int)=(value*activity.resources.displayMetrics.density).toInt()
     private fun text(value:String,size:Float,color:Int=Color.WHITE)=TextView(activity).apply { text=value;textSize=size;setTextColor(color) }
@@ -172,11 +173,13 @@ class ThemeGalleryPanel(private val activity:Activity,private val columns:Int=3,
         header.addView(create, if (wide) LinearLayout.LayoutParams(dp(150), dp(44)) else LinearLayout.LayoutParams(0, dp(44), 1.5f))
         header.addView(reload, if (wide) LinearLayout.LayoutParams(dp(90), dp(44)) else LinearLayout.LayoutParams(0, dp(44), 1f))
         view.addView(header)
-        val grid=GridLayout(activity).apply { columnCount=columns }
+        val horizontalInset = if (exit == null) 16 else 48
+        val availableWidth = activity.resources.configuration.screenWidthDp - horizontalInset
+        galleryColumns = if (usesThorLayout) columns else (availableWidth / 160).coerceIn(1, columns)
+        val grid=GridLayout(activity).apply { columnCount=galleryColumns }
         scroll=ScrollView(activity).apply { defaultFocusHighlightEnabled=false;addView(grid) }
         view.addView(scroll,LinearLayout.LayoutParams(-1,0,1f))
-        val horizontalInset = if (exit == null) 16 else 48
-        val cardWidth = (activity.resources.configuration.screenWidthDp - horizontalInset) / columns - 10
+        val cardWidth = availableWidth / galleryColumns - 10
         val cardHeight = (cardWidth * 9 / 16 + 54).coerceIn(144, 280)
         val activeTheme = OrbitThemes.current().id
         OrbitThemes.list().forEachIndexed { index,theme ->
@@ -193,7 +196,7 @@ class ThemeGalleryPanel(private val activity:Activity,private val columns:Int=3,
                 if (theme.id == activeTheme) addView(text("✓ Active", 12f, blue))
             })
             focusable(card) { showDetails(theme) };controls.add(card)
-            grid.addView(card,GridLayout.LayoutParams(GridLayout.spec(index/columns),GridLayout.spec(index%columns,1f)).apply {
+            grid.addView(card,GridLayout.LayoutParams(GridLayout.spec(index/galleryColumns),GridLayout.spec(index%galleryColumns,1f)).apply {
                 width=0;height=dp(cardHeight);setMargins(dp(5),dp(5),dp(5),dp(9))
             })
             if(theme.id==activeTheme)initialFocus=card
@@ -336,10 +339,10 @@ class ThemeGalleryPanel(private val activity:Activity,private val columns:Int=3,
             if(event.action==KeyEvent.ACTION_DOWN && event.repeatCount==0)controls[current].performClick();return true
         }
         val next=when(key) {
-            KeyEvent.KEYCODE_DPAD_LEFT -> if(current==0 || (current>=2 && (current-2)%columns==0))return false else current-1
-            KeyEvent.KEYCODE_DPAD_RIGHT -> if(current==0)1 else if(current>=2 && (current-2)%columns<columns-1)minOf(current+1,controls.lastIndex) else current
-            KeyEvent.KEYCODE_DPAD_UP -> if(current<2)current else if(current-2<columns)minOf(current-2,1) else current-columns
-            KeyEvent.KEYCODE_DPAD_DOWN -> if(current<2)minOf(2+current,controls.lastIndex) else minOf(current+columns,controls.lastIndex)
+            KeyEvent.KEYCODE_DPAD_LEFT -> if(current==0 || (current>=2 && (current-2)%galleryColumns==0))return false else current-1
+            KeyEvent.KEYCODE_DPAD_RIGHT -> if(current==0)1 else if(current>=2 && (current-2)%galleryColumns<galleryColumns-1)minOf(current+1,controls.lastIndex) else current
+            KeyEvent.KEYCODE_DPAD_UP -> if(current<2)current else if(current-2<galleryColumns)minOf(current-2,1) else current-galleryColumns
+            KeyEvent.KEYCODE_DPAD_DOWN -> if(current<2)minOf(2+minOf(current,galleryColumns-1),controls.lastIndex) else minOf(current+galleryColumns,controls.lastIndex)
             else -> return false
         }
         if(event.action==KeyEvent.ACTION_DOWN) {

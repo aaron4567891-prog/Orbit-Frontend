@@ -12,6 +12,8 @@ import okhttp3.Request
 import org.json.JSONObject
 import java.io.ByteArrayOutputStream
 import java.io.IOException
+import java.util.concurrent.Callable
+import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit
 
 internal class ArtworkSearchClient(private val context: Context) {
@@ -28,38 +30,55 @@ internal class ArtworkSearchClient(private val context: Context) {
         val image: HttpUrl,
         val thumbnail: HttpUrl,
         val sourcePage: HttpUrl?,
-        val dimensions: ArtworkDimensions?
+        val dimensions: ArtworkDimensions?,
+        val provider: String = ""
     )
 
-    data class SearchResults(val images: List<Result>, val viaOpenverse: Boolean = false)
+    data class SearchResults(val images: List<Result>, val failedSources: List<String>)
 
     private class HttpFailure(val status: Int, message: String) : IOException(message)
 
-    private var activeCall: Call? = null
+    private val activeCalls = mutableSetOf<Call>()
 
-    @Synchronized fun cancel() { activeCall?.cancel() }
+    @Synchronized fun cancel() { activeCalls.forEach(Call::cancel) }
 
-    fun search(source: Source, query: String, role: String, targets: List<ArtworkDimensions>): SearchResults {
-        val results = when (source) {
-            Source.COMMONS -> {
-                try {
-                    SearchResults(commons(query))
-                } catch (denied: HttpFailure) {
-                    if (denied.status != 401 && denied.status != 403) throw denied
-                    val backup = try {
-                        openverseCommons(query)
-                    } catch (error: Exception) {
-                        if (Thread.currentThread().isInterrupted) throw error
-                        throw IOException("Wikimedia Commons denied access and the backup search failed. Try again or switch sources.", error)
+    fun search(query: String, role: String, targets: List<ArtworkDimensions>): SearchResults {
+        val steamKey = ScraperCredentials.value(context, Source.STEAM.label, "apiKey")
+        val sources = Source.entries.filter {
+            it != Source.STEAM || (role != "physicalmedia" && steamKey.isNotBlank())
+        }
+        val keyword = when (role) {
+            "covers" -> "box art"
+            "physicalmedia" -> "game media"
+            "marquees" -> "logo"
+            else -> ""
+        }
+        val webQuery = if (keyword.isEmpty() || query.contains(keyword, ignoreCase = true)) query else "$query $keyword"
+        val searches = searchWorkers.invokeAll(sources.map { source ->
+            Callable {
+                runCatching {
+                    val images = when (source) {
+                        Source.COMMONS -> try {
+                            commons(webQuery)
+                        } catch (denied: HttpFailure) {
+                            if (denied.status != 401 && denied.status != 403) throw denied
+                            openverseCommons(webQuery)
+                        }
+                        Source.WALLHAVEN -> wallhaven(webQuery)
+                        Source.FLICKR -> flickr(webQuery)
+                        Source.STEAM -> steam(query, role, targets, steamKey)
                     }
-                    SearchResults(backup, viaOpenverse = true)
+                    images.bestFitFirst(targets).take(12).map { it.copy(provider = source.label) }
                 }
             }
-            Source.WALLHAVEN -> SearchResults(wallhaven(query))
-            Source.FLICKR -> SearchResults(flickr(query))
-            Source.STEAM -> SearchResults(steam(query, role, targets))
-        }
-        return results.copy(images = results.images.bestFitFirst(targets).take(18))
+        }, 13, TimeUnit.SECONDS)
+        val completed = searches.map { if (it.isCancelled) null else it.get().getOrNull() }
+        val images = (0 until 12).flatMap { index -> completed.mapNotNull { it?.getOrNull(index) } }
+            .distinctBy { it.image.newBuilder().fragment(null).build() }
+            .bestFitFirst(targets)
+        return SearchResults(images, sources.zip(completed).mapNotNull { (source, results) ->
+            source.label.takeIf { results == null }
+        })
     }
 
     private fun List<Result>.bestFitFirst(targets: List<ArtworkDimensions>): List<Result> {
@@ -154,9 +173,7 @@ internal class ArtworkSearchClient(private val context: Context) {
         }.distinctBy { it.image }
     }
 
-    private fun steam(query: String, role: String, targets: List<ArtworkDimensions>): List<Result> {
-        val key = ScraperCredentials.value(context, Source.STEAM.label, "apiKey")
-        require(key.isNotBlank()) { "Add your SteamGridDB API key in Scraping → Account, or search Wikimedia Commons." }
+    private fun steam(query: String, role: String, targets: List<ArtworkDimensions>, key: String): List<Result> {
         val base = "https://www.steamgriddb.com/api/v2".toHttpUrl()
         val search = base.newBuilder().addPathSegments("search/autocomplete").addPathSegment(query).build()
         val matches = ScraperClient.objects(json(search, key, missingAllowed = true).opt("data"))
@@ -212,7 +229,7 @@ internal class ArtworkSearchClient(private val context: Context) {
         if (key != null && url.host == "www.steamgriddb.com") request.header("Authorization", "Bearer $key")
         val call = synchronized(this) {
             if (Thread.currentThread().isInterrupted) throw InterruptedException()
-            client.newCall(request.build()).also { activeCall = it }
+            client.newCall(request.build()).also { activeCalls.add(it) }
         }
         call.timeout().timeout(timeout, TimeUnit.SECONDS)
         try {
@@ -239,11 +256,12 @@ internal class ArtworkSearchClient(private val context: Context) {
                 return output.toByteArray()
             }
         } finally {
-            synchronized(this) { if (activeCall === call) activeCall = null }
+            synchronized(this) { activeCalls.remove(call) }
         }
     }
 
     companion object {
+        private val searchWorkers = Executors.newFixedThreadPool(Source.entries.size)
         private val imageTypes = setOf("image/png", "image/jpeg", "image/webp")
         private val commonsMediaHosts = setOf("upload.wikimedia.org", "thumb.wikimedia.org")
         private val steamMediaHosts = setOf("cdn.steamgriddb.com", "s3.amazonaws.com")

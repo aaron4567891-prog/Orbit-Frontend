@@ -70,12 +70,6 @@ internal class ArtworkSearchPicker(
     private val worker = Executors.newSingleThreadExecutor()
     private var job: Future<*>? = null
     private var generation = 0
-    private val sources = ArtworkSearchClient.Source.entries.filterNot {
-        role == "physicalmedia" && it == ArtworkSearchClient.Source.STEAM
-    }
-    private var source = if (role != "system" && ArtworkSearchClient.Source.STEAM in sources &&
-        ScraperCredentials.value(activity, "SteamGridDB", "apiKey").isNotBlank())
-        ArtworkSearchClient.Source.STEAM else ArtworkSearchClient.Source.COMMONS
     private var results = emptyList<ArtworkSearchClient.Result>()
     private val thumbnails = mutableMapOf<Int, Bitmap>()
     private var selected = -1
@@ -116,8 +110,6 @@ internal class ArtworkSearchPicker(
         entry.addView(query, LinearLayout.LayoutParams(0, -2, 1f))
         entry.addView(search)
         panel.addView(entry)
-        val sourceButton = Button(activity).apply { text = "Source · ${source.label}"; isAllCaps = false; SelectionStyle.apply(this) }
-        panel.addView(sourceButton)
         val status = TextView(activity).apply {
             text = "Enter a name and choose Search."
             maxLines = 2
@@ -212,36 +204,27 @@ internal class ArtworkSearchPicker(
             if (keyboard.visibility == View.VISIBLE) keyboard.hide()
             cancelWork()
             clearResults()
-            val provider = source
-            val keywords = if (provider == ArtworkSearchClient.Source.STEAM) "" else when (role) {
-                "covers" -> "box art"
-                "physicalmedia" -> "game media"
-                "marquees" -> "logo"
-                else -> ""
-            }
-            val searchTerm = if (keywords.isEmpty() || term.contains(keywords, ignoreCase = true)) term else "$term $keywords"
             val targets = if (role == "hero" || role == "background") ArtworkDisplayFit.targets(activity, screens) else emptyList()
             val fitLabel = targets.takeIf { it.isNotEmpty() }?.joinToString(" + ") { it.label }
             val ticket = generation
-            status.text = "Searching ${provider.label}…"
+            status.text = "Searching artwork sources…"
             job = worker.submit {
-                val response = try { client.search(provider, searchTerm, role, targets) } catch (error: Exception) {
-                    onCurrent(ticket) { status.text = error.message ?: "Could not search ${provider.label}." }
+                val response = try { client.search(term, role, targets) } catch (error: Exception) {
+                    onCurrent(ticket) { status.text = "Could not search artwork sources. Try again." }
                     return@submit
                 }
                 val found = response.images
                 onCurrent(ticket) {
                     results = found
                     adapter.notifyDataSetChanged()
-                    status.text = when {
-                        found.isEmpty() -> "No images found. Try another name or source."
-                        fitLabel != null -> {
-                            val via = if (response.viaOpenverse) " · via Openverse" else ""
-                            "Best fit first · $fitLabel$via"
-                        }
-                        response.viaOpenverse -> "Wikimedia Commons results via Openverse. Choose an image to preview its details."
-                        else -> "Choose an image to preview its details."
+                    val unavailable = response.failedSources.joinToString(", ")
+                    val summary = when {
+                        found.isEmpty() && unavailable.isNotEmpty() -> "No images found. Some sources were unavailable."
+                        found.isEmpty() -> "No images found. Try another name."
+                        fitLabel != null -> "Best fit first · $fitLabel"
+                        else -> "${found.size} images"
                     }
+                    status.text = if (found.isNotEmpty() && unavailable.isNotEmpty()) "$summary · Unavailable: $unavailable" else summary
                     if (found.isNotEmpty() && keyboard.visibility != View.VISIBLE) {
                         grid.requestFocus()
                         grid.setSelection(0)
@@ -260,19 +243,12 @@ internal class ArtworkSearchPicker(
         query.setOnEditorActionListener { _, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_SEARCH) { search.performClick(); true } else false
         }
-        sourceButton.setOnClickListener {
-            cancelWork()
-            clearResults()
-            source = sources[(sources.indexOf(source) + 1) % sources.size]
-            sourceButton.text = "Source · ${source.label}"
-            status.text = "Choose Search to look on ${source.label}."
-        }
         grid.setOnItemClickListener { _, _, position, _ ->
             if (downloading) return@setOnItemClickListener
             val result = results.getOrNull(position) ?: return@setOnItemClickListener
             selected = position
             adapter.notifyDataSetChanged()
-            status.text = listOfNotNull(result.title, result.dimensions?.label, result.credit).filter(String::isNotBlank).joinToString(" · ")
+            status.text = listOfNotNull(result.title, result.dimensions?.label, result.provider, result.credit).filter(String::isNotBlank).joinToString(" · ")
             refreshActions()
         }
         sourcePage.setOnClickListener {
@@ -286,7 +262,6 @@ internal class ArtworkSearchPicker(
             val ticket = generation
             downloading = true
             search.isEnabled = false
-            sourceButton.isEnabled = false
             query.isEnabled = false
             refreshActions()
             status.text = "Downloading ${result.title}…"
@@ -296,7 +271,6 @@ internal class ArtworkSearchPicker(
                     bytes.onSuccess { close(); apply(it) }.onFailure {
                         downloading = false
                         search.isEnabled = true
-                        sourceButton.isEnabled = true
                         query.isEnabled = true
                         refreshActions()
                         status.text = it.message ?: "Could not download this image."

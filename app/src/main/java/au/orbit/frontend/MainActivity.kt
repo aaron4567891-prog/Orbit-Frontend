@@ -35,6 +35,10 @@ open class MainActivity : Activity() {
         if(ready && !showingCompanion && activeTab==0 && library && !scanning &&
             !EmulatorSettings.menuVisible(this) && activeSplitTileMenu()?.shortcutSelected!=true)
             games.getOrNull(gameCursor)?.let { system to it } else null
+    internal fun adjacentGames(game: Game): List<Game> {
+        if (games.getOrNull(gameCursor) != game) return emptyList()
+        return listOfNotNull(games.getOrNull(gameCursor + 1), games.getOrNull(gameCursor - 1))
+    }
     fun refreshCompanionMedia(refresh:Boolean=false) { companionPanel?.refreshMedia(refresh) }
     internal fun preloadCompanionGame(system:SystemSpec,game:Game) { companionPanel?.preloadGame(system,game) }
     internal fun showCompanionGame(system:SystemSpec,game:Game) { companionPanel?.showGame(system,game) }
@@ -253,6 +257,7 @@ open class MainActivity : Activity() {
     private fun present(contentView: View) {
         finishCrossfade()
         val view=if(contentView===gameMediaRoot)gameMediaSurface ?: contentView else contentView
+        if (view is GameMediaSurface) view.prepareGameView()
         val host = screenHost ?: FrameLayout(this).also { content ->
             screenHost=content
             val shell=FrameLayout(this).apply {
@@ -269,6 +274,9 @@ open class MainActivity : Activity() {
             }
             super.setContentView(shell)
         }
+        val previousLibraryPage = tabViews[if (library) 0 else 6]
+        val switchingLibraryViews = !warmingTabs && activeTab == 0 &&
+            previousLibraryPage != null && previousLibraryPage !== view && previousLibraryPage.isShown
         if(!warmingTabs) {
             if(library || activeTab!=0) {
                 gameLogos.cancelPreload()
@@ -278,21 +286,13 @@ open class MainActivity : Activity() {
             val topSettings=activeTab==2 && OrbitThemeArtwork.screen(this)=="top"
             val themed=ready && (activeTab==0 || topSettings || OrbitThemeArtwork.image(this,OrbitThemes.current(),"background")!=null)
             val splitPage=activeTab==0 && view.findViewWithTag<View>(SplitTileMenu.TAG)!=null
-            val previousSplitPage=tabViews[if(library)0 else 6]
-            val switchingSplitPages=splitPage && previousSplitPage?.isShown==true &&
-                previousSplitPage.findViewWithTag<View>(SplitTileMenu.TAG)!=null
+            val switchingSplitPages = splitPage && switchingLibraryViews &&
+                previousLibraryPage?.findViewWithTag<View>(SplitTileMenu.TAG) != null
             if(!switchingSplitPages)applyWindowChrome(themed)
-            // Remember the outgoing page and its background so it can fade out over the new page;
-            // the panel then never sees the brightness change in a single frame.
-            // The chosen page transition applies to every Systems <-> game page change, in every
-            // theme and layout and on either screen. "Instant" skips the animation.
-            // The chosen transition plays only between the system list and a game list, in every theme
-            // and on either screen. With Dip, going back to the system list is instant; hard cuts
-            // *into* a game list flashed on the Thor, even with a gap.
-            val dipBack=pageTransition()==Transition.DIP && !library
-            if(activeTab==0 && previousSplitPage!=null && previousSplitPage!==view && previousSplitPage.isShown &&
-                pageTransition()!=instantTransition && !dipBack) {
-                crossfadeOutgoing=previousSplitPage
+            // Keep the old background through the animation.
+            val animationView = libraryTransitionView(library)
+            if (switchingLibraryViews && pageTransition(animationView) != instantTransition) {
+                crossfadeOutgoing=previousLibraryPage
                 crossfadeBackground=host.background
                 crossfadeOpening=library
             }
@@ -333,6 +333,10 @@ open class MainActivity : Activity() {
             val child=host.getChildAt(i)
             child.visibility=if(child===view)View.VISIBLE else View.INVISIBLE
         }
+        if (switchingLibraryViews) {
+            val gridTag = if (library) "orbit-game-list" else "orbit-systems-grid"
+            (view.findViewWithTag<View>(gridTag) as? SplitLibraryGrid)?.cascadeIn()
+        }
         val outgoing=crossfadeOutgoing
         crossfadeOutgoing=null
         if(!warmingTabs && outgoing!=null && outgoing.parent===host)startCrossfade(host,outgoing,crossfadeBackground,view,opening=crossfadeOpening)
@@ -369,7 +373,21 @@ open class MainActivity : Activity() {
     // Systems page fading in is the big brightness change, so it keeps the full 100 ms.
     private val dipBackOutMs=80L
     private val dipBackHoldMs=20L
-    private fun pageTransition()=TransitionSettings.int(pageTransitionKey,0).coerceIn(pageTransitionLabels.indices)
+    private fun pageTransition(view: TransitionSettings.View) =
+        TransitionSettings.int(pageTransitionKey, 0, view).coerceIn(pageTransitionLabels.indices)
+    private fun isSlideTransition(style: Int) = style == Transition.SLIDE_X || style == Transition.SLIDE_Y
+
+    private fun libraryTransitionView(opening: Boolean): TransitionSettings.View {
+        val games = TransitionSettings.View.GAMES
+        val systems = TransitionSettings.View.SYSTEMS
+        // A slide covers both pages. Use one direction and speed so Back retraces the same route.
+        return when {
+            isSlideTransition(pageTransition(games)) -> games
+            isSlideTransition(pageTransition(systems)) -> systems
+            opening -> games
+            else -> systems
+        }
+    }
     private fun nextPageTransition(current:Int):Int {
         val position=pageTransitionOrder.indexOf(if(current==Transition.SLIDE_Y)Transition.SLIDE_X else current)
         return pageTransitionOrder[(position+1)%pageTransitionOrder.size]
@@ -388,20 +406,18 @@ open class MainActivity : Activity() {
         else -> "transitionDirection.$style"
     }
     /** The chosen Direction for a style (0 when it has none). The old up-and-down slide defaults to From bottom. */
-    private fun transitionDirection(style:Int):Int {
+    private fun transitionDirection(style: Int, view: TransitionSettings.View): Int {
         val labels=transitionDirectionLabels(style) ?: return 0
         val default=if(style==Transition.SLIDE_Y)2 else 0
-        return TransitionSettings.int(transitionDirectionKey(style),default).coerceIn(labels.indices)
+        return TransitionSettings.int(transitionDirectionKey(style), default, view).coerceIn(labels.indices)
     }
     private val transitionSpeedKey="transitionSpeed"
     private val transitionSpeedLabels=listOf("Slow","Normal","Fast","Very fast")
     private val transitionSpeedFactors=listOf(1.4f,1f,0.75f,0.55f)
-    private fun transitionSpeed()=TransitionSettings.int(transitionSpeedKey,1).coerceIn(transitionSpeedLabels.indices)
-    private fun transitionSpeedFactor()=transitionSpeedFactors[transitionSpeed()]
+    private fun transitionSpeed(view: TransitionSettings.View) =
+        TransitionSettings.int(transitionSpeedKey, 1, view).coerceIn(transitionSpeedLabels.indices)
     private val flipDirectionKey="flipDirection"
     private val flipDirectionLabels=listOf("Sideways","Forwards","Backwards")
-    /** 0 = sideways (around the vertical axis), 1 = forwards (top tips toward you), 2 = backwards. */
-    private fun flipDirection()=TransitionSettings.int(flipDirectionKey,0).coerceIn(flipDirectionLabels.indices)
 
     /** The selected tile on [page], as a rectangle in [host]'s coordinates, for the zoom transition. */
     private fun selectedTileRect(page:View,host:View):android.graphics.RectF? {
@@ -426,7 +442,8 @@ open class MainActivity : Activity() {
      */
     private fun startCrossfade(host:FrameLayout,outgoing:View,background:android.graphics.drawable.Drawable?,
         incoming:View,opening:Boolean) {
-        val style=pageTransition()
+        val animationView = libraryTransitionView(opening)
+        val style = pageTransition(animationView)
         val params=outgoing.layoutParams
         host.removeView(outgoing)
         host.addView(outgoing,params)
@@ -442,7 +459,9 @@ open class MainActivity : Activity() {
             page.pivotX=page.width/2f;page.pivotY=page.height/2f
         } }
         // Slide Direction: 0 from right, 1 from left, 2 from bottom, 3 from top.
-        val slideDirection=if(style==Transition.SLIDE_X || style==Transition.SLIDE_Y)transitionDirection(style) else 0
+        val slideDirection = if (style == Transition.SLIDE_X || style == Transition.SLIDE_Y) {
+            transitionDirection(style, animationView)
+        } else 0
         val vertical=slideDirection>=2
         val slideSign=if(slideDirection==1 || slideDirection==3)-1f else 1f
         val distance=(if(vertical)host.height else host.width).toFloat()
@@ -453,9 +472,9 @@ open class MainActivity : Activity() {
         val gamePage=if(opening)incoming else outgoing
         val systemsPage=if(opening)outgoing else incoming
         // Zoom Direction: 0 grows out of the selected tile, 1 grows from the centre.
-        val tile=if(style==Transition.ZOOM && transitionDirection(style)==0)selectedTileRect(systemsPage,host) else null
+        val tile=if(style==Transition.ZOOM && transitionDirection(style, animationView)==0)selectedTileRect(systemsPage,host) else null
         // Scale Direction: 0 grows in from slightly smaller, 1 shrinks in from slightly larger.
-        val scaleFrom=if(transitionDirection(Transition.SCALE)==0)0.92f else 1.08f
+        val scaleFrom=if(transitionDirection(Transition.SCALE, animationView)==0)0.92f else 1.08f
         val zoomFrom=tile?.let { maxOf(it.width()/host.width,it.height()/host.height).coerceIn(0.05f,1f) } ?: 0.3f
         when(style) {
             Transition.SLIDE_X,Transition.SLIDE_Y -> {
@@ -494,7 +513,7 @@ open class MainActivity : Activity() {
         crossfadeEnd=end
         // Speed scales every duration. Fades keep a floor, because fading faster than about 100 ms
         // brought the Thor's flash back; motion (slide, zoom, scale, flip) can go all the way.
-        val speed=transitionSpeedFactor()
+        val speed = transitionSpeedFactors[transitionSpeed(animationView)]
         fun scaled(ms:Long,floor:Long=0L)=maxOf(floor,(ms*speed).toLong())
         val fadeMs=scaled(pageCrossfadeMs,100L)
         val dipOut=scaled(if(opening)dipOutMs else dipBackOutMs,if(opening)100L else 80L)
@@ -512,7 +531,7 @@ open class MainActivity : Activity() {
         val flipEase=android.view.animation.PathInterpolator(0.4f,0f,0.2f,1f)
         // Sideways turns around the vertical axis; forwards and backwards tip over the horizontal axis
         // (a negative X rotation brings the top edge toward the viewer).
-        val flip=flipDirection()
+        val flip = transitionDirection(Transition.FLIP, animationView)
         val flipSign=when(flip) { 1 -> -1f; 2 -> 1f; else -> 1f }*(if(opening)1f else -1f)
         fun View.turn(degrees:Float) { if(flip==0)rotationY=degrees*flipSign else rotationX=degrees*flipSign }
         crossfade=android.animation.ValueAnimator.ofFloat(0f,1f).apply {
@@ -705,6 +724,7 @@ open class MainActivity : Activity() {
         list.getChildAt(previous - first)?.let { list.adapter.getView(previous, it, list) }
         row?.let { list.adapter.getView(gameCursor, it, list) }
         artworkPanel?.show(system, games.getOrNull(gameCursor))
+        games.getOrNull(gameCursor)?.let { artworkPanel?.warmAdjacentFanArt(system, adjacentGames(it)) }
         importedScene?.showGame(games.getOrNull(gameCursor))
         DualScreenCoordinator.refreshMedia()
     }
@@ -1240,6 +1260,7 @@ open class MainActivity : Activity() {
                 root.addView(content, LinearLayout.LayoutParams(-1, 0, 1f))
             }
             artwork.show(system, entries.firstOrNull())
+            entries.firstOrNull()?.let { artwork.warmAdjacentFanArt(system, adjacentGames(it)) }
             }
             list.post { if (startMenu?.isShowing != true) { list.requestFocus(); if (entries.isNotEmpty()) list.setSelection(0) } }
         }
@@ -1390,7 +1411,8 @@ open class MainActivity : Activity() {
             runCatching { UserDataStore.put(this,"settings",prefix+"Layout",next.ordinal) }
                 .onSuccess { grid.arrange(next,animate) }.onFailure(::showDataError)
         }
-        grid=SplitLibraryGrid(this,theme,slots,
+        val animationView = if (inGames) TransitionSettings.View.GAMES else TransitionSettings.View.SYSTEMS
+        grid=SplitLibraryGrid(this,theme,slots,animationView,
             title={ if(inGames)entries[it].title else systemsHere[it].title },
             bind={ cell,label,index,artworkPending ->
                 if(inGames) {
@@ -2133,72 +2155,15 @@ open class MainActivity : Activity() {
                 }
                 showChoices("Artwork images", parent, choices, focused = focused)
             }
-            fun showAnimationSettings(parent: () -> Unit, focused: Int? = null) {
-                fun flag(key: String) = TransitionSettings.flag(key)
-                fun onOff(key: String) = if (flag(key)) "On" else "Off"
-                fun save(key: String, value: Int, row: Int, after: () -> Unit = {}) {
-                    runCatching { TransitionSettings.put(this, key, value) }
-                        .onSuccess { after(); if (isCurrent(parent)) showAnimationSettings(parent, row) }
-                        .onFailure(::showDataError)
-                }
-                // Grids redraw their selection outline when the gliding setting changes.
-                fun refreshGrids() = listOf(0, 6).forEach { slot ->
-                    (tabViews[slot]?.findViewWithTag<View>(if (slot == 0) "orbit-systems-grid" else "orbit-game-list") as? SplitLibraryGrid)?.refreshTiles()
-                }
-                val transition = pageTransition()
-                // Rows are numbered as they are added, because Direction only appears for some styles.
-                val choices = mutableListOf<Choice>()
-                fun add(choice: (row: Int) -> Choice) { choices += choice(choices.size) }
-                add { row ->
-                    Choice("Transition style", "Press A to switch how the game list opens: Fade, Slide, Zoom, Scale, Flip, Dip (blank, then the next page) or Instant. Instant can flash on the Thor.",
-                        pageTransitionLabels[transition]) { save(pageTransitionKey, nextPageTransition(transition), row) }
-                }
-                // Direction always shows; styles that do not move in a direction show "Not used".
-                val directions = transitionDirectionLabels(transition)
-                add { row ->
-                    if (directions == null) Choice("Direction", "${pageTransitionLabels[transition]} has no direction. Slide, Zoom, Scale and Flip do.", "Not used") { }
-                    else {
-                        val current = transitionDirection(transition)
-                        Choice("Direction", "Press A to change which way the ${pageTransitionLabels[transition]} transition moves.",
-                            directions[current]) {
-                            save(transitionDirectionKey(transition), (current + 1) % directions.size, row)
-                        }
+            fun showAnimationSettings(view: TransitionSettings.View, parent: () -> Unit, focused: Int? = null) {
+                val choices = animationOptions(view).mapIndexed { row, option ->
+                    Choice(option.title, option.description, option.value()) {
+                        option.change()
+                        if (isCurrent(parent)) showAnimationSettings(view, parent, row)
                     }
                 }
-                add { row ->
-                    val speed = transitionSpeed()
-                    Choice("Speed", "Press A to switch between Slow, Normal, Fast and Very fast. Fade and Dip stop short of the fastest fades, which flash on the Thor.",
-                        transitionSpeedLabels[speed]) {
-                        save(transitionSpeedKey, (speed + 1) % transitionSpeedLabels.size, row)
-                    }
-                }
-                add { row ->
-                    Choice("Apply to", "All themes share these settings, or each theme remembers its own. With Each theme, changes here only affect ${OrbitThemes.current().name}.",
-                        if (TransitionSettings.perTheme()) "Each theme (${OrbitThemes.current().name})" else "All themes") {
-                        runCatching {
-                            UserDataStore.put(this, "settings", TransitionSettings.SCOPE_KEY, if (TransitionSettings.perTheme()) 0 else 1)
-                        }.onSuccess { refreshGrids(); if (isCurrent(parent)) showAnimationSettings(parent, row) }.onFailure(::showDataError)
-                    }
-                }
-                add { row ->
-                    Choice("Tile cascade", "Game tiles ripple in one after another when a game list opens.",
-                        onOff(SplitLibraryGrid.TILE_CASCADE_KEY)) {
-                        save(SplitLibraryGrid.TILE_CASCADE_KEY, if (flag(SplitLibraryGrid.TILE_CASCADE_KEY)) 0 else 1, row)
-                    }
-                }
-                add { row ->
-                    Choice("Gliding selection", "The selection outline slides smoothly from tile to tile.",
-                        onOff(SplitLibraryGrid.GLIDING_SELECTION_KEY)) {
-                        save(SplitLibraryGrid.GLIDING_SELECTION_KEY, if (flag(SplitLibraryGrid.GLIDING_SELECTION_KEY)) 0 else 1, row, ::refreshGrids)
-                    }
-                }
-                add { row ->
-                    Choice("Top screen art crossfade", "The top screen's artwork blends into the next instead of cutting.",
-                        onOff(GameMediaSurface.ART_CROSSFADE_KEY)) {
-                        save(GameMediaSurface.ART_CROSSFADE_KEY, if (flag(GameMediaSurface.ART_CROSSFADE_KEY)) 0 else 1, row)
-                    }
-                }
-                showChoices("Page transition", parent, choices, focused = focused)
+                val title = if (view == TransitionSettings.View.SYSTEMS) "Systems animations" else "Game list animations"
+                showChoices(title, parent, choices, focused = focused)
             }
             val section = subpage?.title ?: names[index]
             fun redrawSection() {
@@ -2439,10 +2404,12 @@ open class MainActivity : Activity() {
                             .onSuccess { updateSystemsMusic(); showCategory(index, true) }.onFailure { showDataError(it) }
                     }
                     artworkLinks()
-                    val animationRow = optionRows.size
-                    option("Page transition", "Transition style, tile cascade, gliding selection and top screen art crossfade.",
-                        pageTransitionLabels[pageTransition()]) {
-                        showAnimationSettings(returnToParent(animationRow))
+                    for ((view, label) in listOf(TransitionSettings.View.SYSTEMS to "Systems animations",
+                        TransitionSettings.View.GAMES to "Game list animations")) {
+                        val animationRow = optionRows.size
+                        option(label, "Choose the transition and effects for this view.", pageTransitionLabels[pageTransition(view)]) {
+                            showAnimationSettings(view, returnToParent(animationRow))
+                        }
                     }
                 }
                 "Account" -> {
@@ -3055,6 +3022,71 @@ open class MainActivity : Activity() {
         if (ready && activeTab == 1 && event.action == KeyEvent.ACTION_DOWN && appsPanel?.onKeyDown(event.keyCode, event) == true) return true
         return super.dispatchKeyEvent(event)
     }
+    private class AnimationOption(
+        val title: String,
+        val description: String,
+        val value: () -> String,
+        val change: () -> Unit
+    )
+
+    private fun animationOptions(view: TransitionSettings.View): List<AnimationOption> {
+        val systems = view == TransitionSettings.View.SYSTEMS
+        fun refreshGrid() {
+            val slot = if (systems) 0 else 6
+            val tag = if (systems) "orbit-systems-grid" else "orbit-game-list"
+            (tabViews[slot]?.findViewWithTag<View>(tag) as? SplitLibraryGrid)?.refreshTiles()
+        }
+
+        fun save(key: String, value: Int, refreshSelection: Boolean = false, target: TransitionSettings.View = view) {
+            runCatching { TransitionSettings.put(this, key, value, target) }
+                .onSuccess { if (refreshSelection) refreshGrid() }
+                .onFailure(::showDataError)
+        }
+
+        fun toggle(title: String, description: String, key: String, refreshSelection: Boolean = false) =
+            AnimationOption(title, description, { if (TransitionSettings.flag(key, view)) "On" else "Off" }) {
+                save(key, if (TransitionSettings.flag(key, view)) 0 else 1, refreshSelection)
+            }
+
+        fun motionSettingsView(): TransitionSettings.View {
+            val effective = libraryTransitionView(opening = !systems)
+            return if (isSlideTransition(pageTransition(effective))) effective else view
+        }
+        return listOf(
+            AnimationOption("Transition style", "Slide applies in both directions between Systems and Games.",
+                { pageTransitionLabels[pageTransition(view)] }) {
+                save(pageTransitionKey, nextPageTransition(pageTransition(view)))
+            },
+            AnimationOption("Direction", "Change which way the transition moves.",
+                {
+                    val target = motionSettingsView()
+                    val style = pageTransition(target)
+                    transitionDirectionLabels(style)?.get(transitionDirection(style, target)) ?: "Not used"
+                }) {
+                val target = motionSettingsView()
+                val style = pageTransition(target)
+                transitionDirectionLabels(style)?.let { directions ->
+                    save(transitionDirectionKey(style), (transitionDirection(style, target) + 1) % directions.size, target = target)
+                }
+            },
+            AnimationOption("Speed", "Change the transition speed.",
+                { transitionSpeedLabels[transitionSpeed(motionSettingsView())] }) {
+                val target = motionSettingsView()
+                save(transitionSpeedKey, (transitionSpeed(target) + 1) % transitionSpeedLabels.size, target = target)
+            },
+            AnimationOption("Apply to", "Share animation settings across all themes or set them for each theme.",
+                { if (TransitionSettings.perTheme(view)) "Each theme (${OrbitThemes.current().name})" else "All themes" }) {
+                runCatching {
+                    TransitionSettings.setPerTheme(this, view, !TransitionSettings.perTheme(view))
+                }.onSuccess { refreshGrid() }.onFailure(::showDataError)
+            },
+            toggle("Tile cascade", "Tiles appear one after another when this view opens.", SplitLibraryGrid.TILE_CASCADE_KEY),
+            toggle("Gliding selection", "The selection outline slides from tile to tile.", SplitLibraryGrid.GLIDING_SELECTION_KEY,
+                refreshSelection = true),
+            toggle("Artwork crossfade", "Blend between artwork as you browse this view.", GameMediaSurface.ART_CROSSFADE_KEY)
+        )
+    }
+
     private fun showSystemMenu(spec: SystemSpec, host:Activity=this) {
         if (startMenu?.isShowing == true) return
         val currentGame = if (library && system == spec) games.getOrNull(gameCursor) else null

@@ -12,7 +12,8 @@ data class CompanionBrowse(val key:String,val title:String,val detail:String="",
 
 /** Displays system heroes or the icon and label for the active menu. */
 class CompanionBrowseView(private val activity:Activity):LinearLayout(activity) {
-    var backdropChanged:((Drawable)->Unit)?=null
+    var backdropChanged: ((Drawable, Boolean) -> Unit)? = null
+    private var showingSystem = false
     private var backdrop:Drawable=ColorDrawable(OrbitThemes.current().background)
     private val image=ImageView(activity).apply { scaleType=ImageView.ScaleType.FIT_CENTER }
     private val title=TextView(activity).apply { textSize=28f;gravity=Gravity.CENTER }
@@ -31,6 +32,7 @@ class CompanionBrowseView(private val activity:Activity):LinearLayout(activity) 
         key=nextKey
         backdropTheme=theme
         val system=selection.system
+        showingSystem = system != null
         val labelVisibility=if(system==null)View.VISIBLE else View.GONE
         image.visibility=labelVisibility;title.visibility=labelVisibility;detail.visibility=labelVisibility
         contentDescription=system?.title
@@ -65,7 +67,7 @@ class CompanionBrowseView(private val activity:Activity):LinearLayout(activity) 
         publishBackdrop()
     }
     private fun publishBackdrop() {
-        if(backdropChanged==null)background=backdrop else { background=null;backdropChanged?.invoke(backdrop) }
+        if(backdropChanged==null)background=backdrop else { background=null;backdropChanged?.invoke(backdrop, showingSystem) }
     }
     fun clear() { key=null;imageKey=null;image.setImageDrawable(null) }
     fun destroy()=clear()

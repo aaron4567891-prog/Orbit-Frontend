@@ -191,7 +191,7 @@ internal class SplitTileMenu(
         if (!shortcutSelected) {
             screen.text = "Launch screen · ${if (saved == "top") "Top" else "Bottom"}"
             tiles.text = "Tiles · ${grid.size.title}"
-            arrangement.text = "Layout · ${grid.arrangement.title}"
+            arrangement.text = "Layout · ${grid.arrangementLabel}"
             tileArtwork?.text = "Tile artwork · ${tileArtworkLabel()}"
             spinDiscs?.text = "Spin discs · ${if (discSpinEnabled()) "On" else "Off"}"
         }

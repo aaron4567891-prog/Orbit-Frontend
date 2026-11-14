@@ -71,6 +71,7 @@ object DualScreenCoordinator : DisplayManager.DisplayListener {
     internal fun libraryReady()=schedule()
     internal fun hasLibraryHost()=mainHost.get()?.let { !it.showingCompanion && !it.isDestroyed && !it.isFinishing }==true
     fun mediaSelection(): Pair<SystemSpec,Game>? = mainHost.get()?.companionSelection()
+    internal fun adjacentGames(game: Game) = mainHost.get()?.adjacentGames(game).orEmpty()
     internal fun prepareGameArtwork(host:MainActivity,system:SystemSpec,game:Game) {
         if(mainHost.get()===host)panel.get()?.takeIf { !it.isDestroyed && !it.isFinishing }
             ?.preloadCompanionGame(system,game)

@@ -26,6 +26,7 @@ internal class SplitLibraryGrid(
     context: Context,
     private val theme: OrbitThemes.Theme,
     private val slots: SplitTileSlots,
+    private val animationView: TransitionSettings.View,
     private val title: (Int) -> String,
     private val bind: (FrameLayout, TextView, Int, (Boolean) -> Unit) -> Unit,
     private val onSelected: (Int) -> Unit,
@@ -33,7 +34,8 @@ internal class SplitLibraryGrid(
     initialArrangement: Arrangement,
     private val open: (Int) -> Unit,
     private val hold: () -> Unit,
-    private val changeLayout: (Arrangement) -> Unit
+    private val changeLayout: (Arrangement) -> Unit,
+    private val verticalScroll: Boolean = false
 ) : RecyclerView(context) {
     enum class TileSize(val title: String, val fill: Float) {
         SMALL("Small", 0.64f), MEDIUM("Medium", 0.72f), LARGE("Large", 0.80f), EXTRA_LARGE("Extra Large", 0.96f);
@@ -63,7 +65,7 @@ internal class SplitLibraryGrid(
         private const val CASCADE_MS = 170L
     }
 
-    private val glideEnabled get() = TransitionSettings.flag(GLIDING_SELECTION_KEY)
+    private val glideEnabled get() = TransitionSettings.flag(GLIDING_SELECTION_KEY, animationView)
     private var glideFrom: android.graphics.RectF? = null
     private var glideProgress = 1f
     private var glideAnimator: android.animation.ValueAnimator? = null
@@ -116,7 +118,7 @@ internal class SplitLibraryGrid(
 
     /** Fades and grows the visible tiles in one after another, if the tile cascade is turned on. */
     fun cascadeIn() {
-        if (!TransitionSettings.flag(TILE_CASCADE_KEY)) return
+        if (!TransitionSettings.flag(TILE_CASCADE_KEY, animationView)) return
         // Hide the tiles before the first frame that shows this page, then ripple them in.
         viewTreeObserver.addOnPreDrawListener(object : android.view.ViewTreeObserver.OnPreDrawListener {
             override fun onPreDraw(): Boolean {
@@ -146,6 +148,11 @@ internal class SplitLibraryGrid(
         private set
     var arrangement = initialArrangement
         private set
+    val arrangementLabel: String get() = when {
+        !verticalScroll || arrangement == Arrangement.SINGLE_TILE -> arrangement.title
+        arrangement.rows == 1 -> "1 column"
+        else -> "${arrangement.rows} columns"
+    }
     private var cursor = 0
     private var movingFrom: Int? = null
     val cursorPosition get() = cursor
@@ -154,7 +161,7 @@ internal class SplitLibraryGrid(
     val shortcutSelected get() = selectedLibraryIndex == null
     val emptyShortcutSelected get() = slots.isEmpty(cursor)
     val isMoving get() = movingFrom != null
-    private val layout = GridLayoutManager(context, initialArrangement.rows, HORIZONTAL, false)
+    private val layout = GridLayoutManager(context, initialArrangement.rows, if (verticalScroll) VERTICAL else HORIZONTAL, false)
     private var singleTileLayout = initialArrangement == Arrangement.SINGLE_TILE
     private var swipingSingleTile = false
     private val singleTileSnap = object : PagerSnapHelper() {
@@ -238,10 +245,12 @@ internal class SplitLibraryGrid(
             val label = holder.label
             cell.layoutParams = GridLayoutManager.LayoutParams(tileSize, tileSize).apply {
                 val columnPadding = columnWidth - tileSize
-                leftMargin = columnPadding / 2
-                rightMargin = columnPadding - leftMargin
-                topMargin = rowPadding / 2
-                bottomMargin = rowPadding - topMargin
+                val horizontalPadding = if (verticalScroll) rowPadding else columnPadding
+                val verticalPadding = if (verticalScroll) columnPadding else rowPadding
+                leftMargin = horizontalPadding / 2
+                rightMargin = horizontalPadding - leftMargin
+                topMargin = verticalPadding / 2
+                bottomMargin = verticalPadding - topMargin
             }
             highlight(cell, position)
             val index = slots.libraryIndex(position)
@@ -287,7 +296,7 @@ internal class SplitLibraryGrid(
             }
 
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-                if (swipingSingleTile && dx != 0) {
+                if (swipingSingleTile && (dx != 0 || dy != 0)) {
                     val centered = singleTileSnap.findSnapView(layout)?.let(::getChildAdapterPosition)
                     if (centered != null && centered != NO_POSITION && centered != cursor) {
                         select(centered, reveal = false)
@@ -304,19 +313,22 @@ internal class SplitLibraryGrid(
         val width = MeasureSpec.getSize(widthMeasureSpec)
         val height = MeasureSpec.getSize(heightMeasureSpec)
         if (width > 0 && height > 0) {
-            val rowHeight = (height / arrangement.rows).coerceAtLeast(1)
+            val scrollExtent = if (verticalScroll) height else width
+            val crossExtent = if (verticalScroll) width else height
+            val spanSize = (crossExtent / arrangement.rows).coerceAtLeast(1)
             val singleTile = arrangement == Arrangement.SINGLE_TILE
-            val nextColumnWidth = arrangement.columnWidth(width, height)
-            val nextColumns = (width + nextColumnWidth - 1) / nextColumnWidth
-            val side = (minOf(rowHeight, nextColumnWidth) * size.fill).roundToInt().coerceAtLeast(1)
-            val nextPadding = rowHeight - side
+            val nextColumnWidth = if (verticalScroll && !singleTile) minOf(spanSize, dp(160), scrollExtent)
+                else arrangement.columnWidth(scrollExtent, crossExtent)
+            val nextColumns = (scrollExtent + nextColumnWidth - 1) / nextColumnWidth
+            val side = (minOf(spanSize, nextColumnWidth) * size.fill).roundToInt().coerceAtLeast(1)
+            val nextPadding = spanSize - side
             val layoutChanged = columnWidth != nextColumnWidth || fittedColumns != nextColumns ||
                 layout.spanCount != arrangement.rows || singleTileLayout != singleTile
             if (layoutChanged || tileSize != side || rowPadding != nextPadding) {
                 val first = layout.findViewByPosition(layout.findFirstVisibleItemPosition())
                 val anchor = if (layoutChanged) cursorTile ?: first else first
                 val anchorPosition = anchor?.let(::getChildAdapterPosition) ?: NO_POSITION
-                val left = anchor?.let { it.left - (columnWidth - tileSize) / 2 }
+                val start = anchor?.let { scrollStart(it) - (columnWidth - tileSize) / 2 }
                 tileSize = side
                 columnWidth = nextColumnWidth
                 fittedColumns = nextColumns
@@ -327,8 +339,8 @@ internal class SplitLibraryGrid(
                 tiles.notifyDataSetChanged()
                 if (layoutChanged && singleTile) {
                     layout.scrollToPositionWithOffset(cursor, 0)
-                } else if (left != null && anchorPosition != NO_POSITION) {
-                    val offset = if (layoutChanged && anchorPosition == cursor) left.coerceIn(0, width - columnWidth) else left
+                } else if (start != null && anchorPosition != NO_POSITION) {
+                    val offset = if (layoutChanged && anchorPosition == cursor) start.coerceIn(0, scrollExtent - columnWidth) else start
                     layout.scrollToPositionWithOffset(anchorPosition, offset)
                 }
             }
@@ -491,27 +503,32 @@ internal class SplitLibraryGrid(
 
     fun reopen() {
         select(0, animate = false, reveal = false)
-        if (cursorTile?.left != (columnWidth - tileSize) / 2) {
+        if (cursorTile?.let(::scrollStart) != (columnWidth - tileSize) / 2) {
             layout.scrollToPositionWithOffset(0, 0)
         }
     }
 
+    private fun scrollStart(tile: View) = if (verticalScroll) tile.top else tile.left
+
     private fun revealCursor(animate: Boolean) {
         val first = layout.findFirstVisibleItemPosition()
         val anchor = layout.findViewByPosition(first)
-        if (anchor == null || width == 0) {
+        val viewport = if (verticalScroll) height else width
+        if (anchor == null || viewport == 0) {
             layout.scrollToPositionWithOffset(cursor, 0)
             return
         }
         val rows = layout.spanCount
-        val left = anchor.left - (columnWidth - tileSize) / 2 + (cursor / rows - first / rows) * columnWidth
+        val start = scrollStart(anchor) - (columnWidth - tileSize) / 2 + (cursor / rows - first / rows) * columnWidth
         val delta = when {
-            left < 0 -> left
-            left + columnWidth > width -> left + columnWidth - width
+            start < 0 -> start
+            start + columnWidth > viewport -> start + columnWidth - viewport
             else -> 0
         }
         if (delta == 0) return
-        if (animate) smoothScrollBy(delta, 0, null, TILE_TRANSITION_MS) else scrollBy(delta, 0)
+        val dx = if (verticalScroll) 0 else delta
+        val dy = if (verticalScroll) delta else 0
+        if (animate) smoothScrollBy(dx, dy, null, TILE_TRANSITION_MS) else scrollBy(dx, dy)
     }
 
     fun beginMove() {
@@ -571,7 +588,13 @@ internal class SplitLibraryGrid(
         }
         val rows = layout.spanCount
         val row = cursor % rows
-        val step = when (keyCode) {
+        val step = if (verticalScroll) when (keyCode) {
+            KeyEvent.KEYCODE_DPAD_LEFT -> if (row > 0) -1 else 0
+            KeyEvent.KEYCODE_DPAD_RIGHT -> if (row < rows - 1) 1 else 0
+            KeyEvent.KEYCODE_DPAD_UP -> -rows
+            KeyEvent.KEYCODE_DPAD_DOWN -> rows
+            else -> null
+        } else when (keyCode) {
             KeyEvent.KEYCODE_DPAD_LEFT -> -rows
             KeyEvent.KEYCODE_DPAD_RIGHT -> rows
             KeyEvent.KEYCODE_DPAD_UP -> if (row > 0) -1 else 0

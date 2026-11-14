@@ -15,64 +15,89 @@ internal class GameMediaBackground(private val context:Context):Drawable() {
     private var fallback=OrbitThemeArtwork.background(context)
     private var media=emptyMap<String,Bitmap>()
     private var mode=ScreenMediaSettings.background(screen)
-    private var videoPoster:Bitmap?=null
     // Top-screen art crossfade: the previous game's image fading out over the new one.
     private var fadingFrom:Bitmap?=null
+    private var fadingFromTheme = false
+    private var fadingFromPhysicalMedia = false
     private var fadeProgress=1f
     private var fadeAnimator:android.animation.ValueAnimator?=null
     private fun currentBitmap():Bitmap? {
         val custom=media[GameCustomArtwork.HERO]
         if(custom==null && mode=="off")return null
-        return custom ?: media[mode] ?: if(mode=="videos")videoPoster else null
+        return custom ?: media[mode]
     }
-    fun update(media:Map<String,Bitmap>,videoAvailable:Boolean) {
+    private fun isPhysicalMedia() = mode == "physicalmedia" && GameCustomArtwork.HERO !in media
+
+    fun update(media: Map<String, Bitmap>) {
+        syncSettings()
         val before=currentBitmap()
-        applyUpdate(media,videoAvailable)
+        val wasPhysicalMedia = isPhysicalMedia()
+        this.media = media
+        invalidateSelf()
         val after=currentBitmap()
-        if(GameMediaSurface.artCrossfadeEnabled() && before!=null && before!==after) {
-            fadeAnimator?.cancel()
+        if (before === after) return
+        val enteringMedia = before == null && after != null
+        val leavingMedia = before != null && after == null
+        val blendArtwork = mode != "fanart" && before != null &&
+            GameMediaSurface.artCrossfadeEnabled(TransitionSettings.View.GAMES)
+        fadeAnimator?.cancel()
+        if (enteringMedia || leavingMedia || blendArtwork) {
             fadingFrom=before;fadeProgress=0f
+            fadingFromTheme = enteringMedia
+            fadingFromPhysicalMedia = wasPhysicalMedia
             fadeAnimator=android.animation.ValueAnimator.ofFloat(0f,1f).apply {
-                duration=GameMediaSurface.ART_CROSSFADE_MS.toLong()
+                duration=if (enteringMedia || leavingMedia) 140L else GameMediaSurface.ART_CROSSFADE_MS.toLong()
                 addUpdateListener { fadeProgress=it.animatedValue as Float;invalidateSelf() }
                 addListener(object:android.animation.AnimatorListenerAdapter() {
-                    override fun onAnimationEnd(animation:android.animation.Animator) { fadingFrom=null;invalidateSelf() }
+                    override fun onAnimationEnd(animation:android.animation.Animator) {
+                        fadingFrom=null; fadingFromTheme=false; invalidateSelf()
+                    }
                 })
                 start()
             }
         }
     }
-    private fun applyUpdate(media:Map<String,Bitmap>,videoAvailable:Boolean) {
-        val target=OrbitThemeArtwork.artworkScreen(context)
-        val changed=target!=screen
-        if(changed) {
-            screen=target
-            fallback=OrbitThemeArtwork.background(context)
-        }
-        val next=ScreenMediaSettings.background(screen)
-        videoPoster=if(!changed && next=="videos" && videoAvailable) {
-            if(mode=="videos")videoPoster else this.media[mode]
-        } else null
-        this.media=media;mode=next;invalidateSelf()
+    fun syncSettings(): Boolean {
+        val target = OrbitThemeArtwork.artworkScreen(context)
+        val next = ScreenMediaSettings.background(target)
+        if (target == screen && next == mode) return false
+        if (target != screen) fallback = OrbitThemeArtwork.background(context)
+        screen = target
+        mode = next
+        media = emptyMap()
+        fadeAnimator?.cancel()
+        fadingFrom = null
+        fadingFromTheme = false
+        invalidateSelf()
+        return true
     }
     override fun draw(canvas:Canvas) {
         drawMedia(canvas)
-        val previous=fadingFrom ?: return
-        if(fadeProgress>=1f)return
+        if (fadeProgress >= 1f || (fadingFrom == null && !fadingFromTheme)) return
         val layer=canvas.saveLayerAlpha(RectF(bounds),((1f-fadeProgress)*255).toInt())
-        OrbitThemeArtwork.drawImage(canvas,previous,RectF(bounds),cover=true)
-        canvas.drawColor(Color.argb(85,0,0,0))
+        if (fadingFromTheme) {
+            if (mode=="off") canvas.drawColor(OrbitThemes.current().background) else drawFallback(canvas)
+        } else fadingFrom?.let { drawArtwork(canvas, it, fadingFromPhysicalMedia) }
         canvas.restoreToCount(layer)
     }
     private fun drawMedia(canvas:Canvas) {
         val custom=media[GameCustomArtwork.HERO]
         if(custom==null && mode=="off") { canvas.drawColor(OrbitThemes.current().background);return }
-        val bitmap=custom ?: media[mode] ?: if(mode=="videos")videoPoster else null
-        if(bitmap==null) { fallback.bounds=bounds;fallback.draw(canvas) }
-        else {
-            OrbitThemeArtwork.drawImage(canvas,bitmap,RectF(bounds),cover=true)
-            canvas.drawColor(Color.argb(85,0,0,0))
+        val bitmap = currentBitmap()
+        if(bitmap==null) drawFallback(canvas)
+        else drawArtwork(canvas, bitmap, isPhysicalMedia())
+    }
+    private fun drawFallback(canvas: Canvas) {
+        fallback.bounds = bounds
+        fallback.draw(canvas)
+    }
+    private fun drawArtwork(canvas: Canvas, bitmap: Bitmap, physicalMedia: Boolean) {
+        // Disc and cartridge art can be transparent. Keep the theme visible through the cutout.
+        if (physicalMedia) {
+            drawFallback(canvas)
         }
+        OrbitThemeArtwork.drawImage(canvas, bitmap, RectF(bounds), cover = true)
+        if (!physicalMedia) canvas.drawColor(Color.argb(85, 0, 0, 0))
     }
     override fun setAlpha(alpha:Int)=Unit
     override fun setColorFilter(filter:ColorFilter?)=Unit

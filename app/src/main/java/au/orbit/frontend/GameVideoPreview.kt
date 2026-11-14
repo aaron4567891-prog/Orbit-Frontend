@@ -21,7 +21,8 @@ import android.view.View
 class GameVideoPreview(
     context: Context,
     private val cropToFill: Boolean = false,
-    private val audioPriority: Int = 1
+    private val audioPriority: Int = 1,
+    private val waitForTextureFrame: Boolean = false
 ) : TextureView(context), TextureView.SurfaceTextureListener {
     private companion object {
         // All previews run on the UI thread, including the companion display.
@@ -44,6 +45,10 @@ class GameVideoPreview(
     private var source: Uri? = null
     private var pending: Runnable? = null
     private var ready = false
+    private var renderingStarted = false
+    private var textureUpdated = false
+    internal var hasVisibleFrame = false
+        private set
     private var videoWidth = 0
     private var videoHeight = 0
     private var audioFocused = false
@@ -101,16 +106,31 @@ class GameVideoPreview(
     private fun canPlay() = power.isInteractive && windowVisibility == View.VISIBLE && isShown
 
     private fun releasePlayback() {
+        renderingStarted = false
+        textureUpdated = false
+        hasVisibleFrame = false
+        animate().cancel()
         alpha=0f
         frameReadyChanged?.invoke(false)
+        releaseAudio()
+        player?.release();player=null
+        surface?.release();surface=null
+    }
+
+    private fun releaseAudio() {
         val wasPlaying = playingPreviews.remove(this)
         if (audiblePreview === this) {
             mutePreview()
             audiblePreview = null
         }
-        player?.release();player=null
-        surface?.release();surface=null
         if (wasPlaying && audiblePreview == null) selectAudiblePreview()
+    }
+
+    /** Hold the last frame while a separate preview prepares, with no audio from this clip. */
+    internal fun freezeFrame() {
+        source = null
+        runCatching { player?.pause() }
+        releaseAudio()
     }
 
     private fun requestPreviewAudio() {
@@ -127,6 +147,13 @@ class GameVideoPreview(
     }
 
     private fun failed() { stop();playbackFailed?.invoke() }
+
+    private fun revealFrame() {
+        if (!renderingStarted || (waitForTextureFrame && !textureUpdated) || hasVisibleFrame) return
+        hasVisibleFrame = true
+        alpha = 1f
+        frameReadyChanged?.invoke(true)
+    }
 
     private fun startVideo() {
         val uri=source ?: return
@@ -154,7 +181,8 @@ class GameVideoPreview(
             }
             next.setOnInfoListener { media,what,_ ->
                 if(player===media && what==MediaPlayer.MEDIA_INFO_VIDEO_RENDERING_START) {
-                    alpha=1f;frameReadyChanged?.invoke(true)
+                    renderingStarted = true
+                    revealFrame()
                 }
                 false
             }
@@ -174,7 +202,12 @@ class GameVideoPreview(
     }
     override fun onSurfaceTextureAvailable(texture: SurfaceTexture,w:Int,h:Int) { fit();startVideo() }
     override fun onSurfaceTextureSizeChanged(texture: SurfaceTexture,w:Int,h:Int) { fit() }
-    override fun onSurfaceTextureUpdated(texture: SurfaceTexture) = Unit
+    override fun onSurfaceTextureUpdated(texture: SurfaceTexture) {
+        if (waitForTextureFrame && player != null && !textureUpdated) {
+            textureUpdated = true
+            revealFrame()
+        }
+    }
     override fun onSurfaceTextureDestroyed(texture: SurfaceTexture): Boolean { releasePlayback();return true }
     override fun onWindowVisibilityChanged(visibility: Int) {
         super.onWindowVisibilityChanged(visibility)

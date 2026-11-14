@@ -31,6 +31,8 @@ class GameArtworkPanel(private val context: Activity, private val coverOnly: Boo
     private val artworkScreen get()=OrbitThemeArtwork.artworkScreen(context)
     private data class Artwork(val marquee: Bitmap?, val cover: Bitmap?, val screenshot: Bitmap?,val secondaryArt:Bitmap?=null,val description:String="",val details:String="",val videoUri:android.net.Uri?=null,val fanart:Bitmap?=null,val media:Map<String,Bitmap> = emptyMap())
     private val worker = Executors.newSingleThreadExecutor()
+    private val previewWorker = Executors.newSingleThreadExecutor()
+    private var adjacentLoad: Future<*>? = null
     private val handler = Handler(Looper.getMainLooper())
     private var pending: Runnable? = null
     private var job: Future<*>? = null
@@ -56,7 +58,8 @@ class GameArtworkPanel(private val context: Activity, private val coverOnly: Boo
     private fun image() = ImageView(context).apply { scaleType = ImageView.ScaleType.FIT_CENTER; isFocusable = false }
     private val marquee = image()
     private val cover = image()
-    private val video=GameVideoPreview(context, audioPriority = audioPriority)
+    private val video=LibraryVideoPreview(context, audioPriority = audioPriority)
+    private val bottomScreen = OrbitThemeArtwork.screen(context) == "bottom"
     private val primaryArea=FrameLayout(context).apply {
         addView(cover,FrameLayout.LayoutParams(-1,-1))
         if(!screenMediaLayout)addView(video,FrameLayout.LayoutParams(-1,-1))
@@ -120,6 +123,33 @@ class GameArtworkPanel(private val context: Activity, private val coverOnly: Boo
     internal fun preload(system:SystemSpec,game:Game) =
         requestArtwork(system,game,refresh=false,showNow=false)
 
+    internal fun warmAdjacentFanArt(system: SystemSpec, games: List<Game>) {
+        adjacentLoad?.cancel(true)
+        if (!screenMediaLayout || games.isEmpty()) return
+        val screen = artworkScreen
+        if (ScreenMediaSettings.background(screen) != "fanart" && !ScreenMediaSettings.visible(screen, "fanart")) return
+        val ticket = generation
+        val options = ScreenMediaSettings.signature(screen)
+        val keys = games.map { game ->
+            val group = GameCustomArtwork.group(system, game)
+            val paths = GameCustomArtwork.paths(group, screen)
+            Triple(group, paths, cacheKey(options, group, paths))
+        }
+        adjacentLoad = previewWorker.submit {
+            for ((group, paths, key) in keys) {
+                if (ticket != generation || Thread.currentThread().isInterrupted) break
+                if (cache.get(key) != null) continue
+                val artwork = runCatching { load(group, ticket, screen, paths) }.getOrNull() ?: continue
+                if (ticket != generation || Thread.currentThread().isInterrupted) break
+                artwork.media.values.forEach(Bitmap::prepareToDraw)
+                handler.post { if (ticket == generation && cache.get(key) == null) cache.put(key, artwork) }
+            }
+        }
+    }
+
+    private fun cacheKey(options: String, group: String, customPaths: Map<String, String>) =
+        "${UserDataStore.location(context)}/$variant/$coverOnly/$mediaMode/$options/$group/$customPaths"
+
     private fun requestArtwork(system:SystemSpec,game:Game?,refresh:Boolean,showNow:Boolean) {
         displayWhenReady=showNow
         if(game==null) {
@@ -130,9 +160,10 @@ class GameArtworkPanel(private val context: Activity, private val coverOnly: Boo
         val first=currentGroup==null
         val changed=currentGroup!=group
         val screen=artworkScreen
+        if (screenMediaLayout && showNow) layoutScreenMedia(screen)
         val options=if(screenMediaLayout)ScreenMediaSettings.signature(screen) else ""
         val customPaths=if(screenMediaLayout)GameCustomArtwork.paths(group,screen) else emptyMap()
-        val key="${UserDataStore.location(context)}/$variant/$coverOnly/$mediaMode/$options/$group/$customPaths"
+        val key=cacheKey(options, group, customPaths)
         if(!changed && currentCacheKey==key && !refresh) {
             if(pending!=null || job!=null)return
             currentArtwork?.let { if(showNow && previewPaused)display(it);return }
@@ -141,13 +172,15 @@ class GameArtworkPanel(private val context: Activity, private val coverOnly: Boo
         cancelLoad()
         currentCacheKey=key
         currentGroup=group
-        val hadCustomHero=currentArtwork?.media?.containsKey(GameCustomArtwork.HERO)==true
-        if(changed) { stopManualVideo();currentArtwork=null }
+        val fanArtBackground = screenMediaLayout && ScreenMediaSettings.background(screen) == "fanart"
+        if(changed) {
+            if (!bottomScreen || !screenMediaLayout || manualVideoActive) stopManualVideo()
+            currentArtwork=null
+        }
         if(!refresh)cache.get(key)?.let { acceptArtwork(it);return }
         if(changed) {
-            if(showNow && hadCustomHero)backgroundMediaChanged?.invoke(emptyMap(),null)
             // Reserve the final layout while loading. Never insert a temporary empty-art row.
-            for(image in listOf(marquee,cover,screenshot,secondaryArt)+screenImages.values) {
+            for(image in listOf(marquee,cover,screenshot,secondaryArt)) {
                 image.setImageDrawable(null);image.visibility=View.INVISIBLE
             }
             description.text="";details.text="";empty.visibility=View.INVISIBLE
@@ -163,7 +196,7 @@ class GameArtworkPanel(private val context: Activity, private val coverOnly: Boo
                     }
                 }
             }
-        }.also { handler.postDelayed(it,if(first || !showNow)0 else 70) }
+        }.also { handler.postDelayed(it,if(first || !showNow || fanArtBackground || screenMediaLayout && ScreenMediaSettings.visible(screen, "fanart"))0 else 70) }
     }
 
     private fun acceptArtwork(artwork:Artwork) {
@@ -341,13 +374,30 @@ class GameArtworkPanel(private val context: Activity, private val coverOnly: Boo
             layoutScreenMedia(screen,videoBackground)
             screenImages.forEach { (type,image) ->
                 val bitmap=artwork.media[type]
-                if((image.drawable as? android.graphics.drawable.BitmapDrawable)?.bitmap!==bitmap)image.setImageBitmap(bitmap)
-                if(ScreenMediaSettings.visible(screen,type))image.visibility=if(bitmap==null)View.INVISIBLE else View.VISIBLE
+                if (!ScreenMediaSettings.visible(screen, type)) {
+                    image.animate().cancel()
+                    image.alpha = 1f
+                    image.setImageBitmap(null)
+                } else if (bitmap == null) {
+                    if (image.drawable != null && image.visibility == View.VISIBLE) {
+                        image.animate().alpha(0f).setDuration(140L).withEndAction {
+                            image.setImageBitmap(null)
+                            image.visibility = View.INVISIBLE
+                            image.alpha = 1f
+                        }.start()
+                    } else image.visibility = View.INVISIBLE
+                } else {
+                    image.animate().cancel()
+                    if ((image.drawable as? android.graphics.drawable.BitmapDrawable)?.bitmap !== bitmap) image.setImageBitmap(bitmap)
+                    image.alpha = 1f
+                    image.visibility = View.VISIBLE
+                }
             }
             val showVideo=ScreenMediaSettings.visible(screen,"videos") && videosEnabled() && !videoBackground
             if(!showVideo) { video.stop();foregroundVideoUri=null }
             else if(previewPaused || foregroundVideoUri!=artwork.videoUri) {
-                video.show(artwork.videoUri,if(mediaMode=="screen")0 else 1000)
+                if (artwork.videoUri == null) video.fadeOut()
+                else video.show(artwork.videoUri,if(bottomScreen || mediaMode=="screen")0 else 1000)
                 foregroundVideoUri=artwork.videoUri
             }
             previewPaused=false;currentArtwork=artwork
@@ -370,6 +420,6 @@ class GameArtworkPanel(private val context: Activity, private val coverOnly: Boo
         description.text=artwork.description.ifBlank { "No description available" };details.text=artwork.details
         empty.visibility=if(artwork.marquee==null && artwork.cover==null && artwork.screenshot==null && artwork.fanart==null && artwork.videoUri==null) View.VISIBLE else View.INVISIBLE
     }
-    fun pause() { displayWhenReady=false;stopManualVideo();backgroundMediaPaused?.invoke() }
-    fun destroy() { pause();generation++;cancelLoad();worker.shutdownNow() }
+    fun pause() { displayWhenReady=false;adjacentLoad?.cancel(true);stopManualVideo();backgroundMediaPaused?.invoke() }
+    fun destroy() { pause();generation++;cancelLoad();worker.shutdownNow();previewWorker.shutdownNow() }
 }

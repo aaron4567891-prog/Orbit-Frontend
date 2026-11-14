@@ -36,11 +36,13 @@ class CompanionPanel(private val activity:MainActivity) {
         mediaHost.addView(it.view,FrameLayout.LayoutParams(-1,-1))
         artwork=it
     }
+    private var lastGame: Pair<SystemSpec, Game>? = null
 
     fun refreshMedia(refresh:Boolean=false) {
         if(!mediaActive)return
         val selection=DualScreenCoordinator.mediaSelection()
         if(selection==null) {
+            lastGame = null
             artwork?.pause()
             val selected=DualScreenCoordinator.browseSelection()
             browse.visibility=if(selected!=null)android.view.View.VISIBLE else android.view.View.GONE
@@ -71,6 +73,7 @@ class CompanionPanel(private val activity:MainActivity) {
 
     internal fun showGame(system:SystemSpec,game:Game,refresh:Boolean=false) {
         if(!mediaActive)return
+        view.prepareGameView()
         browse.visibility=android.view.View.GONE
         val panel=prepareArtwork()
         status.visibility=android.view.View.GONE
@@ -78,6 +81,11 @@ class CompanionPanel(private val activity:MainActivity) {
         heading.visibility=android.view.View.GONE
         heading.text=game.title
         panel.show(system,game,refresh)
+        val selection = system to game
+        if (lastGame != selection || refresh) {
+            lastGame = selection
+            panel.warmAdjacentFanArt(system, DualScreenCoordinator.adjacentGames(game))
+        }
     }
     private val update=object:Runnable { override fun run() {
         status.text=GameSessionManager.lastGame?.let { "Last launch\n\n$it\n${GameSessionManager.displayName}\n\nUse the emulator's own controls during gameplay." }
@@ -94,7 +102,9 @@ class CompanionPanel(private val activity:MainActivity) {
             }
         }
         view=GameMediaSurface(activity, content, audioPriority = 0)
-        browse.backdropChanged={ if(browse.visibility==android.view.View.VISIBLE)view.showBrowse(it) }
+        browse.backdropChanged = { drawable, systemArtwork ->
+            if (browse.visibility == android.view.View.VISIBLE) view.showBrowse(drawable, systemArtwork)
+        }
         heading=TextView(activity).apply { text = "◉  ORBIT  /  SECOND SCREEN"; textSize = 20f; maxLines=1;ellipsize=android.text.TextUtils.TruncateAt.END;setTextColor(Color.rgb(113, 177, 255)) }
         content.addView(heading)
         status = TextView(activity).apply { textSize = 20f; gravity = Gravity.CENTER; setTextColor(Color.WHITE); setPadding(24, 32, 24, 32) }
@@ -107,6 +117,6 @@ class CompanionPanel(private val activity:MainActivity) {
     }
     internal fun refreshBottomControls() { bottomControls?.refresh() }
     fun start() { mediaActive=true;handler.removeCallbacks(update);handler.post(update) }
-    fun stop() { mediaActive=false;handler.removeCallbacks(update);handler.removeCallbacks(warmArtwork);artwork?.pause() }
+    fun stop() { mediaActive=false;lastGame=null;handler.removeCallbacks(update);handler.removeCallbacks(warmArtwork);artwork?.pause() }
     fun destroy() { stop();browse.destroy();artwork?.destroy();artwork=null }
 }

@@ -11,7 +11,7 @@ import android.view.Gravity
 import android.view.View
 import android.widget.*
 
-/** Portable dock preferences shared by the bottom screen and Dual Screen settings. */
+/** Portable dock preferences shared by the bottom screen and its settings. */
 object AppDock {
     fun enabled(context:Context)=UserDataStore.cachedInt("appDockEnabled",1)==1
     fun slots(context:Context)=UserDataStore.cachedInt("appDockSlots",5).coerceIn(1,5)
@@ -99,26 +99,19 @@ class AppDockView(private val activity:Activity):LinearLayout(activity) {
     }
 }
 
-/** These touch controls belong to the physical bottom screen in either layout. */
-internal class BottomScreenControls(activity:Activity):FrameLayout(activity) {
-    private val dock=AppDockView(activity)
-    private fun dp(value:Int)=(value*resources.displayMetrics.density).toInt()
+/** Centers the app dock on the physical bottom screen in either layout. */
+internal class BottomScreenControls(activity: MainActivity) : FrameLayout(activity) {
+    private val dock = AppDockView(activity)
 
     init {
-        addView(dock,LayoutParams(-2,-2,Gravity.CENTER))
-        val swap=Button(activity).apply {
-            text="⇅";textSize=26f;setTextColor(Color.rgb(113,177,255));isFocusable=false
-            background=GradientDrawable().apply { setColor(Color.rgb(24,35,50));cornerRadius=24f }
-            contentDescription="Swap Orbit screens";tooltipText="Swap Orbit screens (hold X)"
-            setOnClickListener { DualScreenCoordinator.swapScreens(activity) }
-        }
-        addView(swap,LayoutParams(dp(48),dp(48),Gravity.START or Gravity.CENTER_VERTICAL))
+        addView(dock, LayoutParams(-2, -2, Gravity.CENTER))
         refresh()
     }
 
     fun refresh() {
         dock.refresh()
-        val height=dp(if(dock.visibility==View.VISIBLE)60 else 48)
-        if(minimumHeight!=height)minimumHeight=height
+        minimumHeight = if (dock.visibility == View.VISIBLE) {
+            (60 * resources.displayMetrics.density).toInt()
+        } else 0
     }
 }

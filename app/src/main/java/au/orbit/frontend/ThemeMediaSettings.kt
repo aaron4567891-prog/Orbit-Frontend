@@ -79,9 +79,10 @@ object ThemeMediaSettings {
             Toast.makeText(activity,"Artwork applied",Toast.LENGTH_SHORT).show()
         }) { OrbitThemeArtwork.assignDownloaded(activity,theme,role,screens,system,bytes) }
     }
-    fun setSystemArtwork(activity:MainActivity,theme:OrbitThemes.Theme,screens:Set<String>,changed:()->Unit) {
+    fun setSystemArtworkVisible(activity:MainActivity,theme:OrbitThemes.Theme,screen:String,visible:Boolean,changed:()->Unit) {
         update(activity,theme,changed,visibilityOnly=true) {
             val latest=OrbitThemes.list().firstOrNull { it.id==theme.id } ?: theme
+            val screens = if (visible) latest.systemArtworkScreens + screen else latest.systemArtworkScreens - screen
             val updated=latest.copy(systemArtworkScreens=screens)
             UserDataStore.saveNativeTheme(activity,updated.id,updated.json())
             OrbitThemes.refresh(activity)

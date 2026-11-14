@@ -56,7 +56,8 @@ open class MainActivity : Activity() {
         }
         if(activeTab==2) {
             val names=settingsCategories
-            val icons=listOf(android.R.drawable.ic_menu_preferences,android.R.drawable.ic_menu_view,android.R.drawable.ic_menu_gallery,android.R.drawable.ic_menu_edit,android.R.drawable.ic_menu_view)
+            val icons = listOf(android.R.drawable.ic_menu_preferences, android.R.drawable.ic_menu_gallery,
+                android.R.drawable.ic_menu_edit, android.R.drawable.ic_menu_search)
             return CompanionBrowse("settings/$settingsCategory",names[settingsCategory.coerceIn(names.indices)],"Settings",iconResource=icons[settingsCategory.coerceIn(icons.indices)])
         }
         if(activeTab==4)return CompanionBrowse("scraping","Scraping","Game media and metadata",iconResource=android.R.drawable.ic_menu_search)
@@ -100,7 +101,6 @@ open class MainActivity : Activity() {
         carouselPosition=source.carouselPosition;library=source.library;activeTab=source.activeTab
         gameCursor=cursor
         settingsCategory=source.settingsCategory
-        displaySystemId=source.displaySystemId;displayGameUri=source.displayGameUri
         scrapingCategory=source.scrapingCategory
         pageHistory.clear();pageHistory.addAll(source.pageHistory)
         games=source.games;pages=source.pages;populated=source.populated;error=source.error
@@ -130,15 +130,16 @@ open class MainActivity : Activity() {
     private var activeTab = 0
     private data class PageDestination(val tab:Int,val library:Boolean=false)
     private val pageHistory=mutableListOf<PageDestination>()
-    private val settingsCategories=listOf("General","Display","Media","Customisation","Dual Screen")
-    private var displaySystemId:String?=null
-    private var displayGameUri:String?=null
+    private val settingsCategories = listOf("General", "Media", "Customisation", "Scraping")
     private var appsPanel: AppsPanel? = null
     private var scraperSettingsPanel:ScraperSettingsPanel?=null
     private var screenHost: FrameLayout? = null
     private var libraryDock:BottomScreenControls?=null
     private var libraryDockContent:View?=null
     private val dockPadding=java.util.WeakHashMap<View,Int>()
+    internal fun refreshBottomControls() {
+        if (showingCompanion) companionPanel?.refreshBottomControls() else refreshLibraryDock()
+    }
     private fun refreshLibraryDock() {
         val dock=libraryDock ?: return
         dock.visibility=if(ready && OrbitThemeArtwork.screen(this)=="bottom")View.VISIBLE else View.GONE
@@ -195,7 +196,34 @@ open class MainActivity : Activity() {
         window.isStatusBarContrastEnforced=false
         window.isNavigationBarContrastEnforced=false
         FrontendNavigationBar.apply(this)
+        updateBottomSettingsGestureArea()
     }
+
+    private val bottomSettingsGestureLayout = View.OnLayoutChangeListener { view, _, _, _, _, _, _, _, _ ->
+        setBottomSettingsGestureArea(view)
+    }
+
+    private fun updateBottomSettingsGestureArea() {
+        val decor = window.decorView
+        decor.removeOnLayoutChangeListener(bottomSettingsGestureLayout)
+        if (OrbitThemeArtwork.screen(this) != "bottom") {
+            decor.systemGestureExclusionRects = emptyList()
+            return
+        }
+        decor.addOnLayoutChangeListener(bottomSettingsGestureLayout)
+        setBottomSettingsGestureArea(decor)
+    }
+
+    private fun setBottomSettingsGestureArea(decor: View) {
+        val edgeWidth = dp(32)
+        if (decor.width <= edgeWidth || decor.height == 0) return
+        // Android limits exclusions along each side. Reserve only a central strip for Orbit.
+        val height = minOf(decor.height, dp(192))
+        val top = (decor.height - height) / 2
+        val bottom = top + height
+        decor.systemGestureExclusionRects = listOf(android.graphics.Rect(0, top, edgeWidth, bottom))
+    }
+
     private fun pageBackground(view:View):android.graphics.drawable.Drawable {
         val theme=OrbitThemes.current()
         // The bottom grid's Systems and game pages can each have their own background image.
@@ -557,7 +585,6 @@ open class MainActivity : Activity() {
         try {
             activeTab = 3; renderThemesPage()
             activeTab = 2; renderSettingsPage()
-            activeTab = 4; renderSettingsPage()
             activeTab = 1
             val panel = appsPanel ?: AppsPanel(this, ::navigateTab, ::returnToPreviousPage,showNavigation=false).also { appsPanel = it }
             present(panel.view)
@@ -1667,13 +1694,22 @@ open class MainActivity : Activity() {
             navigateTab(2)
             return
         }
+        showSettingsWindow(host, bottomOnly = false)
+    }
+    internal fun showBottomScreenSettings(host: MainActivity) {
+        if (!ready || showingCompanion || startMenu?.isShowing == true || OrbitThemeArtwork.screen(host) != "bottom") return
+        showSettingsWindow(host, bottomOnly = true)
+    }
+    private fun showSettingsWindow(host: Activity, bottomOnly: Boolean) {
         startMenu?.dismiss()
         val menu=EmulatorSettings.MenuWindow(host,fullScreen=true)
         startMenu=menu.dialog
-        remoteSettingsDialog=menu.dialog
-        remoteSettingsHost=host
+        if (host !== this) {
+            remoteSettingsDialog=menu.dialog
+            remoteSettingsHost=host
+        }
         menu.dialog.setOnDismissListener { settingsWindowClosed(menu.dialog) }
-        renderSettingsPage(menu,menu.dialog::dismiss)
+        renderSettingsPage(menu,menu.dialog::dismiss,bottomOnly)
         updateSystemsMusic()
     }
     private fun settingsWindowClosed(dialog:AlertDialog) {
@@ -1814,12 +1850,17 @@ open class MainActivity : Activity() {
         present(gallery.view);tabFocus[3]=gallery.initialFocus
         if(!warmingTabs)gallery.initialFocus.post { if(activeTab==3)gallery.initialFocus.requestFocus() }
     }
-    private fun renderSettingsPage(popup:EmulatorSettings.MenuWindow?=null,back:()->Unit={}) {
+    private fun renderSettingsPage(popup:EmulatorSettings.MenuWindow?=null,back:()->Unit={},bottomOnly:Boolean=false) {
         val scrapingPage=popup==null && activeTab==4
         val topTabs = !scrapingPage
         val wideOptions = topTabs && (popup?.activity ?: this).resources.configuration.screenWidthDp >= 680
         val pageTab=activeTab
-        var pageCategory=if(scrapingPage)scrapingCategory else settingsCategory
+        var pageCategory = when {
+            bottomOnly -> 0
+            scrapingPage -> scrapingCategory
+            else -> settingsCategory
+        }
+        val mediaScreen = if (bottomOnly) "bottom" else "top"
         val root = LinearLayout(this).apply {
             orientation = LinearLayout.VERTICAL
             if (topTabs) setPadding(dp(16), dp(8), dp(16), dp(8))
@@ -1857,14 +1898,19 @@ open class MainActivity : Activity() {
             columns.addView(detailHost, LinearLayout.LayoutParams(0, -1, 1f))
             root.addView(columns, LinearLayout.LayoutParams(-1, 0, 1f))
         }
-        val scraperCategories = listOf("Account", "Scraping", "Scrape Mode", "Systems", "Region", "Languages")
-        val names = if (scrapingPage) scraperCategories else settingsCategories
+        val scraperCategories = listOf("Account", "Scraping", "Scrape Mode", "Systems", "Region", "Languages", "Media types")
+        val names = when {
+            bottomOnly -> listOf("General", "Media", "Customisation")
+            scrapingPage -> scraperCategories
+            else -> settingsCategories
+        }
         val categoryButtons = mutableListOf<Button>()
         val optionRows = mutableListOf<View>()
         var updatingCategory=false
         data class Choice(val title: String, val description: String = "", val value: String = "",
             val section: String? = null, val choose: () -> Unit)
-        data class Subpage(val title: String, val back: () -> Unit, val choices: List<Choice>? = null, val description: String = "")
+        data class Subpage(val title: String, val back: () -> Unit, val choices: List<Choice>? = null,
+            val description: String = "", val screenMediaTypes: Boolean = false)
         var returnFromSubpage: (() -> Unit)? = null
         var embeddedView: View? = null
         var embeddedFocus: View? = null
@@ -1906,11 +1952,11 @@ open class MainActivity : Activity() {
             (focus ?: content).requestFocus()
             updatingCategory = false
         }
-        fun showCategory(index: Int, enter: Boolean = false, screenMediaRow: Int? = null, restoreOption: Int? = null,
+        fun showCategory(index: Int, enter: Boolean = false, restoreOption: Int? = null,
             romFoldersOption: Int? = null, subpage: Subpage? = null) {
             updatingCategory=true
             val sameCategory = pageCategory == index && optionRows.isNotEmpty() &&
-                screenMediaRow == null && romFoldersOption == null && subpage == null && returnFromSubpage == null
+                romFoldersOption == null && subpage == null && returnFromSubpage == null
             returnFromSubpage = subpage?.back
             clearEmbeddedPage()
             if (!scrapingPage) romLibraryScan?.onUpdate = null
@@ -1919,21 +1965,26 @@ open class MainActivity : Activity() {
             // Keep focus from falling back to the category buttons while replacing option rows.
             detail.isFocusableInTouchMode = true
             if (focusedOption >= 0) detail.requestFocus()
+            val previousCategory = pageCategory
             pageCategory = index
-            if(!scrapingPage)settingsCategory=index else scrapingCategory=index
+            if (scrapingPage) scrapingCategory=index
+            else if (!bottomOnly) settingsCategory=index
             if(!warmingTabs && activeTab==2)DualScreenCoordinator.refreshMedia()
             if(popup==null) { if(!scrapingPage)settingsCategoryView = categoryButtons.getOrNull(index) else scrapingSidebar=categoryButtons.getOrNull(index) }
-            categoryButtons.forEachIndexed { i, row -> row.background = surface(Color.TRANSPARENT, if (i == index) blue else Color.rgb(38,49,65)) }
+            if (previousCategory != index || optionRows.isEmpty()) {
+                categoryButtons.forEachIndexed { i, row ->
+                    row.background = surface(Color.TRANSPARENT, if (i == index) blue else Color.rgb(38,49,65))
+                }
+            }
             detail.removeAllViews(); detailScroll.scrollTo(0, 0)
             detailScroll.visibility=View.VISIBLE
             optionRows.clear()
             val heading = when {
                 subpage != null -> subpage.title
                 romFoldersOption != null -> "ROM folders & scanner"
-                screenMediaRow != null -> "Screen media"
                 else -> names[index]
             }
-            if (!topTabs || subpage != null || romFoldersOption != null || screenMediaRow != null) {
+            if (!topTabs || subpage != null || romFoldersOption != null) {
                 val headingText = text(heading, if (topTabs) 20f else 24f).apply { typeface = Typeface.DEFAULT_BOLD }
                 if (subpage == null) detail.addView(headingText)
                 else detail.addView(LinearLayout(this).apply {
@@ -1944,14 +1995,15 @@ open class MainActivity : Activity() {
                 })
             }
             var first: View? = null
-            fun option(title: String, description: String, value: String = "", action: () -> Unit):LinearLayout {
+            fun option(title: String, description: String, value: String = "", compact: Boolean = false,
+                action: () -> Unit): LinearLayout {
                 val row = LinearLayout(this).apply {
                     orientation = if (wideOptions && description.isNotBlank()) LinearLayout.HORIZONTAL else LinearLayout.VERTICAL
                     gravity = Gravity.CENTER_VERTICAL
                     isFocusable = true; isFocusableInTouchMode = true; isClickable = true
                     defaultFocusHighlightEnabled = false
                     if (topTabs) {
-                        minimumHeight = dp(48)
+                        minimumHeight = dp(if (compact) 44 else 48)
                         setPadding(dp(12), dp(4), dp(12), dp(4))
                     } else setPadding(dp(16), dp(10), dp(16), dp(10))
                     background = surface(Color.TRANSPARENT, Color.rgb(38,49,65))
@@ -1971,90 +2023,64 @@ open class MainActivity : Activity() {
                     setOnFocusChangeListener { v, focus -> v.background = surface(Color.TRANSPARENT, if (focus) blue else Color.rgb(38,49,65)) }
                     setOnClickListener { action() }
                 }
-                detail.addView(row, LinearLayout.LayoutParams(-1, -2).apply { topMargin = dp(if (topTabs) 4 else 10) })
+                detail.addView(row, LinearLayout.LayoutParams(-1, -2).apply { topMargin = dp(if (compact) 2 else if (topTabs) 4 else 10) })
                 optionRows.add(row)
                 if (first == null) first = row
                 return row
             }
-            fun screenMediaLink() {
-                val rowIndex = optionRows.size
-                option("Screen media", "Choose backgrounds and media for the top and bottom screens.") {
-                    showCategory(index, enter = true, screenMediaRow = rowIndex)
+            fun screenMediaOptions(options: List<GameMediaSettingsPanel.Option>, compact: Boolean = false) {
+                options.forEach { mediaOption ->
+                    lateinit var row: LinearLayout
+                    fun label() = "${mediaOption.title}  ·  ${mediaOption.value()}"
+                    fun updateDescription() {
+                        if (compact) row.contentDescription = "${label()}. ${mediaOption.description}"
+                    }
+                    val description = if (compact) "" else mediaOption.description
+                    row = option(mediaOption.title, description, mediaOption.value(), compact = compact) {
+                        mediaOption.choose {
+                            (row.getChildAt(0) as TextView).text = label()
+                            updateDescription()
+                        }
+                    }
+                    updateDescription()
                 }
             }
             fun showChoices(title: String, parent: () -> Unit, choices: List<Choice>, description: String = "",
                 focused: Int? = null) {
                 showCategory(index, enter = true, restoreOption = focused, subpage = Subpage(title, parent, choices, description))
             }
-            fun chooseFromList(title: String, labels: List<String>, selected: Int, parent: () -> Unit, choose: (Int) -> Unit) {
-                val list = ListView(this).apply {
-                    isFocusableInTouchMode = true
-                    defaultFocusHighlightEnabled = false
-                    selector = artworkOutline(this@MainActivity)
-                    setDrawSelectorOnTop(true)
-                    adapter = object : ArrayAdapter<String>(this@MainActivity, android.R.layout.simple_list_item_1, labels) {
-                        override fun getView(position: Int, convertView: View?, parent: ViewGroup): View =
-                            (super.getView(position, convertView, parent) as TextView).apply { setTextColor(Color.WHITE) }
-                    }
-                    setOnItemClickListener { _, _, position, _ -> choose(position) }
-                    setSelection(selected.coerceAtLeast(0))
-                }
-                embedPage(list, parent, list, keys = { event ->
-                    if (event.keyCode != KeyEvent.KEYCODE_BUTTON_A) false
-                    else {
-                        if (event.action == KeyEvent.ACTION_DOWN && event.repeatCount == 0 && !event.isCanceled) {
-                            choose(list.selectedItemPosition.takeIf { it in labels.indices } ?: selected.coerceAtLeast(0))
-                        }
-                        true
-                    }
-                }, title = title)
-            }
             fun returnToParent(row: Int): () -> Unit = { showCategory(index, enter = true, restoreOption = row) }
             fun isCurrent(parent: () -> Unit): Boolean =
                 activeTab == pageTab && root.isShown && returnFromSubpage === parent
-            val screenTargets = listOf(setOf("top", "bottom"), setOf("top"), setOf("bottom"))
-            fun showArtworkImages(parent: () -> Unit, targets: MutableMap<String, Set<String>> = mutableMapOf(),
-                focused: Int? = null) {
+            fun showArtworkImages(parent: () -> Unit, focused: Int? = null) {
                 val theme = OrbitThemes.current()
                 val choices = mutableListOf<Choice>()
-                // Theme artwork is stored per layout slot ("top" = the library screen), which is the
-                // opposite of the physical screens when the library is on the bottom. "Apply to" is
-                // physical, so convert in both directions here.
-                fun slots(physical: Set<String>) = physical.map { OrbitThemeArtwork.artworkScreen(this, it, theme) }.toSet()
+                val screens = setOf(OrbitThemeArtwork.artworkScreen(this, mediaScreen, theme))
                 for ((role, title) in listOf("background" to "Background image", "hero" to "Hero image",
                     "systemsBackground" to "Systems page background", "gamesBackground" to "Game page background")) {
                     val pageImage = role == "systemsBackground" || role == "gamesBackground"
-                    // Page backgrounds sit behind the library grid, so default them to that screen.
-                    val physicalScreens = targets[role] ?: if (pageImage) setOf(theme.libraryScreen) else setOf("top")
-                    val screens = slots(physicalScreens)
-                    val screenLabel = ThemeMediaSettings.screensLabel(physicalScreens)
+                    if (pageImage && theme.libraryScreen != mediaScreen) continue
                     val row = choices.size
-                    val assignedSlots = theme.artwork.filter { it.role == role }.map { it.screen }.toSet()
-                    val assigned = if (assignedSlots.isEmpty()) "None" else ThemeMediaSettings.screensLabel(slots(assignedSlots))
                     fun update(focus: Int): () -> Unit = {
-                        if (isCurrent(parent)) showArtworkImages(parent, targets, focus)
+                        if (isCurrent(parent)) showArtworkImages(parent, focus)
                     }
-                    choices += Choice("Apply to", "Press A to cycle screens. Saved image · $assigned.", screenLabel, section = title) {
-                        targets[role] = screenTargets[(screenTargets.indexOf(physicalScreens) + 1) % screenTargets.size]
-                        showArtworkImages(parent, targets, row)
-                    }
-                    choices += Choice("Search artwork", "Find and download an image sized for the selected screens.") {
-                        val backToImages = { showArtworkImages(parent, targets, row + 1) }
+                    choices += Choice("Search artwork", "Find and download an image sized for this screen.", section = title) {
+                        val backToImages = { showArtworkImages(parent, row) }
                         ArtworkSearchPicker(this, if (pageImage) "background" else role, "", screens) { bytes ->
-                            ThemeMediaSettings.applyDownloaded(this, theme, role, screens, null, bytes, update(row + 1))
+                            ThemeMediaSettings.applyDownloaded(this, theme, role, screens, null, bytes, update(row))
                         }.show(
                             embed = { content, focus, keys, back -> embedPage(content, back, focus, keys, "$title · Search artwork") },
                             closePage = backToImages
                         )
                     }
-                    choices += Choice("Choose from device", "Select a PNG, JPEG or WebP image for the selected screens.") {
+                    choices += Choice("Choose from device", "Select a PNG, JPEG or WebP image for this screen.") {
                         pickThemeImage { uri ->
-                            if (uri != null) ThemeMediaSettings.setImage(this, theme, role, screens, uri, update(row + 2))
+                            if (uri != null) ThemeMediaSettings.setImage(this, theme, role, screens, uri, update(row + 1))
                         }
                     }
                     if (theme.artwork.any { it.role == role && it.screen in screens }) {
-                        choices += Choice("Remove image", "Clear this image from the selected screens.") {
-                            ThemeMediaSettings.setImage(this, theme, role, screens, null, update(row + 2))
+                        choices += Choice("Remove image", "Clear this image from this screen.") {
+                            ThemeMediaSettings.setImage(this, theme, role, screens, null, update(row + 1))
                         }
                     }
                 }
@@ -2127,31 +2153,22 @@ open class MainActivity : Activity() {
                 }
                 showChoices("Page transition", parent, choices, focused = focused)
             }
-            fun showSystemArtwork(parent: () -> Unit, focused: Int? = null) {
-                val theme = OrbitThemes.current()
-                val choices = (screenTargets + listOf(emptySet())).mapIndexed { position, screens ->
-                    val title = ThemeMediaSettings.screensLabel(screens) + if (screens.size == 1) " only" else ""
-                    Choice(title, value = if (theme.systemArtworkScreens == screens) "Selected" else "") {
-                        ThemeMediaSettings.setSystemArtwork(this, theme, screens) {
-                            if (isCurrent(parent)) showSystemArtwork(parent, position)
-                        }
-                    }
-                }
-                showChoices("Show system artwork", parent, choices,
-                    "Choose where the foreground console image is visible for this theme.", focused)
-            }
-            fun showScraperSections(parent: () -> Unit, focused: Int? = null) {
-                val choices = scraperCategories.mapIndexed { position, section ->
-                    Choice(section) {
-                        showCategory(index, enter = true, subpage = Subpage(section, { showScraperSections(parent, position) }))
-                    }
-                }
-                showChoices("Scraping", parent, choices, focused = focused)
-            }
             val section = subpage?.title ?: names[index]
             fun redrawSection() {
                 val focused = optionRows.indexOfFirst { it.hasFocus() }.takeIf { it >= 0 && subpage != null }
                 showCategory(index, enter = true, subpage = subpage, restoreOption = focused)
+            }
+            fun artworkLinks() {
+                val imagesRow = optionRows.size
+                option("Artwork images", "Set background and hero images for this screen.") {
+                    showArtworkImages(returnToParent(imagesRow))
+                }
+                val theme = OrbitThemes.current()
+                val screen = OrbitThemeArtwork.artworkScreen(this, mediaScreen, theme)
+                val visible = screen in theme.systemArtworkScreens
+                option("Show system artwork", "Show the foreground console image for this screen.", if (visible) "On" else "Off") {
+                    ThemeMediaSettings.setSystemArtworkVisible(this, theme, screen, !visible, ::redrawSection)
+                }
             }
             fun showUserData(parent: () -> Unit) {
                 fun showProfiles() {
@@ -2197,8 +2214,10 @@ open class MainActivity : Activity() {
                             setPadding(0, dp(if (optionRows.isEmpty()) 4 else 16), 0, dp(2))
                         })
                     }
-                    option(choice.title, choice.description, choice.value, choice.choose)
+                    option(choice.title, choice.description, choice.value, action = choice.choose)
                 }
+            } else if (subpage?.screenMediaTypes == true) {
+                screenMediaOptions(GameMediaSettingsPanel.options(this, mediaScreen, ::refreshGameMediaOptions).drop(1))
             } else if (romFoldersOption != null) {
                 val scanner = romLibraryScan ?: RomLibraryScan(this, repository, worker, ::publishScannedSystem)
                     .also { romLibraryScan = it }
@@ -2261,24 +2280,21 @@ open class MainActivity : Activity() {
                 scanner.onUpdate = ::updateScanner
                 updateScanner()
                 first = if (scanner.busy) cancel else add
-            } else if (screenMediaRow != null) {
-                returnFromSubpage = returnToParent(screenMediaRow)
-                for (screen in listOf("top", "bottom")) {
-                    detail.addView(text(GameLaunchDisplay.label(screen), 18f).apply {
-                        typeface = Typeface.DEFAULT_BOLD
-                        setPadding(0, dp(if (screen == "top") 4 else 16), 0, dp(2))
-                    })
-                    GameMediaSettingsPanel.options(this, screen, ::refreshGameMediaOptions).forEach { mediaOption ->
-                        lateinit var row: LinearLayout
-                        row = option(mediaOption.title, mediaOption.description, mediaOption.value()) {
-                            mediaOption.choose {
-                                (row.getChildAt(0) as TextView).text = "${mediaOption.title}  ·  ${mediaOption.value()}"
-                            }
-                        }
-                    }
-                }
             } else when (section) {
-                "General" -> {
+                "General" -> if (bottomOnly) {
+                    val dockEnabled = AppDock.enabled(this)
+                    option("App dock", "Show the app dock on the bottom screen.", if (dockEnabled) "On" else "Off") {
+                        runCatching { UserDataStore.put(this, "settings", "appDockEnabled", if (dockEnabled) 0 else 1) }
+                            .onSuccess { DualScreenCoordinator.refreshBottomControls(); redrawSection() }
+                            .onFailure(::showDataError)
+                    }
+                    val dockSlots = AppDock.slots(this)
+                    option("App dock slots", "Press A to choose 1–5 slots.", dockSlots.toString()) {
+                        runCatching { UserDataStore.put(this, "settings", "appDockSlots", dockSlots % 5 + 1) }
+                            .onSuccess { DualScreenCoordinator.refreshBottomControls(); redrawSection() }
+                            .onFailure(::showDataError)
+                    }
+                } else {
                     val startup = UserDataStore.int(this, "scanOnStartup", 1) != 0
                     option("Scan on startup", "Refresh saved ROM folders when Orbit starts.", if (startup) "On" else "Off") {
                         runCatching { UserDataStore.put(this, "settings", "scanOnStartup", if (startup) 0 else 1) }
@@ -2292,6 +2308,10 @@ open class MainActivity : Activity() {
                     val romFoldersRow = optionRows.size
                     option("ROM folders & scanner", "Add global ROM folders and scan your collection.") {
                         showCategory(index, enter = true, romFoldersOption = romFoldersRow)
+                    }
+                    val displayRow = optionRows.size
+                    option("Display", "Set the refresh rate and choose where settings open.") {
+                        showCategory(index, enter = true, subpage = Subpage("Display", returnToParent(displayRow)))
                     }
                     detail.addView(text("Emulators", 18f).apply { setPadding(0, dp(8), 0, dp(2)); typeface = Typeface.DEFAULT_BOLD })
                     val emulatorsRow = optionRows.size
@@ -2321,52 +2341,23 @@ open class MainActivity : Activity() {
                         } else runCatching {
                             FrontendRefreshRate.save(this, rate)
                             FrontendRefreshRate.apply(this)
-                        }.onSuccess { showCategory(index, true) }.onFailure { showDataError(it) }
+                        }.onSuccess { redrawSection() }.onFailure { showDataError(it) }
                     }
-                    val available=populated
-                    val spec=available.firstOrNull { it.id==displaySystemId }
-                        ?: available.firstOrNull { it==system } ?: available.firstOrNull()
-                    if(spec==null)detail.addView(text("Scan your ROM folders to set launch screens for systems and games.",14f,muted))
-                    else {
-                        displaySystemId=spec.id
-                        val systemRow = optionRows.size
-                        option("System","Choose a system to configure.",spec.title) {
-                            val parent = returnToParent(systemRow)
-                            chooseFromList("Choose system", available.map { it.title }, available.indexOf(spec), parent) { choice ->
-                                displaySystemId = available[choice].id
-                                displayGameUri = null
-                                parent()
-                            }
+                    val shortcutScreen = UserDataStore.cachedString("settings", "settingsShortcutScreen")
+                    val shortcutLabel = shortcutScreen?.let(GameLaunchDisplay::label) ?: "Follow tile"
+                    option("Settings shortcut display", "Choose where Start and Select open settings.", shortcutLabel) {
+                        val next = when (shortcutScreen) {
+                            null -> "top"
+                            "top" -> "bottom"
+                            else -> null
                         }
-                        val screen=GameLaunchDisplay.system(this,spec) ?: "top"
-                        option("System launch display","Press A to switch the launch screen for this system.",GameLaunchDisplay.label(screen)) {
-                            runCatching { GameLaunchDisplay.save(this,spec,null,if(screen=="top")"bottom" else "top") }
-                                .onSuccess { showCategory(index,true) }.onFailure { showDataError(it) }
-                        }
-                        val collection=pages[spec.id]?.games.orEmpty()
-                        val game=collection.firstOrNull { it.uri.toString()==displayGameUri }
-                            ?: games.getOrNull(gameCursor)?.takeIf { spec==system && it in collection }
-                            ?: collection.firstOrNull()
-                        if(game!=null) {
-                            displayGameUri=game.uri.toString()
-                            val gameRow = optionRows.size
-                            option("Game","Choose a game for an individual launch-screen override.",game.title) {
-                                val parent = returnToParent(gameRow)
-                                chooseFromList("Choose game", collection.map { it.title }, collection.indexOf(game), parent) { choice ->
-                                    displayGameUri = collection[choice].uri.toString()
-                                    parent()
-                                }
-                            }
-                            val gameScreen=GameLaunchDisplay.game(this,spec,game)
-                            option("Game launch display","Press A to cycle system default, top screen and bottom screen.",GameLaunchDisplay.label(gameScreen)) {
-                                val next=when(gameScreen) { null -> "top";"top" -> "bottom";else -> null }
-                                runCatching { GameLaunchDisplay.save(this,spec,game,next) }
-                                    .onSuccess { showCategory(index,true) }.onFailure { showDataError(it) }
-                            }
-                        }
+                        runCatching { UserDataStore.put(this, "settings", "settingsShortcutScreen", next) }
+                            .onSuccess { redrawSection() }.onFailure(::showDataError)
                     }
                 }
-                "Customisation" -> {
+                "Customisation" -> if (bottomOnly) {
+                    artworkLinks()
+                } else {
                     val theme = OrbitThemes.current()
                     val themesRow = optionRows.size
                     option("Themes", "Open the theme gallery to preview, apply or create a theme.", theme.name) {
@@ -2380,42 +2371,12 @@ open class MainActivity : Activity() {
                         runCatching { UserDataStore.put(this, "settings", "systemsMusic", if (musicOn) 0 else 1) }
                             .onSuccess { updateSystemsMusic(); showCategory(index, true) }.onFailure { showDataError(it) }
                     }
-                    screenMediaLink()
-                    val imagesRow = optionRows.size
-                    option("Artwork images", "Set background and hero images for this theme.") {
-                        showArtworkImages(returnToParent(imagesRow))
-                    }
+                    artworkLinks()
                     val animationRow = optionRows.size
                     option("Page transition", "Transition style, tile cascade, gliding selection and top screen art crossfade.",
                         pageTransitionLabels[pageTransition()]) {
                         showAnimationSettings(returnToParent(animationRow))
                     }
-                    val visibilityRow = optionRows.size
-                    option("Show system artwork","Show or remove the foreground console image for this theme.",ThemeMediaSettings.screensLabel(theme.systemArtworkScreens)) {
-                        showSystemArtwork(returnToParent(visibilityRow))
-                    }
-                }
-                "Dual Screen" -> {
-                    val shortcutScreen=UserDataStore.cachedString("settings","settingsShortcutScreen")
-                    val shortcutLabel=shortcutScreen?.let(GameLaunchDisplay::label) ?: "Current screen"
-                    option("Settings shortcuts","Choose where Start and Select open settings. Top or Bottom always wins; Current screen follows the tile's saved launch screen.",shortcutLabel) {
-                        val next=when(shortcutScreen) { null -> "top";"top" -> "bottom";else -> null }
-                        runCatching { UserDataStore.put(this,"settings","settingsShortcutScreen",next) }
-                            .onSuccess { showCategory(index,true) }.onFailure(::showDataError)
-                    }
-                    val dockEnabled=AppDock.enabled(this)
-                    option("App dock", "Show the app dock on the bottom screen.", if(dockEnabled) "On" else "Off") {
-                        UserDataStore.put(this,"settings","appDockEnabled",if(dockEnabled)0 else 1)
-                        refreshLibraryDock()
-                        redrawSection()
-                    }
-                    val dockSlots=AppDock.slots(this)
-                    option("App dock slots", "Press A to choose 1–5 slots.", dockSlots.toString()) {
-                        UserDataStore.put(this,"settings","appDockSlots",dockSlots%5+1)
-                        refreshLibraryDock()
-                        showCategory(index,true)
-                    }
-                    detail.addView(text("Thor’s Focus Mode controls which screen receives the physical buttons. Use Auto-lock to follow the active screen.", 13f, muted))
                 }
                 "Account" -> {
                     val providerPreferences=getSharedPreferences("scraper_credentials",0)
@@ -2466,20 +2427,44 @@ open class MainActivity : Activity() {
                     }
                 }
                 "Scraping" -> {
-                    val panel=scraperPanel()
+                    val panel = scraperPanel()
+                    val mainScrapingTab = !scrapingPage && subpage == null
+                    val startRow = optionRows.size
                     panel.attach(detail) {
-                        if (subpage == null) openScrapingPage(3)
+                        if (mainScrapingTab) {
+                            showCategory(index, enter = true, subpage = Subpage("Systems", returnToParent(startRow)))
+                        } else if (subpage == null) openScrapingPage(3)
                         else showCategory(index, enter = true, subpage = Subpage("Systems", subpage.back))
                     }
                     optionRows.addAll(panel.navigationRows)
-                    first=panel.navigationRows.firstOrNull { it.isEnabled && it.visibility==View.VISIBLE }
-                }
-                "Media" -> {
-                    val scrapingRow = optionRows.size
-                    option("Scraping","Open scraper accounts, scan options and download progress.") {
-                        showScraperSections(returnToParent(scrapingRow))
+                    first = panel.navigationRows.firstOrNull { it.isEnabled && it.visibility == View.VISIBLE }
+                    if (mainScrapingTab) {
+                        detail.addView(text("Scraper settings", 21f).apply { typeface = Typeface.DEFAULT_BOLD })
+                        listOf(
+                            "Account" to "Choose a scraper and sign in.",
+                            "Scrape Mode" to "Choose what to replace and how many games to scrape at once.",
+                            "Systems" to "Choose which systems to scrape.",
+                            "Region" to "Choose the preferred artwork region.",
+                            "Languages" to "Choose the preferred language.",
+                            "Media types" to "Choose which artwork and media to download."
+                        ).forEach { (label, description) ->
+                            val row = optionRows.size
+                            option(label, description) {
+                                showCategory(index, enter = true, subpage = Subpage(label, returnToParent(row)))
+                            }
+                        }
                     }
-                    screenMediaLink()
+                }
+                "Media" -> if (bottomOnly) {
+                    screenMediaOptions(GameMediaSettingsPanel.options(this, mediaScreen, ::refreshGameMediaOptions), compact = true)
+                } else {
+                    screenMediaOptions(GameMediaSettingsPanel.options(this, mediaScreen, ::refreshGameMediaOptions).take(1))
+                    val mediaTypesRow = optionRows.size
+                    option("Media types", "Choose which media to show on the top screen.") {
+                        showCategory(index, enter = true,
+                            subpage = Subpage("Media types", returnToParent(mediaTypesRow), screenMediaTypes = true))
+                    }
+                    detail.addView(text("Media library", 21f).apply { typeface = Typeface.DEFAULT_BOLD })
                     val packsRow = optionRows.size
                     option("NeoAssets artwork packs","Browse downloadable system artwork packs.") {
                         val parent = returnToParent(packsRow)
@@ -2505,16 +2490,20 @@ open class MainActivity : Activity() {
                         ) { picker -> startActivityForResult(picker, 151, popupLaunchOptions()) }.also { mediaTransferPanel = it }
                         embedPage(panel.view, panel::back, panel.initialFocus)
                     }
-                    detail.addView(text("Media types", 21f).apply { typeface = Typeface.DEFAULT_BOLD })
-                    val mediaPreferences = getSharedPreferences("scraper_credentials", 0)
-                    val enabledMedia = mediaPreferences.getStringSet("media.categories", ScraperMediaTypes.categories.map { it.folder }.toSet()).orEmpty()
-                    ScraperMediaTypes.categories.forEach { category ->
-                        val enabled = category.folder in enabledMedia
-                        option(category.title, "Include when scraping, where available.", if (enabled) "On" else "Off") {
-                            val next = enabledMedia.toMutableSet()
-                            if (enabled) next.remove(category.folder) else next.add(category.folder)
-                            mediaPreferences.edit().putStringSet("media.categories", next).apply()
-                            showCategory(index, true)
+                }
+                "Media types" -> {
+                    val preferences = getSharedPreferences("scraper_credentials", 0)
+                    val categories = ScraperMediaTypes.categories
+                    val defaults = categories.map { it.folder }.toSet()
+                    fun enabledMedia() = preferences.getStringSet("media.categories", defaults).orEmpty()
+                    categories.forEach { category ->
+                        fun value() = if (category.folder in enabledMedia()) "On" else "Off"
+                        lateinit var row: LinearLayout
+                        row = option(category.title, "Include when scraping, where available.", value()) {
+                            val next = enabledMedia().toMutableSet()
+                            if (!next.add(category.folder)) next.remove(category.folder)
+                            preferences.edit().putStringSet("media.categories", next).apply()
+                            (row.getChildAt(0) as TextView).text = "${category.title}  ·  ${value()}"
                         }
                     }
                 }
@@ -2639,16 +2628,15 @@ open class MainActivity : Activity() {
                 val preferred = restoreOption ?: focusedOption.takeIf { sameCategory }
                 val target = preferred?.let(optionRows::getOrNull)?.takeIf { it.isEnabled && it.visibility==View.VISIBLE } ?: first
                 val destination=target ?: optionRows.firstOrNull { it.isEnabled && it.visibility==View.VISIBLE }
+                if (sameCategory && restoreOption == null) detailScroll.scrollTo(0, previousScroll)
                 destination?.requestFocus()
-                destination?.post {
-                    if(pageCategory==index && activeTab==pageTab && destination.isAttachedToWindow) {
-                        destination.requestFocus()
-                        if (restoreOption != null) destination.requestRectangleOnScreen(
+                if (restoreOption != null) destination?.post {
+                    if (pageCategory == index && activeTab == pageTab && destination.hasFocus()) {
+                        destination.requestRectangleOnScreen(
                             android.graphics.Rect(0, 0, destination.width, destination.height), true
                         )
                     }
                 }
-                detailScroll.scrollTo(0, previousScroll)
             }
             updatingCategory=false
         }
@@ -2670,8 +2658,7 @@ open class MainActivity : Activity() {
         fun reveal(scroll: ScrollView, row: View) {
             row.requestFocus()
             scroll.fling(0)
-            if (row.top < scroll.scrollY) scroll.scrollTo(0, row.top)
-            else if (row.bottom > scroll.scrollY + scroll.height) scroll.scrollTo(0, row.bottom - scroll.height)
+            row.requestRectangleOnScreen(android.graphics.Rect(0, 0, row.width, row.height), true)
         }
         fun focusCategory(index: Int) {
             val row = categoryButtons[index]
@@ -2711,7 +2698,7 @@ open class MainActivity : Activity() {
             } else if (topTabs && categories.hasFocus() && key == KeyEvent.KEYCODE_DPAD_DOWN) {
                 if (event.action == KeyEvent.ACTION_DOWN && !event.isCanceled) focusDetail()
                 true
-            } else if(key in listOf(KeyEvent.KEYCODE_BUTTON_B,KeyEvent.KEYCODE_BACK) && (returnFromSubpage != null || detailHost.hasFocus())) {
+            } else if(key in listOf(KeyEvent.KEYCODE_BUTTON_B,KeyEvent.KEYCODE_BACK) && (returnFromSubpage != null || (!bottomOnly && detailHost.hasFocus()))) {
                 if(event.action==KeyEvent.ACTION_DOWN && event.repeatCount==0) {
                     returnFromSubpage?.invoke() ?: returnToCategory()
                 }
@@ -2749,6 +2736,10 @@ open class MainActivity : Activity() {
                     if(key==KeyEvent.KEYCODE_DPAD_UP && position<3) {
                         val previous=optionRows.takeWhile { it!==focusedGrid }.lastOrNull { it.isEnabled && it.visibility==View.VISIBLE }
                         if(previous!=null)reveal(detailScroll,previous) else returnToCategory()
+                    } else if(key==KeyEvent.KEYCODE_DPAD_DOWN && position / 3 == (focusedGrid.count - 1) / 3) {
+                        val next = optionRows.dropWhile { it !== focusedGrid }.drop(1)
+                            .firstOrNull { it.isEnabled && it.visibility == View.VISIBLE }
+                        if (next != null) reveal(detailScroll, next)
                     } else if(key==KeyEvent.KEYCODE_DPAD_LEFT && position%3==0) {
                         if (!topTabs) returnToCategory()
                     }
@@ -2789,10 +2780,11 @@ open class MainActivity : Activity() {
                 true
             }
         }
-        val initial=categoryButtons[pageCategory]
+        val initial = categoryButtons[pageCategory]
         if(popup!=null) {
-            popup.clearTabs("All settings")
-            popup.page("All settings",root,back=back,handle={ _,event -> handleSettings(event) })
+            val title = if (bottomOnly) "Dual Screen Settings" else "All settings"
+            popup.clearTabs(title)
+            popup.page(title,root,back=back,handle={ _,event -> handleSettings(event) })
             initial.post { if(popup.dialog.isShowing)initial.requestFocus() }
         } else {
             settingsKeys=handleSettings;settingsKeyHandlers[pageTab]=handleSettings
@@ -2839,6 +2831,58 @@ open class MainActivity : Activity() {
         }
         return true
     }
+    private var trackingBottomSettingsSwipe = false
+    private var bottomEdgeX = 0f
+    private var bottomEdgeY = 0f
+    private var bottomEdgeSwipeCaptured = false
+
+    override fun dispatchTouchEvent(event: MotionEvent): Boolean {
+        val action = event.actionMasked
+        if (action == MotionEvent.ACTION_DOWN) {
+            bottomEdgeSwipeCaptured = false
+            trackingBottomSettingsSwipe = false
+            if (event.x < dp(32) && OrbitThemeArtwork.screen(this) == "bottom" && startMenu?.isShowing != true &&
+                (ready || showingCompanion) && !scanning && !companionVideoActive &&
+                artworkPanel?.manualVideoActive != true &&
+                activeSplitTileMenu()?.isOpen != true && activeSplitGrid()?.isMoving != true
+            ) {
+                trackingBottomSettingsSwipe = true
+                bottomEdgeX = event.x
+                bottomEdgeY = event.y
+            }
+        } else if (bottomEdgeSwipeCaptured) {
+            if (action == MotionEvent.ACTION_UP || action == MotionEvent.ACTION_CANCEL ||
+                action == MotionEvent.ACTION_POINTER_DOWN
+            ) {
+                if (action == MotionEvent.ACTION_UP && trackingBottomSettingsSwipe) {
+                    DualScreenCoordinator.openBottomSettings(this)
+                }
+                trackingBottomSettingsSwipe = false
+                if (action != MotionEvent.ACTION_POINTER_DOWN) bottomEdgeSwipeCaptured = false
+            }
+            return true
+        } else if (action == MotionEvent.ACTION_MOVE && trackingBottomSettingsSwipe) {
+            val inward = event.x - bottomEdgeX
+            val vertical = kotlin.math.abs(event.y - bottomEdgeY)
+            val slop = ViewConfiguration.get(this).scaledTouchSlop
+            if (inward >= dp(64) && inward >= vertical * 1.5f) {
+                bottomEdgeSwipeCaptured = true
+                val cancel = MotionEvent.obtain(event)
+                cancel.action = MotionEvent.ACTION_CANCEL
+                try {
+                    super.dispatchTouchEvent(cancel)
+                } finally {
+                    cancel.recycle()
+                }
+                return true
+            }
+            if (inward < -slop || (vertical > slop && vertical > inward)) trackingBottomSettingsSwipe = false
+        } else if (action != MotionEvent.ACTION_MOVE) {
+            trackingBottomSettingsSwipe = false
+        }
+        return super.dispatchTouchEvent(event)
+    }
+
     override fun dispatchKeyEvent(event: KeyEvent): Boolean {
         if(showingCompanion)return super.dispatchKeyEvent(event)
         remotePopups.removeAll { !it.isShowing }
@@ -2960,7 +3004,7 @@ open class MainActivity : Activity() {
                 "Scraper" -> showGameScraper(0)
                 "Customisation" -> if(currentGame==null)SystemArtworkSettingsPanel(this,menu,spec).show()
                     else customArtwork?.show()
-                "Media" -> GameMediaSettingsPanel(this,menu).show()
+                "Media" -> GameMediaSettingsPanel(this, menu).show(menu.dialog::dismiss)
             }
         }
         showGameScraper = { selected ->

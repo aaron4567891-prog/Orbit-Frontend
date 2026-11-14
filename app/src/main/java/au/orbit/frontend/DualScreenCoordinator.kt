@@ -107,6 +107,10 @@ object DualScreenCoordinator : DisplayManager.DisplayListener {
         !it.isDestroyed && !it.isFinishing && it.windowManager.defaultDisplay.displayId!=Display.DEFAULT_DISPLAY
     }
     fun bottomDisplay():Int?=bottomHost()?.windowManager?.defaultDisplay?.displayId
+    internal fun openBottomSettings(bottom: MainActivity) {
+        val host = mainHost.get()?.takeIf { !it.isFinishing && !it.isDestroyed } ?: return
+        host.showBottomScreenSettings(bottom)
+    }
     fun refreshMedia(refresh:Boolean=false) {
         if(Looper.myLooper()!=Looper.getMainLooper()) { handler.post { refreshMedia(refresh) };return }
         forceMediaRefresh=forceMediaRefresh || refresh
@@ -119,6 +123,7 @@ object DualScreenCoordinator : DisplayManager.DisplayListener {
             panel.get()?.takeIf { !it.isDestroyed && !it.isFinishing }?.refreshCompanionMedia(force)
         }
     }
+    internal fun refreshBottomControls() { bottomHost()?.refreshBottomControls() }
     fun refreshNavigationBars() { hosts.forEach { FrontendNavigationBar.apply(it) } }
     fun returnBottomToFrontend() {
         val bottom=bottomHost() ?: return

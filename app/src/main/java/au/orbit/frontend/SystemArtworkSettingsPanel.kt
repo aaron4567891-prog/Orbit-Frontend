@@ -7,7 +7,7 @@ import android.view.KeyEvent
 import android.view.View
 import android.widget.*
 
-/** Screen selection and image controls stay inside the existing System Settings popup. */
+/** Top-screen artwork overrides in the System Settings Customisation tab. */
 class SystemArtworkSettingsPanel(
     private val activity:MainActivity,
     private val menu:EmulatorSettings.MenuWindow,
@@ -18,14 +18,11 @@ class SystemArtworkSettingsPanel(
     private fun label(value:String,size:Float,color:Int=Color.WHITE)=TextView(activity).apply {
         text=value;textSize=size;setTextColor(color)
     }
-    fun show() {
-        menu.actions("Customisation · ${system.title}",listOf(
-            "Top screen" to { selectedKey="hero/image";showScreen("top") },
-            "Bottom screen" to { selectedKey="hero/image";showScreen("bottom") }
-        ))
-    }
-    private fun showScreen(screen:String,scrollY:Int=0) {
-        val theme=OrbitThemes.current()
+    fun show() = showControls()
+
+    private fun showControls(scrollY: Int = 0) {
+        val theme = OrbitThemes.current()
+        val screen = OrbitThemeArtwork.artworkScreen(activity, "top", theme)
         val content=LinearLayout(activity).apply { orientation=LinearLayout.VERTICAL }
         val viewport=ScrollView(activity).apply { defaultFocusHighlightEnabled=false;isSmoothScrollingEnabled=false;addView(content) }
         val controls=mutableListOf<Pair<String,View>>()
@@ -35,7 +32,8 @@ class SystemArtworkSettingsPanel(
             val offset=viewport.scrollY
             change {
                 if(menu.dialog.isShowing && menu.revision==expectedRevision) {
-                    selectedKey=key;showScreen(screen,offset)
+                    selectedKey = key
+                    showControls(offset)
                 }
             }
         }
@@ -68,7 +66,7 @@ class SystemArtworkSettingsPanel(
             text.addView(label(if(hero)"Hero image" else "System image",17f))
             text.addView(label(if(custom)"Custom" else if(hero)"Global" else "Default",13f,theme.muted))
             card.addView(text,LinearLayout.LayoutParams(0,-2,1f))
-            card.contentDescription="${if(screen=="top")"Top" else "Bottom"} screen ${if(hero)"hero" else "system"} image"
+            card.contentDescription = if (hero) "Hero image" else "System image"
             fun refreshPreview() {
                 val bitmap=if(hero)OrbitThemeArtwork.image(activity,theme,"hero",system,screen)
                     else OrbitThemeArtwork.systemImage(activity,theme,system,screen) ?: OrbitConsoleImages.cached(system)
@@ -89,10 +87,6 @@ class SystemArtworkSettingsPanel(
         }
         imageCard(true)
         imageCard(false)
-        action("media","Media") {
-            val offset=viewport.scrollY
-            GameMediaSettingsPanel(activity,menu).showMedia(screen) { selectedKey="media";showScreen(screen,offset) }
-        }
         var savingVisibility=false
         lateinit var visibilityButton:Button
         fun visibilitySaved() {
@@ -113,8 +107,7 @@ class SystemArtworkSettingsPanel(
                 ThemeMediaSettings.resetSystemImageVisibility(activity,system,screen,::visibilitySaved)
             }
         }
-        val title=if(screen=="top")"Top screen" else "Bottom screen"
-        menu.page("$title · ${system.title}",viewport,back={ show() },handle={ key,event ->
+        menu.page("Customisation · ${system.title}", viewport, backLabel = "Close", handle = { key, event ->
             val index=controls.indexOfFirst { it.second.hasFocus() }.takeIf { it>=0 }
                 ?: controls.indexOfFirst { it.first==selectedKey }.coerceAtLeast(0)
             when(key) {

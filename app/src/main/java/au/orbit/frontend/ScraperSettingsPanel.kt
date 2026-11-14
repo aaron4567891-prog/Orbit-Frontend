@@ -88,8 +88,8 @@ class ScraperSettingsPanel(private val activity:Activity,private val selectedSys
     }
     init {
         view.addView(totalLabel);view.addView(slotLabel);view.addView(start)
-        view.addView(grid,LinearLayout.LayoutParams(-1,(activity.resources.displayMetrics.heightPixels-dp(270)).coerceAtLeast(dp(220))))
         view.addView(status)
+        view.addView(grid,LinearLayout.LayoutParams(-1,(activity.resources.displayMetrics.heightPixels-dp(270)).coerceAtLeast(dp(220))))
         refreshLabels()
     }
     private fun refreshLabels() {
@@ -104,7 +104,8 @@ class ScraperSettingsPanel(private val activity:Activity,private val selectedSys
         updateGamePopup()
     }
     private fun resetProgress() {
-        scrapedCount=0;accountSlots=null;workerSlots=null;progressRows.clear()
+        scrapedCount=0;accountSlots=null;workerSlots=null;selectedTile=0
+        selected.clear();progressRows.clear()
         refreshLabels()
     }
     val navigationRows get()=listOf(start,grid)
@@ -136,7 +137,7 @@ class ScraperSettingsPanel(private val activity:Activity,private val selectedSys
     }
     fun downloadPack(folder:String) {
         if (busy) return
-        busy=true;cancelled.set(false);status.text="Downloading artwork pack…";refreshLabels()
+        busy=true;cancelled.set(false);status.text="Downloading artwork pack…";resetProgress()
         worker.execute {
             val result=runCatching {
                 require(folder.matches(Regex("[a-zA-Z0-9_-]+")))
@@ -158,7 +159,7 @@ class ScraperSettingsPanel(private val activity:Activity,private val selectedSys
     private fun scrape() {
         val targets=selectedSystems()
         if(targets.isEmpty()) { status.text="Scan your ROM folders first.";chooseSystems();return }
-        busy=true;cancelled.set(false);status.text="Loading selected games…";refreshLabels()
+        busy=true;cancelled.set(false);status.text="Loading selected games…";resetProgress()
         worker.execute {
             val result=runCatching {
                 val library=LibraryRepository(activity)
@@ -181,7 +182,7 @@ class ScraperSettingsPanel(private val activity:Activity,private val selectedSys
         val chosen=selected.sorted().filter { it in games.indices }
         if(chosen.isEmpty()) { busy=false;status.text="No scanned games in the selected systems.";refreshLabels();return }
         provider=activity.getSharedPreferences("scraper_credentials",0).getString("scrape.provider","ScreenScraper") ?: "ScreenScraper"
-        val source=provider;resetProgress();busy=true;cancelled.set(false);status.text="Checking $source…";refreshLabels()
+        val source=provider;status.text="Checking $source…";refreshLabels()
         worker.execute {
             val result=runCatching {
                 val accountAllowed=ScraperClient(activity,source).accountConcurrency()
@@ -325,7 +326,6 @@ class ScraperSettingsPanel(private val activity:Activity,private val selectedSys
     fun attach(parent:LinearLayout, chooseSystems: () -> Unit) {
         this.chooseSystems = chooseSystems
         (view.parent as? ViewGroup)?.removeView(view);parent.addView(view)
-        if(!busy) { selected.clear();scrapedCount=0;progressRows.clear() }
         refreshLabels()
     }
     fun destroy() { closed=true;popup?.dismiss();cancelled.set(true);pool?.shutdownNow();worker.shutdownNow();previewWorker.shutdownNow() }

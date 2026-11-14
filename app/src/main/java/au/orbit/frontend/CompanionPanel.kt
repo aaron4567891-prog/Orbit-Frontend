@@ -1,13 +1,12 @@
 package au.orbit.frontend
 
-import android.app.Activity
 import android.graphics.Color
 import android.view.Gravity
 import android.view.WindowInsets
 import android.widget.*
 
 /** Reusable companion content; both physical display windows can host it. */
-class CompanionPanel(private val activity:Activity) {
+class CompanionPanel(private val activity:MainActivity) {
     private val content:LinearLayout
     internal val view:GameMediaSurface
     private val handler=android.os.Handler(android.os.Looper.getMainLooper())
@@ -106,6 +105,7 @@ class CompanionPanel(private val activity:Activity) {
         browse.visibility=android.view.View.GONE
         bottomControls?.let { content.addView(it,LinearLayout.LayoutParams(-1,-2)) }
     }
+    internal fun refreshBottomControls() { bottomControls?.refresh() }
     fun start() { mediaActive=true;handler.removeCallbacks(update);handler.post(update) }
     fun stop() { mediaActive=false;handler.removeCallbacks(update);handler.removeCallbacks(warmArtwork);artwork?.pause() }
     fun destroy() { stop();browse.destroy();artwork?.destroy();artwork=null }

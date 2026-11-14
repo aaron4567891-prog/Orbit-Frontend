@@ -35,18 +35,11 @@ internal class GameMediaSettingsPanel(private val activity:MainActivity,private 
             }
         }
     }
-    fun show() {
-        menu.actions("Media",listOf(
-            "Top screen" to { showMedia("top",::show) },
-            "Bottom screen" to { showMedia("bottom",::show) }
-        ))
-    }
-
-    fun showMedia(screen:String,back:()->Unit) {
+    fun show(back: () -> Unit) {
         val content=LinearLayout(activity).apply { orientation=LinearLayout.VERTICAL }
-        val viewport=ScrollView(activity).apply { defaultFocusHighlightEnabled=false;isSmoothScrollingEnabled=false;addView(content) }
+        val viewport=ScrollView(activity).apply { defaultFocusHighlightEnabled=false;isSmoothScrollingEnabled=true;addView(content) }
         val buttons=mutableListOf<Button>()
-        options(activity,screen,activity::refreshGameMediaOptions).forEach { option ->
+        options(activity, "top", activity::refreshGameMediaOptions).forEach { option ->
             fun label()="${option.title} · ${option.value()}"
             val row=Button(activity).apply {
                 text=label();isAllCaps=false;textSize=16f;setTextColor(Color.WHITE);isFocusableInTouchMode=true
@@ -59,13 +52,13 @@ internal class GameMediaSettingsPanel(private val activity:MainActivity,private 
             }
             buttons.add(row);content.addView(row,LinearLayout.LayoutParams(-1,-2))
         }
-        menu.page("${GameLaunchDisplay.label(screen)} media",viewport,backLabel="",back=back,handle={ key,event ->
+        menu.page("Media",viewport,backLabel="",back=back,handle={ key,event ->
             val index=buttons.indexOfFirst { it.hasFocus() }.coerceAtLeast(0)
             when(key) {
                 KeyEvent.KEYCODE_DPAD_UP,KeyEvent.KEYCODE_DPAD_DOWN -> {
                     if(event.action==KeyEvent.ACTION_DOWN) {
                         val row=buttons[(index+if(key==KeyEvent.KEYCODE_DPAD_DOWN)1 else -1).coerceIn(buttons.indices)]
-                        row.requestFocus();row.requestRectangleOnScreen(Rect(0,0,row.width,row.height),true)
+                        row.requestFocus();row.requestRectangleOnScreen(Rect(0,0,row.width,row.height),false)
                     }
                     true
                 }

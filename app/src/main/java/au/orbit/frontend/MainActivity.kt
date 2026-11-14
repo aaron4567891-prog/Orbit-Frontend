@@ -1371,8 +1371,13 @@ open class MainActivity : Activity() {
         }
         val vertical = appearance == GameAppearance.VERTICAL_WHEEL
         lateinit var wheel: GameWheelView
-        val showSelectedMedia = Runnable {
-            if (activeTab == 0 && library && wheel.isShown && activeGameWheel() === wheel) {
+        val showSelectedMedia = object : Runnable {
+            override fun run() {
+                if (activeTab != 0 || !library || !wheel.isShown || activeGameWheel() !== wheel) return
+                if (wheel.isWheelMoving) {
+                    wheel.postDelayed(this, 60L)
+                    return
+                }
                 val game = entries[gameCursor]
                 panel?.show(spec, game)
                 panel?.warmAdjacentFanArt(spec, adjacentGames(game))

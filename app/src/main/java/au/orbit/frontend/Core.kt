@@ -10,6 +10,9 @@ import android.provider.DocumentsContract as Docs
 import android.view.Display
 
 data class SystemSpec(val id: String, val title: String, val short: String, val subtitle: String, val extensions: Set<String>)
+internal val retroAchievementsSystem = SystemSpec(
+    "orbit-retroachievements", "RetroAchievements", "RA", "Achievement progress", emptySet()
+)
 private val initialSystems = listOf(
     SystemSpec("psx", "PlayStation", "PS", "THE ORIGINAL PLAY", setOf("cue", "chd", "pbp", "iso")),
     SystemSpec("snes", "Super Nintendo", "SN", "16-BIT CLASSICS", setOf("sfc", "smc")),

@@ -32,7 +32,8 @@ internal class SplitTileMenu(
     private val toggleTileArtwork: () -> Unit,
     private val discSpinEnabled: () -> Boolean,
     private val toggleDiscSpin: () -> Unit,
-    private val openSettings: () -> Unit
+    private val openSettings: () -> Unit,
+    private val canSetLaunchScreen: () -> Boolean
 ) : FrameLayout(context) {
     companion object { const val TAG = "orbit-split-tile-menu" }
 
@@ -91,7 +92,7 @@ internal class SplitTileMenu(
     private val editing get() = page == Page.EDIT || page == Page.DEFAULT_SCREEN
     private val activeButtons get() = when {
         choosingScreen -> choices
-        editing -> editButtons
+        editing -> editButtons.filter { it.visibility == VISIBLE }
         else -> mainButtons.filter { it.visibility == VISIBLE }
     }
 
@@ -187,6 +188,7 @@ internal class SplitTileMenu(
         remove.visibility = if (shortcutSelected && !empty) VISIBLE else GONE
         if (empty) return
 
+        screen.visibility = if (!shortcutSelected && canSetLaunchScreen()) VISIBLE else GONE
         val saved = launchScreen()
         if (!shortcutSelected) {
             screen.text = "Launch screen · ${if (saved == "top") "Top" else "Bottom"}"
@@ -300,7 +302,7 @@ internal class SplitTileMenu(
         val primary = if (editing) editPanel else actionsPanel
         val row = if (editing) screen else open
         val firstWidth = minOf(mainWidth, width)
-        val count = if (editing) editButtons.size else mainButtons.count { it.visibility == VISIBLE }
+        val count = if (editing) editButtons.count { it.visibility == VISIBLE } else mainButtons.count { it.visibility == VISIBLE }
         val primaryHeight = minOf(panelHeight(count), height)
         val anchorRight = grid.left + tile.right
         val anchorBottom = grid.top + tile.bottom

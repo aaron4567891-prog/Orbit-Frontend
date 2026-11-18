@@ -18,6 +18,16 @@ private const val WHEEL_HOLD_MAX_SPEED = 24f
 /** Original vector artwork, shared by Orbit's system gallery and companion display. */
 object OrbitSystemArtwork {
     fun drawForScreen(context:Context,canvas:Canvas,area:RectF,system:SystemSpec,theme:OrbitThemes.Theme,showHero:Boolean=true,heroInBackground:Boolean=false) {
+        if (system == retroAchievementsSystem) {
+            val size = minOf(area.width(), area.height()).times(0.36f).toInt()
+            context.getDrawable(android.R.drawable.btn_star_big_on)?.apply {
+                val left = (area.centerX() - size / 2f).toInt()
+                val top = (area.centerY() - size / 2f).toInt()
+                setBounds(left, top, left + size, top + size)
+                draw(canvas)
+            }
+            return
+        }
         val hero=showHero && if(heroInBackground)OrbitThemeArtwork.image(context,theme,"hero",system)!=null
             else OrbitThemeArtwork.hero(context,canvas,area,theme,system)
         if(!theme.showSystemArtwork(system.id,OrbitThemeArtwork.artworkScreen(context)))return
@@ -327,7 +337,8 @@ class OrbitSystemsView(
             portrait -> 0.73f
             else -> 0.47f
         }
-        canvas.drawText("${count(system)} games", w * 0.055f, h * countY, paint)
+        val detail = if (system == retroAchievementsSystem) system.subtitle else "${count(system)} games"
+        canvas.drawText(detail, w * 0.055f, h * countY, paint)
         paint.color = theme.accent
         paint.textSize = textScale(h) * 0.023f
         val position = "${cursor + 1} / ${systems.size}"

@@ -59,6 +59,10 @@ open class MainActivity : Activity() {
         EmulatorSettings.companionBrowse(this)?.let { return it }
         activeSplitTileMenu()?.shortcutBrowse()?.let { return it }
         if((activeTab==0 && !library) || activeTab==3) {
+            if (activeTab == 0 && focusedBrowseSystem == retroAchievementsSystem) {
+                return CompanionBrowse("retroachievements", retroAchievementsSystem.title,
+                    iconResource = R.drawable.ic_companion_star)
+            }
             val spec=systems.getOrNull(focusedSystemIndex)?.takeIf { it in populated } ?: populated.firstOrNull() ?: return null
             val theme=OrbitThemes.current()
             val identity="${theme.id}/${theme.hashCode()}"
@@ -144,7 +148,7 @@ open class MainActivity : Activity() {
     private var activeTab = 0
     private data class PageDestination(val tab:Int,val library:Boolean=false)
     private val pageHistory=mutableListOf<PageDestination>()
-    private val settingsCategories = listOf("General", "Customisation", "Scraping")
+    private val settingsCategories = listOf("General", "Customisation", "Scraping", "RetroAchievements")
     private var appsPanel: AppsPanel? = null
     private var scraperSettingsPanel:ScraperSettingsPanel?=null
     private var screenHost: FrameLayout? = null
@@ -251,7 +255,9 @@ open class MainActivity : Activity() {
         val fallback=OrbitThemeArtwork.background(this,theme,pageRole=pageRole)
         if(activeTab!=0 || library || scanning || OrbitThemeArtwork.screen(this)=="bottom" ||
             view.findViewWithTag<View>("orbit-systems-grid")!=null)return fallback
-        val spec=systems.getOrNull(focusedSystemIndex)?.takeIf { it in populated } ?: populated.firstOrNull() ?: return fallback
+        val focused = focusedBrowseSystem
+        if (focused == retroAchievementsSystem) return fallback
+        val spec=focused?.takeIf { it in populated } ?: populated.firstOrNull() ?: return fallback
         val screen=OrbitThemeArtwork.artworkScreen(this)
         if(theme.heroImage(screen,spec.id)==null)return fallback
         return OrbitThemeArtwork.systemHeroBackground(this,theme,spec,screen,fallback).also { hero ->
@@ -261,7 +267,8 @@ open class MainActivity : Activity() {
     private fun focusSystem(spec:SystemSpec) {
         focusedSystemIndex=systems.indexOf(spec)
         val wheel=nativeSystems?.takeIf { it.isShown && systemsAppearance()==SystemsAppearance.VERTICAL_SCROLL }
-        if(wheel==null)preloadListArtwork(spec)
+        if(spec==retroAchievementsSystem) wheel?.removeCallbacks(warmWheelSelection)
+        else if(wheel==null)preloadListArtwork(spec)
         else {
             // Keep the preview in sync, but wait until the wheel settles to warm its game list.
             wheel.removeCallbacks(warmWheelSelection)
@@ -705,11 +712,14 @@ open class MainActivity : Activity() {
     private var generation = 0
     private var pickingSystem: SystemSpec? = null
     private val worker = Executors.newSingleThreadExecutor()
+    private val retroAchievementsWorker = Executors.newSingleThreadExecutor()
     private val libraryRefreshWorker=Executors.newSingleThreadExecutor()
     private lateinit var repository: LibraryRepository
     private lateinit var root: LinearLayout
     private var ready = false
     private var populated = emptyList<SystemSpec>()
+    private val browsingSystems get() = populated
+    private val focusedBrowseSystem get() = systems.getOrNull(focusedSystemIndex)
     private data class LibraryPage(val games: List<Game>, val errors: List<String>)
     private var pages = emptyMap<String, LibraryPage>()
     private var gameList: AbsListView? = null
@@ -797,6 +807,19 @@ open class MainActivity : Activity() {
         DualScreenCoordinator.refreshMedia()
     }
     private fun page(report: RomScanResult) = LibraryPage(report.games.map { Game(it.title, android.net.Uri.parse(it.uri), it.fileName,it.directory) }, report.errors)
+    private fun openBrowseSystem(spec: SystemSpec) {
+        if (spec == retroAchievementsSystem) {
+            openRetroAchievementsPage()
+        } else openSystem(systems.indexOf(spec))
+    }
+
+    private fun openRetroAchievementsPage() {
+        settingsCategory = settingsCategories.indexOf(retroAchievementsSystem.title)
+        tabViews.remove(2)?.let { screenHost?.removeView(it) }
+        tabFocus.remove(2)
+        navigateTab(2)
+    }
+
     private fun openSystem(index: Int) {
         rememberPage(PageDestination(0,true))
         activeTab = 0; selected = index; library = true
@@ -1084,7 +1107,7 @@ open class MainActivity : Activity() {
         DualScreenCoordinator.detach(this)
         super.onStop()
     }
-    override fun onDestroy() { remoteSettingsDialog?.dismiss();systemsMusic.destroy();mediaTransferPanel?.destroy();scraperSettingsPanel?.destroy();themeBackdrop?.destroy();gamePreloader?.destroy();importedSystems?.destroy();importedScene?.destroy();gameLogos.destroy();companionPanel?.destroy();if(showingCompanion)DualScreenCoordinator.panelDestroyed(this);colorfulSystems?.destroy(); artworkPanel?.destroy(); discardPreparedArtwork(); appsPanel?.destroy(); skipStartup.set(true); generation++; libraryRefreshWorker.shutdownNow();worker.shutdownNow(); super.onDestroy() }
+    override fun onDestroy() { remoteSettingsDialog?.dismiss();systemsMusic.destroy();mediaTransferPanel?.destroy();scraperSettingsPanel?.destroy();themeBackdrop?.destroy();gamePreloader?.destroy();importedSystems?.destroy();importedScene?.destroy();gameLogos.destroy();companionPanel?.destroy();if(showingCompanion)DualScreenCoordinator.panelDestroyed(this);colorfulSystems?.destroy(); artworkPanel?.destroy(); discardPreparedArtwork(); appsPanel?.destroy(); skipStartup.set(true); generation++; libraryRefreshWorker.shutdownNow();worker.shutdownNow();retroAchievementsWorker.shutdownNow(); super.onDestroy() }
     private fun dp(n: Int) = (n * resources.displayMetrics.density).toInt()
     private fun text(value: String, size: Float, color: Int = Color.WHITE) = TextView(this).apply {
         text = value; textSize = size; setTextColor(color); setPadding(0, dp(5), 0, dp(5))
@@ -1121,6 +1144,8 @@ open class MainActivity : Activity() {
             it.displayId!=android.view.Display.DEFAULT_DISPLAY && it.state!=android.view.Display.STATE_OFF
         })
         useSplitGameGrid = splitDisplays
+        val visibleSystems = browsingSystems
+        val focusedPosition = visibleSystems.indexOf(focusedBrowseSystem).coerceAtLeast(0)
         val gameView = gameAppearance()
         if (library && !scanning && games.isNotEmpty() && gameView != GameAppearance.THEME_DEFAULT) {
             renderGameWheel(nativeTheme, gameView, splitDisplays)
@@ -1141,8 +1166,8 @@ open class MainActivity : Activity() {
         val useArtworkCarousel = verticalScroll || appearance == SystemsAppearance.HORIZONTAL_VIEW || nativeTheme.systemLayout == "artwork" ||
             OrbitThemeArtwork.image(this, nativeTheme, "hero", target = screen) != null
         if(useArtworkCarousel && !library && populated.isNotEmpty() && !scanning) {
-            val scene=OrbitSystemsView(this,populated,populated.indexOf(systems.getOrNull(focusedSystemIndex)).coerceAtLeast(0),
-                { pages[it.id]?.games?.size ?: 0 },::focusSystem,{ openSystem(systems.indexOf(it)) },
+            val scene=OrbitSystemsView(this,visibleSystems,focusedPosition,
+                { pages[it.id]?.games?.size ?: 0 },::focusSystem,::openBrowseSystem,
                 showHero=showSystemHero, verticalScroll=verticalScroll)
             root=LinearLayout(this).apply { orientation=LinearLayout.VERTICAL;setBackgroundColor(nativeTheme.background);addView(scene,LinearLayout.LayoutParams(-1,-1)) }
             nativeSystems=scene;present(root);tabFocus[0]=scene
@@ -1151,8 +1176,8 @@ open class MainActivity : Activity() {
         }
         val externalTheme=ImportedThemes.active(this)
         if(externalTheme!=null && !library && populated.isNotEmpty() && !scanning) {
-            val scene=ImportedSystemsView(this,externalTheme,populated,populated.indexOf(systems.getOrNull(focusedSystemIndex)).coerceAtLeast(0),
-                { pages[it.id]?.games?.size ?: 0 },{ focusedSystemIndex=systems.indexOf(it);preloadFirstGame(it);refreshThemeBackdrop();DualScreenCoordinator.refreshMedia() },{ openSystem(systems.indexOf(it)) })
+            val scene=ImportedSystemsView(this,externalTheme,visibleSystems,focusedPosition,
+                { pages[it.id]?.games?.size ?: 0 },{ focusedSystemIndex=systems.indexOf(it);preloadFirstGame(it);refreshThemeBackdrop();DualScreenCoordinator.refreshMedia() },::openBrowseSystem)
             root=LinearLayout(this).apply {
                 orientation=LinearLayout.VERTICAL
                 addView(scene,LinearLayout.LayoutParams(-1,-1))
@@ -1165,8 +1190,8 @@ open class MainActivity : Activity() {
         if (colorful && !library && populated.isNotEmpty() && !scanning) {
             colorfulSystems?.destroy()
             root = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL; setBackgroundColor(Color.rgb(12,17,25)) }
-            val view = ColorfulSystemsView(this,populated,populated.indexOf(systems.getOrNull(focusedSystemIndex)).coerceAtLeast(0),
-                { pages[it.id]?.games?.size ?: 0 }, { focusedSystemIndex=systems.indexOf(it);DualScreenCoordinator.refreshMedia() }, { openSystem(systems.indexOf(it)) })
+            val view = ColorfulSystemsView(this,visibleSystems,focusedPosition,
+                { pages[it.id]?.games?.size ?: 0 }, { focusedSystemIndex=systems.indexOf(it);DualScreenCoordinator.refreshMedia() }, ::openBrowseSystem)
             colorfulSystems=view
             root.addView(view,LinearLayout.LayoutParams(-1,0,1f));present(root)
             tabFocus[0]=view;view.post { if(activeTab==0 && !library)view.requestFocus() }
@@ -1199,9 +1224,8 @@ open class MainActivity : Activity() {
         if (!library) {
             val rail = SystemCarousel(this)
             val cards = LinearLayout(this)
-            val focused=systems.getOrNull(focusedSystemIndex)?.takeIf { it in populated } ?: system
-            populated.map { systems.indexOf(it) }.forEach { index ->
-                val spec = systems[index]
+            val focused = visibleSystems[focusedPosition]
+            visibleSystems.forEach { spec ->
                 val card = LinearLayout(this).apply {
                     orientation = LinearLayout.VERTICAL; gravity = Gravity.CENTER; isFocusable = true; isFocusableInTouchMode = true; isClickable = true
                     defaultFocusHighlightEnabled = false
@@ -1221,6 +1245,10 @@ open class MainActivity : Activity() {
                         OrbitConsoleImages.request(this@MainActivity,spec) { console.invalidate() }
                     }
                     val titleLabel = text(spec.title, 15f)
+                    if (spec == retroAchievementsSystem) {
+                        titleLabel.gravity = Gravity.CENTER
+                        titleLabel.setCompoundDrawablesWithIntrinsicBounds(0, android.R.drawable.btn_star_big_on, 0, 0)
+                    }
                     val logo = ImageView(this@MainActivity).apply {
                         scaleType = ImageView.ScaleType.FIT_CENTER
                         visibility = View.GONE
@@ -1240,14 +1268,14 @@ open class MainActivity : Activity() {
                         if (focused) { tabFocus[0] = v; rail.reveal(v);focusSystem(spec) }
                         v.background = surface(nativeTheme.surface, if (focused) blue else Color.rgb(38, 49, 65))
                     }
-                    setOnClickListener { carouselPosition = rail.scrollX; openSystem(index) }
+                    setOnClickListener { carouselPosition = rail.scrollX; openBrowseSystem(spec) }
                 }
                 cards.addView(card, LinearLayout.LayoutParams(dp(190), dp(164)).apply { setMargins(0, dp(10), dp(12), dp(12)) })
                 if (spec == focused) tabFocus[0] = card
             }
             rail.addView(cards); body.addView(rail)
             rail.restore(carouselPosition) {
-                if (startMenu?.isShowing != true) cards.getChildAt(populated.indexOf(focused).coerceAtLeast(0))?.requestFocus()
+                if (startMenu?.isShowing != true) cards.getChildAt(focusedPosition)?.requestFocus()
             }
         }
         if (library && (scanning || error != null)) {
@@ -1643,10 +1671,10 @@ open class MainActivity : Activity() {
             }
             discardPreparedSplitGameView()
         }
-        val libraryKeys=if(inGames)entries.map { it.uri.toString() } else populated.map { it.id }
+        val libraryKeys=if(inGames)entries.map { it.uri.toString() } else browsingSystems.map { it.id }
         val slots=SplitTileSlots(this,if(inGames)"games/${spec.id}" else "systems",libraryKeys)
         val initialSlot = if (inGames) 0 else previousSlot
-            ?: slots.librarySlot(populated.indexOf(systems.getOrNull(focusedSystemIndex))) ?: 0
+            ?: slots.librarySlot(browsingSystems.indexOf(focusedBrowseSystem)) ?: 0
         val (view,grid)=createSplitGrid(theme,inGames,spec,entries,slots)
         if(inGames)gameCursor=0
         root=view
@@ -1657,7 +1685,7 @@ open class MainActivity : Activity() {
     private fun createSplitGrid(
         theme:OrbitThemes.Theme,inGames:Boolean,spec:SystemSpec,entries:List<Game>,slots:SplitTileSlots
     ):Pair<LinearLayout,SplitLibraryGrid> {
-        val systemsHere=populated
+        val systemsHere=if(inGames) emptyList() else browsingSystems
         val verticalScroll = !inGames && systemsAppearance() == SystemsAppearance.VERTICAL_GRID
         val prefix = when {
             inGames -> "splitGameTile"
@@ -1712,6 +1740,7 @@ open class MainActivity : Activity() {
                     grid.emptyShortcutSelected -> tileMenu.show()
                     index==null -> slots.openApp(position)
                     inGames -> chooseEmulator(entries[index])
+                    systemsHere[index] == retroAchievementsSystem -> openRetroAchievementsPage()
                     else -> openSplitSystem(grid,systems.indexOf(systemsHere[index]))
                 }
             }, hold = { tileMenu.show() }, changeLayout = { changeLayout(it, true) }, verticalScroll = verticalScroll)
@@ -1731,7 +1760,7 @@ open class MainActivity : Activity() {
                 else GameLaunchDisplay.resolve(targetGame()?.let { GameLaunchDisplay.game(this,spec,it) },GameLaunchDisplay.system(this,targetSystem()))
             },
             chooseScreen={ screen ->
-                runCatching { GameLaunchDisplay.save(this,targetSystem(),targetGame(),screen) }.onFailure(::showDataError)
+                if (targetSystem() != retroAchievementsSystem) runCatching { GameLaunchDisplay.save(this,targetSystem(),targetGame(),screen) }.onFailure(::showDataError)
             },launchOnce={ screen ->
                 if(grid.shortcutSelected)slots.openApp(grid.cursorPosition,screen)
                 else targetGame()?.let { chooseEmulator(it,screen) }
@@ -1745,7 +1774,11 @@ open class MainActivity : Activity() {
             },discSpinEnabled=::spinDiscs,toggleDiscSpin={
                 runCatching { UserDataStore.put(this,"settings",discSpinKey,if(spinDiscs())0 else 1) }
                     .onSuccess { grid.refreshTiles() }.onFailure(::showDataError)
-            },openSettings={ showSystemMenu(targetSystem(),settingsShortcutHost()) })
+            },openSettings={
+                val target = targetSystem()
+                if (target == retroAchievementsSystem) openRetroAchievementsPage()
+                else showSystemMenu(target,settingsShortcutHost())
+            }, canSetLaunchScreen = { targetSystem() != retroAchievementsSystem })
         val view=LinearLayout(this).apply {
             orientation=LinearLayout.VERTICAL
             val bottom=OrbitThemeArtwork.screen(this@MainActivity)=="bottom"
@@ -1763,6 +1796,14 @@ open class MainActivity : Activity() {
             cell.addView(this,FrameLayout.LayoutParams(-1,-1))
         }
         cell.tag=spec.id
+        if (spec == retroAchievementsSystem) {
+            image.setImageDrawable(null)
+            image.visibility = View.INVISIBLE
+            label.setCompoundDrawablesWithIntrinsicBounds(0, android.R.drawable.btn_star_big_on, 0, 0)
+            label.visibility = View.VISIBLE
+            return
+        }
+        label.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0)
         val screen=OrbitThemeArtwork.artworkScreen(this)
         val visible=theme.showSystemArtwork(spec.id,screen)
         fun bind() {
@@ -1980,7 +2021,8 @@ open class MainActivity : Activity() {
     private fun selectedTileSettingsScreen():String? {
         val grid=activeSplitGrid() ?: return null
         if(grid.shortcutSelected)return null
-        val spec=if(library)system else systems.getOrNull(focusedSystemIndex) ?: return null
+        val spec=if(library)system else focusedBrowseSystem ?: return null
+        if (spec == retroAchievementsSystem) return null
         val gameScreen=if(library)games.getOrNull(gameCursor)?.let { GameLaunchDisplay.game(this,spec,it) } else null
         return gameScreen ?: GameLaunchDisplay.system(this,spec)
     }
@@ -2082,7 +2124,7 @@ open class MainActivity : Activity() {
             if(slot==6)gameList=cached.findViewWithTag<View>("orbit-game-list") as? AbsListView
             present(cached)
             if (slot == 0) activeSplitGrid()?.let { grid ->
-                val index = populated.indexOf(systems.getOrNull(focusedSystemIndex))
+                val index = browsingSystems.indexOf(focusedBrowseSystem)
                 if (index >= 0 && index != grid.selectedLibraryIndex) grid.selectLibrary(index)
                 else preloadSplitGames(grid)
             }
@@ -2545,6 +2587,7 @@ open class MainActivity : Activity() {
                     Choice("System profiles", "Manage emulator definitions in the systems folder.", choose = ::showProfiles)
                 ), UserDataStore.accessError ?: UserDataStore.location(this))
             }
+
             fun showCollections() {
                 fun showCollectionsHome() = showCategory(index, enter = true, restoreOption = 0, subpage = subpage)
                 fun showList(id: String, focused: Int? = null) {
@@ -2602,6 +2645,92 @@ open class MainActivity : Activity() {
                 if (collections.isEmpty()) detail.addView(text("Add games from Game Settings → Customisation → Collections.", 14f, muted))
                 collections.forEach { collection ->
                     option(collection.name, "", "${collection.games.size} games") { showList(collection.id) }
+                }
+            }
+
+            fun showRetroAchievements() {
+                val account = RetroAchievements.account(this)
+                val connectionRow = optionRows.size
+                option("Account", "Enter your RetroAchievements username and Web API key.", account?.username.orEmpty()) {
+                    editFields("RetroAchievements account", listOf(
+                        InputField("Username", account?.username.orEmpty()),
+                        InputField("Web API key", account?.key.orEmpty(), secret = true)
+                    )) { values ->
+                        val (username, key) = values
+                        require(username.isNotBlank() && key.isNotBlank()) { "Enter your username and Web API key." }
+                        RetroAchievements.save(this, RetroAchievements.Account(username, key))
+                        showCategory(index, enter = true, restoreOption = connectionRow)
+                    }
+                }
+                option("Get a Web API key", "Open the RetroAchievements control panel.") {
+                    openRetroAchievements(RetroAchievements.ACCOUNT_URL)
+                }
+                if (account == null) return
+
+                fun <T> load(title: String, back: () -> Unit, retry: () -> Unit, fetch: () -> T, display: (T) -> Unit) {
+                    showChoices(title, back, emptyList(), "Loading…")
+                    retroAchievementsWorker.execute {
+                        val result = runCatching(fetch)
+                        runOnUiThread {
+                            if (!isDestroyed && isCurrent(back)) result.fold(display) {
+                                val message = (it as? RetroAchievements.RequestError)?.message
+                                    ?: "Couldn’t load RetroAchievements. Check your connection and try again."
+                                showChoices(title, back, listOf(Choice("Retry", choose = retry)), message)
+                            }
+                        }
+                    }
+                }
+                fun profile(back: () -> Unit) {
+                    load("Profile", back, { profile(back) }, { RetroAchievements.profile(account) }) { profile ->
+                        showChoices(profile.name, back, listOf(
+                            Choice("Refresh") { profile(back) }
+                        ), "${profile.points} hardcore points · ${profile.softcorePoints} softcore points")
+                    }
+                }
+                fun recent(back: () -> Unit) {
+                    load("Recent unlocks", back, { recent(back) }, { RetroAchievements.recent(account) }) { unlocks ->
+                        val rows = unlocks.map { unlock ->
+                            Choice(unlock.title, "${unlock.game} · ${unlock.points} points",
+                                if (unlock.hardcore) "Hardcore" else "Softcore") {
+                                openRetroAchievements("https://retroachievements.org/achievement/${unlock.id}")
+                            }
+                        }
+                        showChoices("Recent unlocks", back, rows + Choice("Refresh") { recent(back) },
+                            if (rows.isEmpty()) "No achievements unlocked in the last 24 hours." else "Unlocks in the last 24 hours.")
+                    }
+                }
+                fun progress(back: () -> Unit, offset: Int = 0) {
+                    load("Game progress", back, { progress(back, offset) },
+                        { RetroAchievements.progress(account, offset) }) { page ->
+                        val rows = buildList {
+                            page.games.forEach { game ->
+                                add(Choice(game.title, "${game.system} · ${game.earned}/${game.total} softcore · ${game.hardcore}/${game.total} hardcore") {
+                                    openRetroAchievements("https://retroachievements.org/game/${game.id}")
+                                })
+                            }
+                            if (offset > 0) add(Choice("Previous games") {
+                                progress(back, offset - RetroAchievements.PAGE_SIZE)
+                            })
+                            if (page.games.isNotEmpty() && offset + page.games.size < page.total) {
+                                add(Choice("More games") { progress(back, offset + RetroAchievements.PAGE_SIZE) })
+                            }
+                            add(Choice("Refresh") { progress(back, offset) })
+                        }
+                        val summary = if (page.games.isEmpty()) "No game progress to display."
+                            else "${offset + 1}–${offset + page.games.size} of ${page.total} games"
+                        showChoices("Game progress", back, rows, summary)
+                    }
+                }
+                fun row(title: String, description: String, open: (() -> Unit) -> Unit) {
+                    val position = optionRows.size
+                    option(title, description) { open(returnToParent(position)) }
+                }
+                row("Profile", "View your points.", ::profile)
+                row("Recent unlocks", "View achievements earned in the last 24 hours.", ::recent)
+                row("Game progress", "Browse achievement progress by game.") { progress(it) }
+                option("Disconnect", "Remove the saved RetroAchievements account from Orbit.") {
+                    RetroAchievements.save(this, null)
+                    showCategory(index, enter = true, restoreOption = connectionRow)
                 }
             }
 
@@ -2683,6 +2812,7 @@ open class MainActivity : Activity() {
                 first = if (scanner.busy) cancel else add
             } else when (section) {
                 "Collections" -> showCollections()
+                "RetroAchievements" -> showRetroAchievements()
                 "General" -> if (bottomOnly) {
                     val dockEnabled = AppDock.enabled(this)
                     option("App dock", "Show the app dock on the bottom screen.", if (dockEnabled) "On" else "Off") {
@@ -3739,6 +3869,11 @@ open class MainActivity : Activity() {
         }
     }
 
+    private fun openRetroAchievements(url: String) {
+        runCatching { popupContext().startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(url))) }
+            .onFailure { showSettingsMessage("RetroAchievements", "A web browser is needed to open this page.") }
+    }
+
     private fun showGameCollections(menu: EmulatorSettings.MenuWindow, spec: SystemSpec, game: Game, back: () -> Unit,
         focus: Int = 0) {
         val entry = CustomCollections.Entry(spec, game)
@@ -3761,6 +3896,97 @@ open class MainActivity : Activity() {
     }
 
 
+    private fun showGameAchievements(menu: EmulatorSettings.MenuWindow, spec: SystemSpec, game: Game, back: () -> Unit) {
+        val title = "RetroAchievements"
+        val account = RetroAchievements.account(this)
+        if (account == null) {
+            menu.page(title, TextView(menu.activity).apply {
+                text = "Achievement progress is unavailable."
+                textSize = 16f
+                setTextColor(Color.WHITE)
+                setPadding(dp(12), dp(12), dp(12), dp(12))
+            }, back = back)
+            return
+        }
+        val key = GameCustomArtwork.group(spec, game)
+        fun <T> load(retry: () -> Unit, fetch: () -> T, display: (T) -> Unit) {
+            val status = TextView(menu.activity).apply {
+                text = "Loading…"
+                textSize = 16f
+                setTextColor(Color.WHITE)
+                setPadding(dp(12), dp(12), dp(12), dp(12))
+                isFocusableInTouchMode = true
+            }
+            menu.page(title, status, back = back)
+            status.requestFocus()
+            val revision = menu.revision
+            retroAchievementsWorker.execute {
+                val result = runCatching(fetch)
+                runOnUiThread {
+                    if (!isDestroyed && menu.dialog.isShowing && menu.revision == revision) {
+                        result.fold(display) { error ->
+                            val message = if (error is RetroAchievements.AuthenticationError)
+                                "Achievement progress is unavailable."
+                            else (error as? RetroAchievements.RequestError)?.message
+                                ?: "Couldn’t load RetroAchievements. Check your connection and try again."
+                            menu.actions(message, listOf("Retry" to retry, "Change game match" to {
+                                editAchievementSet(menu, key, null) { showGameAchievements(menu, spec, game, back) }
+                            }), back)
+                        }
+                    }
+                }
+            }
+        }
+
+        fun showSet(set: RetroAchievements.GameSet) {
+            val change = {
+                editAchievementSet(menu, key, set.id) { showGameAchievements(menu, spec, game, back) }
+            }
+            load({ showSet(set) }, { RetroAchievements.gameBadges(account, set.id) }) { (name, badges) ->
+                if (badges.isEmpty()) {
+                    menu.actions("No badges for $name", listOf("Change game match" to change), back)
+                } else AchievementBadgeGrid(menu, badges, change) { badge ->
+                    val message = listOf(badge.progressSummary(), badge.description)
+                        .filter(String::isNotBlank).joinToString("\n\n")
+                    showSettingsMessage("${badge.title} · ${badge.points} points", message)
+                }.show("$title · $name", back)
+            }
+        }
+
+        val linked = RetroAchievements.linkedSet(this, key)
+        if (linked != null) {
+            showSet(RetroAchievements.GameSet(linked, ""))
+        } else load({ showGameAchievements(menu, spec, game, back) },
+            { RetroAchievements.match(this, account, spec, game) }) { matches ->
+            when (matches.size) {
+                0 -> menu.actions("No matching achievement set", listOf("Enter RetroAchievements game ID" to {
+                    editAchievementSet(menu, key, null) { showGameAchievements(menu, spec, game, back) }
+                }), back)
+                1 -> showSet(matches.single())
+                else -> menu.actions("Choose the matching game", matches.map { set ->
+                    "${set.title} · #${set.id}" to {
+                        RetroAchievements.linkSet(this, key, set.id)
+                        showSet(set)
+                    }
+                } + ("Enter RetroAchievements game ID" to {
+                    editAchievementSet(menu, key, null) { showGameAchievements(menu, spec, game, back) }
+                }), back)
+            }
+        }
+    }
+
+    private fun editAchievementSet(menu: EmulatorSettings.MenuWindow, key: String, currentId: Int?, refresh: () -> Unit) {
+        editFields("RetroAchievements game match", listOf(
+            InputField("Game ID from retroachievements.org/game/… (blank for automatic)", currentId?.toString().orEmpty())
+        )) { values ->
+            val input = values.single()
+            val id = input.toIntOrNull()
+            require(input.isBlank() || id != null && id > 0) { "Enter the game’s numeric RetroAchievements ID." }
+            RetroAchievements.linkSet(this, key, id)
+            if (menu.dialog.isShowing) refresh()
+        }
+    }
+
     private fun showSystemMenu(spec: SystemSpec, host:Activity=this) {
         if (startMenu?.isShowing == true) return
         val currentGame = if (library && system == spec) games.getOrNull(gameCursor) else null
@@ -3772,7 +3998,8 @@ open class MainActivity : Activity() {
         menu.dialog.setOnDismissListener {
             settingsWindowClosed(menu.dialog)
         }
-        val sections = listOf("Scraper", "Emulator", "Customisation")
+        val sections = if (currentGame == null) listOf("Scraper", "Emulator", "Customisation")
+            else listOf("Scraper", "Emulator", "Customisation", "RetroAchievements")
         var section=0
         fun showScraper(selected: Int = 0) {
             val artworkLabel = if (customArtwork == null) "System artwork" else "View or change artwork"
@@ -3802,6 +4029,7 @@ open class MainActivity : Activity() {
                 "Emulator" -> if(currentGame!=null) EmulatorSettings.showForGame(menu,spec,currentGame) { menu.dialog.dismiss() }
                     else EmulatorSettings.showForSystemIn(menu,spec,{}, { menu.dialog.dismiss() })
                 "Scraper" -> showScraper()
+                "RetroAchievements" -> currentGame?.let { showGameAchievements(menu, spec, it, menu.dialog::dismiss) }
                 "Customisation" -> menu.actions("Customisation", buildList {
                     add("Animation" to {
                         if (currentGame != null) showGameAnimations(menu, ::home)
@@ -3815,7 +4043,7 @@ open class MainActivity : Activity() {
                 })
             }
         }
-        menu.tabs(if(currentGame!=null) "Game Settings" else "System Settings",currentGame?.let { "${it.title} · ${spec.title}" } ?: spec.title,sections,section) { section=it;home() }
+        menu.tabs(if(currentGame!=null) "Game Settings" else "System Settings",currentGame?.let { "${it.title} · ${spec.title}" } ?: spec.title,sections,section,compactTabs=currentGame!=null) { section=it;home() }
         menu.onShoulder={ direction -> section=(section+direction+sections.size)%sections.size;home() }
         home()
     }
@@ -3891,10 +4119,11 @@ open class MainActivity : Activity() {
             return true
         }
         if (keyCode == KeyEvent.KEYCODE_BUTTON_SELECT) {
-            if (ready && activeTab == 0 && populated.isNotEmpty() && !event.isCanceled &&
+            if (ready && activeTab == 0 && !event.isCanceled &&
                 activeSplitTileMenu()?.shortcutSelected!=true) {
-                val target = if (library) system else systems[focusedSystemIndex.coerceIn(systems.indices)]
-                showSystemMenu(target,settingsShortcutHost())
+                val target = if (library) system else focusedBrowseSystem ?: return true
+                if (target == retroAchievementsSystem) openRetroAchievementsPage()
+                else if (populated.isNotEmpty()) showSystemMenu(target,settingsShortcutHost())
             }
             return true
         }

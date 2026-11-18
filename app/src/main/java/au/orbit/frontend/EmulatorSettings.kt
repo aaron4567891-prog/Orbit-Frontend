@@ -198,11 +198,11 @@ object EmulatorSettings {
         var onShoulder: ((Int) -> Unit)? = null
         override var isTabbed=false
             private set
-        private var tabsView:LinearLayout?=null
+        private var tabsView:android.view.View?=null
         private var sectionTitle:TextView?=null
         private var tabButtons=emptyList<TextView>()
         private var tabbedLayoutApplied = false
-        fun tabs(title:String,subtitle:String,labels:List<String>,selected:Int,choose:(Int)->Unit) {
+        fun tabs(title:String,subtitle:String,labels:List<String>,selected:Int,compactTabs:Boolean=false,choose:(Int)->Unit) {
             browse.scope(title)
             isTabbed=true
             val dp={ n:Int -> (n*activity.resources.displayMetrics.density).toInt() }
@@ -217,12 +217,25 @@ object EmulatorSettings {
             heading.addView(Button(activity).apply { text="×";textSize=25f;setTextColor(Color.rgb(5,97,195));backgroundTintList=null;setBackgroundColor(Color.TRANSPARENT);setOnClickListener { dialog.dismiss() } },LinearLayout.LayoutParams(dp(48),dp(48)))
             header.addView(heading)
             dialog.setCustomTitle(header)
-            tabsView=LinearLayout(activity).apply { orientation=LinearLayout.HORIZONTAL;setPadding(dp(8),0,dp(8),dp(12)) }
+            val tabRow = LinearLayout(activity).apply {
+                orientation = LinearLayout.HORIZONTAL
+                val inset = dp(if (compactTabs) 2 else 8)
+                setPadding(inset, 0, inset, dp(12))
+            }
+            tabsView = if (compactTabs) HorizontalScrollView(activity).apply {
+                isFillViewport = true
+                isHorizontalScrollBarEnabled = false
+                isFocusable = false
+                addView(tabRow, FrameLayout.LayoutParams(-2, -2))
+            } else tabRow
             tabButtons=labels.mapIndexed { index,label ->
                 TextView(activity).apply {
                     text=label;textSize=17f;gravity=android.view.Gravity.CENTER;isFocusable=false
-                    setPadding(dp(10),dp(12),dp(10),dp(12));setOnClickListener { choose(index) }
-                    tabsView!!.addView(this,LinearLayout.LayoutParams(0,-2,1f))
+                    if (compactTabs) isSingleLine = true
+                    val inset = dp(if (compactTabs) 4 else 10)
+                    setPadding(inset, dp(12), inset, dp(12))
+                    setOnClickListener { choose(index) }
+                    tabRow.addView(this,LinearLayout.LayoutParams(if (compactTabs) -2 else 0,-2,1f))
                 }
             }
             sectionTitle=TextView(activity).apply { textSize=13f;setTextColor(Color.rgb(148,161,180));setPadding(dp(12),0,dp(12),dp(8)) }
@@ -235,6 +248,13 @@ object EmulatorSettings {
                     setColor(Color.TRANSPARENT)
                     cornerRadius=8*activity.resources.displayMetrics.density
                     setStroke(if(index==selected)(2*activity.resources.displayMetrics.density).toInt() else 0,Color.rgb(5,97,195))
+                }
+            }
+            if (tabsView !is HorizontalScrollView) return
+            val tab = tabButtons.getOrNull(selected) ?: return
+            tab.post {
+                if (tabButtons.getOrNull(selected) === tab && tab.currentTextColor == Color.rgb(5,97,195)) {
+                    tab.requestRectangleOnScreen(Rect(0, 0, tab.width, tab.height), true)
                 }
             }
         }

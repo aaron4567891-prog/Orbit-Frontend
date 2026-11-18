@@ -97,6 +97,16 @@
       "extra": ""
     },
     {
+      "name": "GBA DS",
+      "uniqueId": "gba.io.github.kyannon.gbads",
+      "description": "Dual-screen GBA emulator. Supported extensions: gba, zip, 7z. Allow All files access in GBA DS first.",
+      "acceptedFilenameRegex": "^(.*)\\.(?:gba|zip|7z)$",
+      "amStartArguments": "-n io.github.kyannon.gbads/.LauncherActivity\n  -a android.intent.action.VIEW\n  -d {file.uri}\n  --activity-clear-task\n  --activity-clear-top",
+      "killPackageProcesses": false,
+      "killPackageProcessesWarning": true,
+      "extra": ""
+    },
+    {
       "name": "RetroArch (64 bits) - vba_next",
       "uniqueId": "gba.ra64.vba_next",
       "description": "Supported extensions: gba, zip, 7z.",

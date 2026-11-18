@@ -2712,7 +2712,7 @@
         "sgb",
         "zip"
       ],
-      "players": 34,
+      "players": 35,
       "unconvertedCommands": 0,
       "metadata": {
         "source": "https://gitlab.com/es-de/emulationstation-de/-/blob/master/resources/systems/android/es_systems.xml",
@@ -2745,7 +2745,8 @@
         "gba.ra32.noods",
         "gba.ra32.skyemu",
         "gba.ra.noods",
-        "gba.ra.skyemu"
+        "gba.ra.skyemu",
+        "gba.io.github.kyannon.gbads"
       ]
     },
     {

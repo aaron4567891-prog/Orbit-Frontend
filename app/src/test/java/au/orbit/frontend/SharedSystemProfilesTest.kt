@@ -31,6 +31,21 @@ class SharedSystemProfilesTest {
             assertEquals(setOf("iso","xiso"),player.extensions)
         }
     }
+    @Test fun gbaDsUsesDocumentedFrontendUriContract() {
+        SystemCatalog.load(java.io.File("src/main/assets/system-catalog.json").readText())
+        val profiles=SharedSystemProfiles.parse(java.io.File("src/main/assets/systems/gba.json").readText(),mutableListOf())
+        val player=profiles.single { it.id=="gba.io.github.kyannon.gbads" }
+        assertEquals("GBA DS",player.name)
+        assertEquals("io.github.kyannon.gbads/.LauncherActivity",componentArgument("gba",player.id))
+        assertEquals("android.intent.action.VIEW",player.action)
+        assertEquals("{file.uri}",player.dataTemplate)
+        assertEquals(setOf("gba","zip","7z"),player.extensions)
+        assertTrue(player.flags and android.content.Intent.FLAG_ACTIVITY_CLEAR_TASK != 0)
+        assertTrue(player.flags and android.content.Intent.FLAG_ACTIVITY_CLEAR_TOP != 0)
+        val accepted=Regex(player.filenameRegex!!,RegexOption.IGNORE_CASE)
+        listOf("Metroid Fusion.gba","Castlevania.ZIP","Mario.7z").forEach { assertTrue(accepted.matches(it)) }
+        assertFalse(accepted.matches("Game.nds"))
+    }
     @Test fun gopher64UsesTheExportedSlintActivityAndViewUri() {
         SystemCatalog.load(java.io.File("src/main/assets/system-catalog.json").readText())
         val profiles=SharedSystemProfiles.parse(java.io.File("src/main/assets/systems/n64.json").readText(),mutableListOf())

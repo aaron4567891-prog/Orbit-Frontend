@@ -12,7 +12,7 @@ Updated 18 November 2026, Australia/Sydney.
 - Last Thor install was 18 November at 22:55:15 device time, verified through ADB. It includes uninstall actions and the RetroAchievements system-list removal, but predates the two emulator additions and the empty-library return correction. The newer APK has been built but not installed.
 - Thor was paired successfully on 17 November. On 18 November its discovered serial was `adb-1ff9a7f3-ICBUiS._adb-tls-connect._tcp`; always check `adb devices -l` and `adb mdns services` again because wireless ports change. Do not retain pairing codes.
 - Earlier review findings about collections, achievement API errors/matching/cache behavior, and artwork retry behavior have not been addressed in this batch. See current source before fixing them.
-- The user also asked whether `https://github.com/kyannon/gba-ds` supports frontends. Its wiki documents `io.github.kyannon.gbads/.LauncherActivity`, ACTION_VIEW, ROM URI or `rom` extra, and gba/zip/7z support. Integration has not been added; the user has been asked whether to add it.
+- GBA DS was subsequently added at the user's request for Game Boy Advance: `io.github.kyannon.gbads/.LauncherActivity`, ACTION_VIEW, ROM URI, clear-task/clear-top flags, and gba/zip/7z support, following its frontend wiki. Allow All files access in GBA DS first. The profile, catalogue, and launch-contract tests passed; this addition has not been packaged or installed on Thor. The 140-test result above predates the additional GBA DS test.
 
 ## Historical snapshot (15 November)
 

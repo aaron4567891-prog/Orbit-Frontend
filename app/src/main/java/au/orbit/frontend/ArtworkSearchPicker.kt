@@ -112,7 +112,7 @@ internal class ArtworkSearchPicker(
         panel.addView(entry)
         val status = TextView(activity).apply {
             text = "Enter a name and choose Search."
-            maxLines = 2
+            setLines(2)
             ellipsize = TextUtils.TruncateAt.END
             setPadding(0, dp(6), 0, dp(6))
         }
@@ -246,8 +246,10 @@ internal class ArtworkSearchPicker(
         grid.setOnItemClickListener { _, _, position, _ ->
             if (downloading) return@setOnItemClickListener
             val result = results.getOrNull(position) ?: return@setOnItemClickListener
+            val previous = selected
             selected = position
-            adapter.notifyDataSetChanged()
+            grid.getChildAt(previous - grid.firstVisiblePosition)?.background = null
+            grid.getChildAt(position - grid.firstVisiblePosition)?.background = artworkOutline(activity)
             status.text = listOfNotNull(result.title, result.dimensions?.label, result.provider, result.credit).filter(String::isNotBlank).joinToString(" · ")
             refreshActions()
         }

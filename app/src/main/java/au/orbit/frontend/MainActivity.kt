@@ -1908,10 +1908,10 @@ open class MainActivity : Activity() {
         }.onFailure { Toast.makeText(this, "Folder access could not be saved. Please choose another folder.", Toast.LENGTH_LONG).show() }
         scan()
     }
-    private fun chooseEmulator(game: Game, screenOverride:String?=null) {
+    private fun chooseEmulator(game: Game, screenOverride:String?=null, spec:SystemSpec=system) {
         val emulatorRepository=EmulatorProfileRepository(this)
-        val savedProfile=emulatorRepository.selectedForGame(system,game)
-        val profile = savedProfile ?: InstalledEmulators.available(this,emulatorRepository.forSystem(system))
+        val savedProfile=emulatorRepository.selectedForGame(spec,game)
+        val profile = savedProfile ?: InstalledEmulators.available(this,emulatorRepository.forSystem(spec))
             .filter { candidate -> candidate.installed(this) &&
                 (candidate.filenameRegex?.let { Regex(it,RegexOption.IGNORE_CASE).matches(game.fileName) }
                     ?: (game.fileName.substringAfterLast('.').lowercase() in candidate.extensions)) }
@@ -1919,13 +1919,13 @@ open class MainActivity : Activity() {
             .firstOrNull()
         if (profile != null) {
             runCatching {
-                EmulatorLaunchManager(this).launch(game, GameLaunchDisplay.display(this,system,game,screenOverride), profile)
-                if(savedProfile==null)emulatorRepository.select(system,profile)
+                EmulatorLaunchManager(this).launch(game, GameLaunchDisplay.display(this,spec,game,screenOverride), profile)
+                if(savedProfile==null)emulatorRepository.select(spec,profile)
             }
                 .onFailure { AlertDialog.Builder(this).setTitle("Unable to launch ${profile.name}").setMessage(it.message).setPositiveButton("OK", null).show() }
             return
         }
-        if (emulatorRepository.forSystem(system).isNotEmpty()) {
+        if (emulatorRepository.forSystem(spec).isNotEmpty()) {
             AlertDialog.Builder(this).setTitle("No compatible emulator")
                 .setMessage("No visible, installed emulator accepts ${game.fileName}. Choose an emulator in Game Settings or install a compatible emulator.")
                 .setPositiveButton("OK",null).show()
@@ -1938,7 +1938,7 @@ open class MainActivity : Activity() {
         }
         AlertDialog.Builder(this).setTitle("Open ${game.title}").setItems(matches.map { it.loadLabel(packageManager).toString() }.toTypedArray()) { _, index ->
             val info = matches[index].activityInfo
-            runCatching { EmulatorLaunchManager(this).launch(game, GameLaunchDisplay.display(this,system,game,screenOverride), ComponentName(info.packageName, info.name)) }
+            runCatching { EmulatorLaunchManager(this).launch(game, GameLaunchDisplay.display(this,spec,game,screenOverride), ComponentName(info.packageName, info.name)) }
                 .onFailure { AlertDialog.Builder(this).setTitle("Unable to launch").setMessage(it.message ?: "Emulator launch failed").setPositiveButton("OK", null).show() }
         }.show()
     }
@@ -2545,6 +2545,66 @@ open class MainActivity : Activity() {
                     Choice("System profiles", "Manage emulator definitions in the systems folder.", choose = ::showProfiles)
                 ), UserDataStore.accessError ?: UserDataStore.location(this))
             }
+            fun showCollections() {
+                fun showCollectionsHome() = showCategory(index, enter = true, restoreOption = 0, subpage = subpage)
+                fun showList(id: String, focused: Int? = null) {
+                    val collection = CustomCollections.list(this).firstOrNull { it.id == id } ?: return
+                    val titles = systems.associateBy { it.id }
+                    val gameIndex = collection.games.map { it.systemId }.distinct().associateWith { systemId ->
+                        pages[systemId]?.games.orEmpty().associateBy { it.uri.toString() }
+                    }
+                    val choices = buildList {
+                        add(Choice("Rename collection") {
+                            editFields("Rename collection", listOf(InputField("Collection name", collection.name))) { values ->
+                                CustomCollections.rename(this@MainActivity, id, values.single())
+                                showList(id, 0)
+                            }
+                        })
+                        add(Choice("Delete collection") {
+                            showChoices("Delete collection?", { showList(id, 1) }, listOf(
+                                Choice("Keep collection") { showList(id, 1) },
+                                Choice("Delete ${collection.name}") {
+                                    runCatching { CustomCollections.delete(this@MainActivity, id) }
+                                        .onSuccess { showCollectionsHome() }.onFailure(::showDataError)
+                                }
+                            ), "Your ROMs and artwork stay in the library.")
+                        })
+                        collection.games.forEachIndexed { position, entry ->
+                            val spec = titles[entry.systemId]
+                            val game = gameIndex[entry.systemId]?.get(entry.uri)
+                            add(Choice(game?.title ?: entry.title, spec?.title ?: entry.systemId,
+                                if (game == null) "Unavailable" else "", if (position == 0) "Games" else null) {
+                                val actions = buildList {
+                                    if (spec != null && game != null) add(Choice("Launch game") {
+                                        chooseEmulator(game, spec = spec)
+                                    })
+                                    add(Choice("Remove from collection") {
+                                        runCatching { CustomCollections.setMember(this@MainActivity, id, entry, false) }
+                                            .onSuccess { showList(id, position + 1) }.onFailure(::showDataError)
+                                    })
+                                }
+                                showChoices(game?.title ?: entry.title, { showList(id, position + 2) }, actions,
+                                    if (game == null) "Scan the ROM folder to make this game available again." else spec?.title.orEmpty())
+                            })
+                        }
+                    }
+                    showChoices(collection.name, { showCollectionsHome() }, choices,
+                        if (collection.games.isEmpty()) "Add games from Game Settings → Customisation → Collections." else "", focused)
+                }
+
+                option("New collection", "Create a named list of games from any system.") {
+                    editFields("New collection", listOf(InputField("Collection name"))) { values ->
+                        CustomCollections.create(this, values.single())
+                        showCollectionsHome()
+                    }
+                }
+                val collections = CustomCollections.list(this)
+                if (collections.isEmpty()) detail.addView(text("Add games from Game Settings → Customisation → Collections.", 14f, muted))
+                collections.forEach { collection ->
+                    option(collection.name, "", "${collection.games.size} games") { showList(collection.id) }
+                }
+            }
+
             val subpageChoices = subpage?.choices
             if (subpageChoices != null) {
                 if (subpage.description.isNotBlank()) detail.addView(text(subpage.description, 14f, muted))
@@ -2622,6 +2682,7 @@ open class MainActivity : Activity() {
                 updateScanner()
                 first = if (scanner.busy) cancel else add
             } else when (section) {
+                "Collections" -> showCollections()
                 "General" -> if (bottomOnly) {
                     val dockEnabled = AppDock.enabled(this)
                     option("App dock", "Show the app dock on the bottom screen.", if (dockEnabled) "On" else "Off") {
@@ -2649,6 +2710,10 @@ open class MainActivity : Activity() {
                     val romFoldersRow = optionRows.size
                     option("ROM folders & scanner", "Add global ROM folders and scan your collection.") {
                         showCategory(index, enter = true, romFoldersOption = romFoldersRow)
+                    }
+                    val collectionsRow = optionRows.size
+                    option("Collections", "Browse and manage your custom game collections.") {
+                        showCategory(index, enter = true, subpage = Subpage("Collections", returnToParent(collectionsRow)))
                     }
                     val displayRow = optionRows.size
                     option("Display", "See screen sizes, set the refresh rate and choose where settings open.") {
@@ -3610,6 +3675,92 @@ open class MainActivity : Activity() {
         }, back, initialSelection = gameWheelMedia().ordinal)
     }
 
+    private data class InputField(val label: String, val value: String = "", val secret: Boolean = false)
+
+    private fun editFields(title: String, fields: List<InputField>, save: (List<String>) -> Unit) {
+        val host = popupContext()
+        val body = LinearLayout(host).apply {
+            orientation = LinearLayout.VERTICAL
+            setPadding(dp(20), dp(8), dp(20), 0)
+            descendantFocusability = ViewGroup.FOCUS_BEFORE_DESCENDANTS
+            isFocusableInTouchMode = true
+        }
+        val editors = fields.map { field ->
+            body.addView(TextView(host).apply { text = field.label })
+            EditText(host).apply {
+                isSingleLine = true
+                inputType = android.text.InputType.TYPE_CLASS_TEXT or if (field.secret)
+                    android.text.InputType.TYPE_TEXT_VARIATION_PASSWORD else android.text.InputType.TYPE_TEXT_VARIATION_NORMAL
+                if (field.secret) importantForAutofill = View.IMPORTANT_FOR_AUTOFILL_NO
+                setText(field.value)
+                contentDescription = field.label
+                body.addView(this, LinearLayout.LayoutParams(-1, -2))
+            }
+        }
+        val dialog = AlertDialog.Builder(host).setTitle(title).setView(body)
+            .setNegativeButton("Cancel", null).setPositiveButton("Save", null).create()
+        dialog.styleArtworkWindow(host)
+        dialog.window?.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN or
+            WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE)
+        dialog.show()
+        trackPopup(dialog)
+        body.requestFocus()
+        val confirm = dialog.getButton(AlertDialog.BUTTON_POSITIVE)
+        val cancel = dialog.getButton(AlertDialog.BUTTON_NEGATIVE)
+        SelectionStyle.apply(confirm)
+        SelectionStyle.apply(cancel)
+        FrontendNavigationBar.apply(host, dialog.window)
+        confirm.setOnClickListener {
+            runCatching { save(editors.map { it.text.toString().trim() }) }
+                .onSuccess { dialog.dismiss() }
+                .onFailure { editors.first().error = it.message ?: "Could not save. Try again." }
+        }
+        dialog.setOnKeyListener { _, key, event ->
+            when (key) {
+                KeyEvent.KEYCODE_BUTTON_A -> {
+                    if (event.action == KeyEvent.ACTION_UP && !event.isCanceled) {
+                        val focus = dialog.currentFocus
+                        if (focus === confirm || focus === cancel) focus?.performClick()
+                        else {
+                            val editor = focus as? EditText ?: editors.first()
+                            editor.requestFocus()
+                            host.getSystemService(android.view.inputmethod.InputMethodManager::class.java)
+                                .showSoftInput(editor, android.view.inputmethod.InputMethodManager.SHOW_IMPLICIT)
+                        }
+                    }
+                    true
+                }
+                KeyEvent.KEYCODE_BUTTON_B -> {
+                    if (event.action == KeyEvent.ACTION_UP && !event.isCanceled) dialog.dismiss()
+                    true
+                }
+                else -> false
+            }
+        }
+    }
+
+    private fun showGameCollections(menu: EmulatorSettings.MenuWindow, spec: SystemSpec, game: Game, back: () -> Unit,
+        focus: Int = 0) {
+        val entry = CustomCollections.Entry(spec, game)
+        val collections = CustomCollections.list(this)
+        val labels = listOf({ "New collection" }) + collections.map { collection ->
+            { if (collection.contains(entry)) "✓  ${collection.name}" else collection.name }
+        }
+        menu.liveActions("Collections", labels, { position ->
+            if (position == 0) {
+                editFields("New collection", listOf(InputField("Collection name"))) { values ->
+                    CustomCollections.create(this, values.single(), entry)
+                    showGameCollections(menu, spec, game, back, collections.size + 1)
+                }
+            } else {
+                val collection = collections[position - 1]
+                runCatching { CustomCollections.setMember(this, collection.id, entry, !collection.contains(entry)) }
+                    .onSuccess { showGameCollections(menu, spec, game, back, position) }.onFailure(::showDataError)
+            }
+        }, back, initialSelection = focus)
+    }
+
+
     private fun showSystemMenu(spec: SystemSpec, host:Activity=this) {
         if (startMenu?.isShowing == true) return
         val currentGame = if (library && system == spec) games.getOrNull(gameCursor) else null
@@ -3657,7 +3808,10 @@ open class MainActivity : Activity() {
                         else menu.actions("Animation", emptyList(), ::home)
                     })
                     if (currentGame == null) add("System views" to { showSystemViews(menu, ::home) })
-                    else add("Game Views" to { showGameViews(menu, ::home) })
+                    else {
+                        add("Game Views" to { showGameViews(menu, ::home) })
+                        add("Collections" to { showGameCollections(menu, spec, currentGame, ::home) })
+                    }
                 })
             }
         }

@@ -37,13 +37,16 @@ open class MainActivity : Activity() {
             games.getOrNull(gameCursor)?.let { system to it } else null
     internal fun adjacentGames(game: Game): List<Game> {
         if (games.getOrNull(gameCursor) != game) return emptyList()
-        return listOfNotNull(games.getOrNull(gameCursor + 1), games.getOrNull(gameCursor - 1))
+        val range = if (activeGameWheel()?.isShown == true) 2 else 1
+        return (1..range).flatMap { offset ->
+            listOfNotNull(games.getOrNull(gameCursor + offset), games.getOrNull(gameCursor - offset))
+        }
     }
     fun refreshCompanionMedia(refresh:Boolean=false) { companionPanel?.refreshMedia(refresh) }
     internal fun preloadCompanionGame(system:SystemSpec,game:Game) { companionPanel?.preloadGame(system,game) }
     internal fun showCompanionGame(system:SystemSpec,game:Game) { companionPanel?.showGame(system,game) }
-    internal fun showCachedCompanionFanArt(system: SystemSpec, game: Game) {
-        companionPanel?.showCachedFanArt(system, game)
+    internal fun previewCompanionBackground(system: SystemSpec, game: Game) {
+        companionPanel?.previewWheelBackground(system, game)
     }
     internal fun setCompanionWheelScrolling(scrolling: Boolean) {
         companionPanel?.setWheelScrolling(scrolling)
@@ -727,7 +730,11 @@ open class MainActivity : Activity() {
         val panel = preparedArtworkPanel ?: GameArtworkPanel(this, OrbitThemes.current().systemLayout == "artwork")
             .also { preparedArtworkPanel = it }
         panel.preload(spec, first)
-        if (UserDataStore.cachedInt("nativeListLogos", 0) == 1) {
+        if (gameAppearance() != GameAppearance.THEME_DEFAULT) {
+            val media = gameWheelMedia()
+            gameLogos.preload(spec, media.artworkType, delayMillis = 75,
+                spinDiscs = media == GameWheelMedia.PHYSICAL_MEDIA && spinDiscsEnabled()) { entries.take(8) }
+        } else if (UserDataStore.cachedInt("nativeListLogos", 0) == 1) {
             gameLogos.preload(spec, "marquee", delayMillis = 75) { entries.take(8) }
         }
     }
@@ -785,7 +792,7 @@ open class MainActivity : Activity() {
         list.getChildAt(previous - first)?.let { list.adapter.getView(previous, it, list) }
         row?.let { list.adapter.getView(gameCursor, it, list) }
         artworkPanel?.show(system, games.getOrNull(gameCursor))
-        games.getOrNull(gameCursor)?.let { artworkPanel?.warmAdjacentFanArt(system, adjacentGames(it)) }
+        games.getOrNull(gameCursor)?.let { artworkPanel?.warmAdjacentBackgrounds(system, adjacentGames(it)) }
         importedScene?.showGame(games.getOrNull(gameCursor))
         DualScreenCoordinator.refreshMedia()
     }
@@ -1371,7 +1378,7 @@ open class MainActivity : Activity() {
                 root.addView(content, LinearLayout.LayoutParams(-1, 0, 1f))
             }
             artwork.show(system, entries.firstOrNull())
-            entries.firstOrNull()?.let { artwork.warmAdjacentFanArt(system, adjacentGames(it)) }
+            entries.firstOrNull()?.let { artwork.warmAdjacentBackgrounds(system, adjacentGames(it)) }
             }
             list.post { if (startMenu?.isShowing != true) { list.requestFocus(); if (entries.isNotEmpty()) list.setSelection(0) } }
         }
@@ -1449,15 +1456,17 @@ open class MainActivity : Activity() {
             if (activeTab == 0 && library && wheel.isShown && activeGameWheel() === wheel) {
                 val game = entries[gameCursor]
                 panel?.show(spec, game)
-                panel?.warmAdjacentFanArt(spec, adjacentGames(game))
+                panel?.warmAdjacentBackgrounds(spec, adjacentGames(game))
                 DualScreenCoordinator.refreshMedia()
             }
         }
         val showWheelBackground = Runnable {
             if (activeTab == 0 && library && wheel.isShown && activeGameWheel() === wheel) {
                 val game = entries[gameCursor]
-                panel?.showCachedFanArt(spec, game)
-                DualScreenCoordinator.showCachedFanArt(this, spec, game)
+                panel?.previewWheelBackground(spec, game) {
+                    activeTab == 0 && library && wheel.isShown && activeGameWheel() === wheel && entries.getOrNull(gameCursor) == game
+                }
+                DualScreenCoordinator.previewWheelBackground(this, spec, game)
             }
         }
         wheel = GameWheelView(this, entries, vertical, artworkScale, gameCursor, theme,
@@ -1466,6 +1475,8 @@ open class MainActivity : Activity() {
                     spinDiscs = media == GameWheelMedia.PHYSICAL_MEDIA && spinDiscsEnabled(),
                     blendFromTitle = true, scheduleArtwork = scheduleArtwork)
             },
+            recycleArtwork = gameLogos::recycle,
+            prioritizeArtwork = gameLogos::prioritize,
             selected = { index ->
                 gameCursor = index
                 wheel.removeCallbacks(showWheelBackground)
@@ -1530,7 +1541,10 @@ open class MainActivity : Activity() {
             spec?.let(::preloadListArtwork)
             return
         }
-        if (gameAppearance() != GameAppearance.THEME_DEFAULT) return
+        if (gameAppearance() != GameAppearance.THEME_DEFAULT) {
+            spec?.let(::preloadListArtwork)
+            return
+        }
         val entries=spec?.let { pages[it.id]?.games }
         if(grid.scrollState!=RecyclerView.SCROLL_STATE_IDLE || grid.shortcutSelected || spec==null || entries.isNullOrEmpty()) {
             gameLogos.cancelPreload()
@@ -1543,7 +1557,7 @@ open class MainActivity : Activity() {
             if(grid.isShown && activeTab==0 && !library && grid.scrollState==RecyclerView.SCROLL_STATE_IDLE &&
                 matchingSplitGamePage(preparedSplitGameView,spec,entries,OrbitThemes.current())!=null)
                 stagePreparedSplitGameView()
-        }) {
+        }, spinDiscs = physicalMedia && spinDiscsEnabled()) {
             val tile=grid.cursorTile
             if(!grid.isShown || activeTab!=0 || library || grid.scrollState!=RecyclerView.SCROLL_STATE_IDLE ||
                 (!initial && (tile==null || tile.right<=0 || tile.left>=grid.width)))emptyList()

@@ -38,9 +38,9 @@ internal class GameMediaBackground(private val context:Context):Drawable() {
         val before=currentBitmap()
         val wasPhysicalMedia = isPhysicalMedia()
         this.media = media
-        invalidateSelf()
         val after=currentBitmap()
-        if (before === after) return
+        if (before === after && wasPhysicalMedia == isPhysicalMedia()) return
+        invalidateSelf()
         val enteringMedia = before == null && after != null
         val leavingMedia = before != null && after == null
         animation = TransitionSettings.ArtworkAnimation.selected()
@@ -138,7 +138,7 @@ internal class GameMediaBackground(private val context:Context):Drawable() {
         canvas.clipRect(area)
         canvas.drawBitmap(bitmap, null, artworkBounds, artworkPaint)
         canvas.restoreToCount(save)
-        if (!physicalMedia) canvas.drawColor(Color.argb(85, 0, 0, 0))
+        if (!physicalMedia) canvas.drawColor(Color.argb(42, 0, 0, 0))
     }
     override fun setAlpha(alpha:Int)=Unit
     override fun setColorFilter(filter:ColorFilter?)=Unit

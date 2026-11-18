@@ -18,7 +18,7 @@ internal class GameMediaSurface(context:Context,val content:View, audioPriority:
     }
     private val backdrop=GameMediaBackground(context)
     private val video=LibraryVideoPreview(context, cropToFill = true, audioPriority = audioPriority)
-    private val shade=View(context).apply { setBackgroundColor(Color.argb(85,0,0,0));visibility=GONE }
+    private val shade=View(context).apply { setBackgroundColor(Color.argb(32,0,0,0));visibility=GONE }
     private var playing:Uri?=null
     /** The background currently shown (or being faded to), separate from a transition wrapper. */
     private var shown:Drawable=backdrop

@@ -71,8 +71,10 @@ class CompanionPanel(private val activity:MainActivity) {
         if(mediaActive)prepareArtwork().preload(system,game)
     }
 
-    internal fun showCachedFanArt(system: SystemSpec, game: Game) {
-        if (mediaActive && mediaHost.isShown) artwork?.showCachedFanArt(system, game)
+    internal fun previewWheelBackground(system: SystemSpec, game: Game) {
+        if (mediaActive && mediaHost.isShown) artwork?.previewWheelBackground(system, game) {
+            mediaActive && mediaHost.isShown && DualScreenCoordinator.mediaSelection() == (system to game)
+        }
     }
 
     internal fun setWheelScrolling(scrolling: Boolean) {
@@ -93,7 +95,7 @@ class CompanionPanel(private val activity:MainActivity) {
         val selection = system to game
         if (lastGame != selection || refresh) {
             lastGame = selection
-            panel.warmAdjacentFanArt(system, DualScreenCoordinator.adjacentGames(game))
+            panel.warmAdjacentBackgrounds(system, DualScreenCoordinator.adjacentGames(game))
         }
     }
     private val update=object:Runnable { override fun run() {

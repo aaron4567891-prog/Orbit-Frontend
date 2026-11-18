@@ -3,6 +3,7 @@ package au.orbit.frontend
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.graphics.drawable.BitmapDrawable
 import android.os.Handler
 import android.os.Looper
 import android.util.LruCache
@@ -12,35 +13,54 @@ import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.TextView
 import org.json.JSONObject
-import java.util.concurrent.Executors
+import java.util.concurrent.LinkedBlockingDeque
+import java.util.concurrent.ThreadPoolExecutor
+import java.util.concurrent.TimeUnit
 
 /** Decodes row artwork off the UI thread; recycled rows retain their own identity. */
 class GameLogoRows(private val context:Context) {
     private data class Artwork(val bitmap:Bitmap,val disc:DiscArtwork.Center?)
-    private data class ArtworkKey(val location:String,val group:String,val mediaType:String,val fallbackMediaType:String?)
+    private data class ArtworkKey(val location:String,val group:String,val mediaType:String,val fallbackMediaType:String?,val detectDisc:Boolean)
     private data class Binding(val key:ArtworkKey,val spinDiscs:Boolean)
-    private val worker=Executors.newFixedThreadPool(2)
+    private val pendingTasks = LinkedBlockingDeque<Runnable>()
+    private val worker = ThreadPoolExecutor(2, 2, 0L, TimeUnit.MILLISECONDS, pendingTasks)
     private val handler=Handler(Looper.getMainLooper())
     private val cache=object:LruCache<ArtworkKey,Artwork>(24*1024*1024) {
         override fun sizeOf(key:ArtworkKey,value:Artwork)=value.bitmap.allocationByteCount
     }
     private val missing=mutableSetOf<ArtworkKey>()
-    private val waiting=mutableMapOf<ArtworkKey,MutableList<(Artwork?)->Unit>>()
+    private class PendingArtwork {
+        lateinit var task: Runnable
+        val listeners = mutableMapOf<Any, (Artwork?) -> Unit>()
+    }
+
+    private val waiting = mutableMapOf<ArtworkKey, PendingArtwork>()
+    private val requests = mutableMapOf<Any, ArtworkKey>()
+    private val preloadOwner = Any()
     internal var generation=0
         private set
     private var preloadGeneration=0
     private var pendingPreload:Runnable?=null
-    fun clear() { cancelPreload();generation++;cache.evictAll();missing.clear();waiting.clear() }
+    fun clear() {
+        cancelPreload()
+        generation++
+        pendingTasks.clear()
+        cache.evictAll()
+        missing.clear()
+        waiting.clear()
+        requests.clear()
+    }
     fun destroy() { clear();worker.shutdownNow() }
     internal fun cancelPreload() {
         preloadGeneration++
         pendingPreload?.let(handler::removeCallbacks)
         pendingPreload=null
+        release(preloadOwner)
     }
 
     internal fun preload(
         system: SystemSpec, mediaType: String, fallback: String? = null,
-        delayMillis: Long = 0, onReady: () -> Unit = {}, visibleGames: () -> List<Game>
+        delayMillis: Long = 0, onReady: () -> Unit = {}, spinDiscs: Boolean = false, visibleGames: () -> List<Game>
     ) {
         cancelPreload()
         val ticket=preloadGeneration
@@ -51,7 +71,7 @@ class GameLogoRows(private val context:Context) {
             var warmedBytes=0
             fun next() {
                 while(ticket==preloadGeneration && games.hasNext() && warmedBytes<20*1024*1024) {
-                    val key=ArtworkKey(location,GameCustomArtwork.group(system,games.next()),mediaType,fallback)
+                    val key=ArtworkKey(location,GameCustomArtwork.group(system,games.next()),mediaType,fallback,spinDiscs)
                     val cached=cache.get(key)
                     if(cached!=null) {
                         warmedBytes+=cached.bitmap.allocationByteCount
@@ -59,7 +79,7 @@ class GameLogoRows(private val context:Context) {
                     }
                     if(key in missing)continue
                     // Queue only one speculative read so navigation can stop the rest immediately.
-                    request(key) {
+                    request(key, preloadOwner) {
                         warmedBytes+=it?.bitmap?.allocationByteCount ?: 0
                         next()
                     }
@@ -82,17 +102,23 @@ class GameLogoRows(private val context:Context) {
             setPadding(16,6,16,6)
             row.addView(this,FrameLayout.LayoutParams(-1,-1,Gravity.CENTER))
         }
-        val key=ArtworkKey(UserDataStore.location(context),GameCustomArtwork.group(system,game),mediaType,fallbackMediaType)
+        val key=ArtworkKey(UserDataStore.location(context),GameCustomArtwork.group(system,game),mediaType,fallbackMediaType,spinDiscs)
+        if (!enabled || requests[row] != key) release(row)
         val previous=(row.tag as? Binding)?.key
         val binding=Binding(key,spinDiscs)
         val spinView=image as? GameTileArtworkView
+        fun setArtwork(bitmap: Bitmap?) {
+            if (scheduleArtwork != null && spinView != null) {
+                spinView.updateWheelDrawable(bitmap?.let { BitmapDrawable(image.resources, it) })
+            } else image.setImageBitmap(bitmap)
+        }
         image.animate().cancel()
         text.animate().cancel()
         image.alpha=1f
         text.alpha=1f
         if(!enabled || !spinDiscs || row.tag!=binding)spinView?.showDisc(null)
         if(!enabled || previous?.group!=key.group || previous.location!=key.location) {
-            image.setImageDrawable(null);image.visibility=View.INVISIBLE;text.visibility=View.VISIBLE
+            setArtwork(null);image.visibility=View.INVISIBLE;text.visibility=View.VISIBLE
         }
         row.tag=if(enabled)binding else null
         spinView?.setSpinSelected(row.isSelected)
@@ -102,11 +128,11 @@ class GameLogoRows(private val context:Context) {
             return
         }
         fun display(artwork:Artwork?, loadedAsync:Boolean=false) {
-            if(row.tag!=binding)return
+            if(row.tag !== binding)return
             val bitmap=artwork?.bitmap
             val blend = blendFromTitle && loadedAsync && bitmap != null &&
-                text.visibility == View.VISIBLE && row.isShown
-            image.setImageBitmap(bitmap);image.visibility=if(bitmap==null)View.INVISIBLE else View.VISIBLE
+                text.visibility == View.VISIBLE && row.isShown && row.isSelected
+            setArtwork(bitmap);image.visibility=if(bitmap==null)View.INVISIBLE else View.VISIBLE
             if (blend) {
                 image.alpha=0f
                 image.animate().alpha(1f).setDuration(140L).start()
@@ -122,7 +148,7 @@ class GameLogoRows(private val context:Context) {
         val awaitingArtwork=image.drawable==null
         if(!showTitleWhileLoading && awaitingArtwork)text.visibility=View.INVISIBLE
         onArtworkPending?.invoke(awaitingArtwork)
-        request(key) { artwork ->
+        request(key, row) { artwork ->
             if (row.tag === binding) {
                 if (scheduleArtwork == null) display(artwork, loadedAsync = true)
                 else scheduleArtwork { display(artwork, loadedAsync = true) }
@@ -130,19 +156,44 @@ class GameLogoRows(private val context:Context) {
         }
     }
 
-    private fun request(key:ArtworkKey,callback:(Artwork?)->Unit) {
-        waiting[key]?.let { it.add(callback);return }
-        waiting[key]=mutableListOf(callback)
-        val ticket=generation
-        worker.execute {
-            val artwork=runCatching { load(key) }.getOrNull()
+    internal fun recycle(row: View) {
+        release(row)
+        row.tag = null
+    }
+
+    internal fun prioritize(row: View) {
+        val task = waiting[requests[row]]?.task ?: return
+        if (pendingTasks.remove(task)) pendingTasks.addFirst(task)
+    }
+
+    private fun release(owner: Any) {
+        val key = requests.remove(owner) ?: return
+        val pending = waiting[key] ?: return
+        pending.listeners.remove(owner)
+        // A decode already in progress can still warm the cache. Drop queued reads with no row to update.
+        if (pending.listeners.isEmpty() && worker.remove(pending.task)) waiting.remove(key)
+    }
+
+    private fun request(key: ArtworkKey, owner: Any, callback: (Artwork?) -> Unit) {
+        requests[owner] = key
+        waiting[key]?.let {
+            it.listeners[owner] = callback
+            return
+        }
+        val pending = PendingArtwork().apply { listeners[owner] = callback }
+        pending.task = Runnable {
+            val result = runCatching { load(key) }
             handler.post {
-                if(ticket==generation) {
-                    if(artwork==null)missing.add(key) else cache.put(key,artwork)
-                    waiting.remove(key)?.forEach { it(artwork) }
-                }
+                if (waiting[key] !== pending) return@post
+                waiting.remove(key)
+                val artwork = result.getOrNull()
+                if (artwork != null) cache.put(key, artwork) else if (result.isSuccess) missing.add(key)
+                pending.listeners.keys.forEach(requests::remove)
+                pending.listeners.values.forEach { it(artwork) }
             }
         }
+        waiting[key] = pending
+        worker.execute(pending.task)
     }
 
     private fun load(key:ArtworkKey):Artwork? {
@@ -163,7 +214,7 @@ class GameLogoRows(private val context:Context) {
         val alternatives=mutableListOf<Pair<String,String>>()
         fun find(type:String,files:List<Pair<String,String>>)=files.firstNotNullOfOrNull { (kind,path) ->
             if(kind!=type || path.isBlank())null
-            else runCatching { decode(key.group,path,key.mediaType=="physicalmedia" && type in preferred) }.getOrNull()
+            else runCatching { decode(key.group,path,key.detectDisc && key.mediaType=="physicalmedia" && type in preferred) }.getOrNull()
         }
         for(bytes in UserDataStore.readScrapedRecords(context,key.group)) {
             val record=runCatching { JSONObject(bytes.toString(Charsets.UTF_8)) }.getOrNull() ?: continue

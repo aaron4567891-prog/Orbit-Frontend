@@ -25,6 +25,8 @@ internal class GameWheelView(
     initial: Int,
     private val theme: OrbitThemes.Theme,
     private val bindArtwork: (FrameLayout, TextView, Game, ((() -> Unit) -> Unit)?) -> Unit,
+    private val recycleArtwork: (View) -> Unit,
+    private val prioritizeArtwork: (View) -> Unit,
     private val selected: (Int) -> Unit,
     private val settled: () -> Unit,
     private val motionChanged: (Boolean) -> Unit,
@@ -54,10 +56,10 @@ internal class GameWheelView(
     private val artworkUpdates = LinkedHashMap<View, () -> Unit>()
     private val applyNextArtwork = object : Runnable {
         override fun run() {
-            val next = artworkUpdates.entries.firstOrNull() ?: return
-            val view = next.key
-            val apply = next.value
-            artworkUpdates.remove(view)
+            val centered = layout.findViewByPosition(cursor)
+            val next = centered?.takeIf(artworkUpdates::containsKey)
+                ?: artworkUpdates.keys.minByOrNull { abs(itemCenter(it) - viewportCenter) }
+            val apply = artworkUpdates.remove(next) ?: return
             apply()
             if (artworkUpdates.isNotEmpty()) postOnAnimation(this)
         }
@@ -142,11 +144,15 @@ internal class GameWheelView(
             }
 
             override fun onViewAttachedToWindow(holder: ViewHolder) {
-                holder.itemView.setGameTileSelected(holder.bindingAdapterPosition == cursor)
+                val centered = holder.bindingAdapterPosition == cursor
+                holder.itemView.setGameTileSelected(centered)
+                if (centered) prioritizeArtwork(holder.itemView)
             }
 
             override fun onViewRecycled(holder: ViewHolder) {
+                artworkUpdates.remove(holder.itemView)
                 holder.itemView.setGameTileSelected(false)
+                recycleArtwork(holder.itemView)
             }
         }
         addOnScrollListener(object : OnScrollListener() {
@@ -219,7 +225,7 @@ internal class GameWheelView(
             val scale = 0.65f + 0.35f * emphasis
             item.scaleX = scale
             item.scaleY = scale
-            item.alpha = emphasis
+            item.alpha = 0.72f + 0.28f * emphasis
             if (vertical) item.translationY = -pixelRemainder else item.translationX = -pixelRemainder
         }
     }
@@ -229,7 +235,10 @@ internal class GameWheelView(
         val previous = cursor
         cursor = position
         layout.findViewByPosition(previous)?.setGameTileSelected(false)
-        layout.findViewByPosition(cursor)?.setGameTileSelected(true)
+        layout.findViewByPosition(cursor)?.let { current ->
+            current.setGameTileSelected(true)
+            prioritizeArtwork(current)
+        }
         selected(cursor)
     }
 

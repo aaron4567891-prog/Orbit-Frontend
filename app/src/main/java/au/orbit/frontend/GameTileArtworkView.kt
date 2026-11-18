@@ -3,6 +3,7 @@ package au.orbit.frontend
 import android.animation.ValueAnimator
 import android.content.Context
 import android.graphics.Canvas
+import android.graphics.drawable.Drawable
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.LinearInterpolator
@@ -15,6 +16,7 @@ internal fun View.setGameTileSelected(selected: Boolean) {
 
 /** Rotates the artwork layer while its selected tile is visible. */
 internal class GameTileArtworkView(context: Context) : ImageView(context) {
+    private var fixedBoundsUpdate = false
     private var disc: DiscArtwork.Center? = null
     private var spinSelected = false
     private var animation: ValueAnimator? = null
@@ -22,6 +24,20 @@ internal class GameTileArtworkView(context: Context) : ImageView(context) {
     private var angle = 0f
     private var discCenterX = 0f
     private var discCenterY = 0f
+
+    // Wheel cells are measured to a fixed size. Changing the drawable only changes its fit matrix.
+    fun updateWheelDrawable(drawable: Drawable?) {
+        fixedBoundsUpdate = isLaidOut && !isLayoutRequested && width > 0 && height > 0
+        try {
+            setImageDrawable(drawable)
+        } finally {
+            fixedBoundsUpdate = false
+        }
+    }
+
+    override fun requestLayout() {
+        if (!fixedBoundsUpdate) super.requestLayout()
+    }
 
     fun showDisc(center: DiscArtwork.Center?) {
         disc = center

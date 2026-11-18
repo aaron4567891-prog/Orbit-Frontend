@@ -91,6 +91,16 @@ class SharedSystemProfilesTest {
             }
         }
     }
+    @Test fun hakuMaliTargetsPublishedPackageAndUsesContentUri() {
+        SystemCatalog.load(java.io.File("src/main/assets/system-catalog.json").readText())
+        val profiles=SharedSystemProfiles.parse(java.io.File("src/main/assets/systems/xbox.json").readText(),mutableListOf())
+        val player=profiles.single { it.name=="HakuX-Mali" }
+        assertEquals("com.rfandango.haku_x.debug/com.rfandango.haku_x.LauncherActivity",componentArgument("xbox",player.id))
+        assertEquals("android.intent.action.VIEW",player.action)
+        assertEquals("{file.uri}",player.dataTemplate)
+        assertEquals(setOf("iso","xiso"),player.extensions)
+        assertTrue(profiles.any { it.name=="hakuX" })
+    }
     @Test fun hakuUsesViewWhenLaunchArgumentsSupplyOnlyData() {
         SystemCatalog.load(java.io.File("src/main/assets/system-catalog.json").readText())
         val profile=SharedSystemProfiles.parse(java.io.File("src/main/assets/systems/xbox.json").readText(),mutableListOf()).single { it.name=="hakuX" }

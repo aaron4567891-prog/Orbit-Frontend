@@ -39,6 +39,16 @@
       "extra": ""
     },
     {
+      "name": "HakuX-Mali",
+      "uniqueId": "xbox.com.rfandango.haku_x.debug",
+      "description": "ISO/XISO images. Complete setup and grant access to your Xbox games folder in HakuX-Mali first.",
+      "acceptedFilenameRegex": "^(.*)\\.(?:xiso|iso)$",
+      "amStartArguments": "-n com.rfandango.haku_x.debug/com.rfandango.haku_x.LauncherActivity\n  -a android.intent.action.VIEW\n  -d {file.uri}",
+      "killPackageProcesses": false,
+      "killPackageProcessesWarning": true,
+      "extra": ""
+    },
+    {
       "name": "Xenra",
       "uniqueId": "xbox.Ali.Xanite.green.dev",
       "description": "Xenra",

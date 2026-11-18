@@ -7805,7 +7805,7 @@
         "iso",
         "xiso"
       ],
-      "players": 3,
+      "players": 4,
       "unconvertedCommands": 0,
       "metadata": {
         "source": "https://gitlab.com/es-de/emulationstation-de/-/blob/master/resources/systems/android/es_systems.xml",
@@ -7822,7 +7822,8 @@
       "playerSource": "cocoon",
       "sourceFile": "Xbox.json",
       "additionalPlayerIds": [
-        "xbox.Ali.Xanite.green.dev"
+        "xbox.Ali.Xanite.green.dev",
+        "xbox.com.rfandango.haku_x.debug"
       ]
     },
     {

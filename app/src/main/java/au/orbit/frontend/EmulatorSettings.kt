@@ -186,12 +186,12 @@ object EmulatorSettings {
         override fun selectCompanionOption(label:String) { browse.select(label);DualScreenCoordinator.refreshMedia() }
         fun browseSelection():CompanionBrowse {
             val icon=when(browse.icon) {
-                MenuBrowseState.Icon.SETTINGS -> android.R.drawable.ic_menu_preferences
-                MenuBrowseState.Icon.ARTWORK -> android.R.drawable.ic_menu_gallery
-                MenuBrowseState.Icon.EMULATOR -> android.R.drawable.ic_media_play
-                MenuBrowseState.Icon.STORAGE -> android.R.drawable.ic_menu_save
-                MenuBrowseState.Icon.DISPLAY -> android.R.drawable.ic_menu_view
-                MenuBrowseState.Icon.SEARCH -> android.R.drawable.ic_menu_search
+                MenuBrowseState.Icon.SETTINGS -> R.drawable.ic_companion_settings
+                MenuBrowseState.Icon.ARTWORK -> R.drawable.ic_companion_artwork
+                MenuBrowseState.Icon.EMULATOR -> R.drawable.ic_companion_emulator
+                MenuBrowseState.Icon.STORAGE -> R.drawable.ic_companion_storage
+                MenuBrowseState.Icon.DISPLAY -> R.drawable.ic_companion_display
+                MenuBrowseState.Icon.SEARCH -> R.drawable.ic_companion_search
             }
             return CompanionBrowse(browse.key,browse.title,"Orbit menu",iconResource=icon)
         }

@@ -70,7 +70,7 @@ internal class SplitTileSlots(
             "shortcut/$page/$slot/${component?.flattenToString()}",
             app?.label ?: ADD_LABEL,
             icon = app?.icon,
-            iconResource = if (component == null) android.R.drawable.ic_input_add else android.R.drawable.sym_def_app_icon
+            iconResource = if (component == null) R.drawable.ic_companion_add else R.drawable.ic_companion_apps
         )
     }
 

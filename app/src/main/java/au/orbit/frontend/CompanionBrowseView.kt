@@ -8,7 +8,7 @@ import android.view.Gravity
 import android.view.View
 import android.widget.*
 
-data class CompanionBrowse(val key:String,val title:String,val detail:String="",val system:SystemSpec?=null,val icon:Drawable?=null,val iconResource:Int=android.R.drawable.ic_menu_preferences)
+data class CompanionBrowse(val key:String,val title:String,val detail:String="",val system:SystemSpec?=null,val icon:Drawable?=null,val iconResource:Int=R.drawable.ic_companion_settings)
 
 /** Displays system heroes or the icon and label for the active menu. */
 class CompanionBrowseView(private val activity:Activity):LinearLayout(activity) {
@@ -58,6 +58,9 @@ class CompanionBrowseView(private val activity:Activity):LinearLayout(activity) 
             image.setImageDrawable(drawable)
             imageKey=nextImageKey
         }
+        // Menu glyphs are white vectors; tint them to the theme. App icons and the gold star keep their colours.
+        image.imageTintList=if(selection.icon==null && selection.iconResource!=R.drawable.ic_companion_star)
+            android.content.res.ColorStateList.valueOf(theme.text) else null
         image.invalidate()
         val nextBackdropKey="${theme.id}/${theme.background}/${theme.image("background",screen)}"
         if(backdropKey!=nextBackdropKey || refresh) {

@@ -66,16 +66,16 @@ open class MainActivity : Activity() {
         }
         if(activeTab==1) {
             val app=appsPanel?.companionSelection()
-            return CompanionBrowse("app/${app?.info?.activityInfo?.packageName}/${app?.info?.activityInfo?.name}",app?.label ?: "Android apps",icon=app?.icon,iconResource=android.R.drawable.sym_def_app_icon)
+            return CompanionBrowse("app/${app?.info?.activityInfo?.packageName}/${app?.info?.activityInfo?.name}",app?.label ?: "Android apps",icon=app?.icon,iconResource=R.drawable.ic_companion_apps)
         }
         if(activeTab==2) {
             val names=settingsCategories
-            val icons = listOf(android.R.drawable.ic_menu_preferences, android.R.drawable.ic_menu_edit,
-                android.R.drawable.ic_menu_search)
+            val icons = listOf(R.drawable.ic_companion_settings, R.drawable.ic_companion_edit,
+                R.drawable.ic_companion_search, R.drawable.ic_companion_star)
             return CompanionBrowse("settings/$settingsCategory",names[settingsCategory.coerceIn(names.indices)],"Settings",iconResource=icons[settingsCategory.coerceIn(icons.indices)])
         }
-        if(activeTab==4)return CompanionBrowse("scraping","Scraping","Game media and metadata",iconResource=android.R.drawable.ic_menu_search)
-        if(activeTab==3)return CompanionBrowse("themes","Themes","Choose a look for your collection",iconResource=android.R.drawable.ic_menu_gallery)
+        if(activeTab==4)return CompanionBrowse("scraping","Scraping","Game media and metadata",iconResource=R.drawable.ic_companion_search)
+        if(activeTab==3)return CompanionBrowse("themes","Themes","Choose a look for your collection",iconResource=R.drawable.ic_companion_artwork)
         return null
     }
 

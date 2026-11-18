@@ -422,6 +422,8 @@ internal class SplitLibraryGrid(
 
     fun editShortcut() = slots.choose(cursor, ::refreshSlots)
 
+    fun uninstallShortcut() = slots.uninstallApp(cursor)
+
     fun removeShortcut() {
         slots.remove(cursor)
         refreshSlots()

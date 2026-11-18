@@ -78,6 +78,10 @@ internal class SplitTileSlots(
         component(slot)?.let { AppDock.launchApp(activity, it, screen) }
     }
 
+    fun uninstallApp(slot: Int) {
+        component(slot)?.let { AppActions.uninstall(activity, it) }
+    }
+
     fun choose(slot: Int, changed: () -> Unit) {
         BottomAppDrawer.show(activity, "Choose an Android app or game", component(slot) != null) { component ->
             val tile = component?.let { Tile.App(it.flattenToString()) } ?: Tile.Empty

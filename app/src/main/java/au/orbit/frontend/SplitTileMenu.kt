@@ -53,6 +53,10 @@ internal class SplitTileMenu(
         grid.beginMove()
     }
     private val remove = action("Remove shortcut", android.R.drawable.ic_menu_delete, ::removeShortcut)
+    private val uninstall = action("Uninstall app", android.R.drawable.ic_menu_delete) {
+        close()
+        grid.uninstallShortcut()
+    }
     private val settingsButton = action(if (inGames) "Game Settings" else "System Settings", android.R.drawable.ic_menu_manage, ::settings)
     private val screen = action("Launch screen", android.R.drawable.ic_menu_view) { showPage(Page.DEFAULT_SCREEN) }
     private val tiles = action("Tiles", android.R.drawable.ic_menu_sort_by_size) {
@@ -73,7 +77,7 @@ internal class SplitTileMenu(
     } else null
     private val top = action("Top") { selectScreen("top") }
     private val bottom = action("Bottom") { selectScreen("bottom") }
-    private val mainButtons = listOf(open, edit, move, remove)
+    private val mainButtons = listOf(open, edit, move, remove, uninstall)
     private val editButtons = listOfNotNull(settingsButton, screen, tiles, arrangement, tileArtwork, spinDiscs)
     private val choices = listOf(top, bottom)
     private val actionsPanel = panel(mainButtons)
@@ -186,6 +190,7 @@ internal class SplitTileMenu(
         edit.visibility = if (empty) GONE else VISIBLE
         move.visibility = if (empty) GONE else VISIBLE
         remove.visibility = if (shortcutSelected && !empty) VISIBLE else GONE
+        uninstall.visibility = if (shortcutSelected && !empty) VISIBLE else GONE
         if (empty) return
 
         screen.visibility = if (!shortcutSelected && canSetLaunchScreen()) VISIBLE else GONE

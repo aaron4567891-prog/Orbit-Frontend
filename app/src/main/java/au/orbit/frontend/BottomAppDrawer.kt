@@ -108,8 +108,8 @@ object BottomAppDrawer {
             // Narrow by the beginning of the displayed app name on every keystroke.
             filtered=apps.filter { it.label.startsWith(query,true) }
             adapter.notifyDataSetChanged()
-            status.text=if(filtered.isEmpty())"No apps found" else ""
-            status.visibility=if(filtered.isEmpty())View.VISIBLE else View.GONE
+            status.text=if(filtered.isEmpty())"No apps found" else "Hold an app or press Y for options"
+            status.visibility=View.VISIBLE
             grid.setSelection(0)
         }
         search.addTextChangedListener(object:TextWatcher {
@@ -121,8 +121,25 @@ object BottomAppDrawer {
             keyboard.hide();true
         }
         grid.setOnItemClickListener { _,_,position,_ -> open(position) }
+        fun showAppActions(position: Int) {
+            val app = filtered.getOrNull(position) ?: return
+            val info = app.info.activityInfo
+            AlertDialog.Builder(activity).setTitle(app.label)
+                .setItems(arrayOf("Uninstall app")) { _, _ ->
+                    if (AppActions.uninstall(activity, ComponentName(info.packageName, info.name))) {
+                        restoreFocus = false
+                        dialog.dismiss()
+                    }
+                }.setNegativeButton("Cancel", null).show()
+        }
+        grid.setOnItemLongClickListener { _, _, position, _ -> showAppActions(position); true }
         dialog.setOnKeyListener { _,key,event ->
             when(key) {
+                KeyEvent.KEYCODE_BUTTON_Y -> {
+                    if (event.action == KeyEvent.ACTION_UP && !event.isCanceled && grid.hasFocus())
+                        showAppActions(grid.selectedItemPosition)
+                    true
+                }
                 KeyEvent.KEYCODE_BUTTON_B,KeyEvent.KEYCODE_BACK -> { if(event.action==KeyEvent.ACTION_UP && !event.isCanceled) { if(keyboard.visibility==View.VISIBLE)keyboard.hide() else dialog.dismiss() };true }
                 KeyEvent.KEYCODE_BUTTON_X -> {
                     if(event.action==KeyEvent.ACTION_UP)keyboard.show()
@@ -154,7 +171,7 @@ object BottomAppDrawer {
         }
         grid.requestFocus()
         worker.execute {
-            val result=runCatching { InstalledApps.load(activity.applicationContext) }
+            val result=runCatching { InstalledApps.load(activity.applicationContext, forceRefresh = true) }
             activity.runOnUiThread {
                 if(activity.isDestroyed || !dialog.isShowing)return@runOnUiThread
                 result.onSuccess { apps=it;filter() }.onFailure { status.text="Unable to load apps";status.visibility=View.VISIBLE }

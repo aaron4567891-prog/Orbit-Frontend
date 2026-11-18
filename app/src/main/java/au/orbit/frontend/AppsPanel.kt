@@ -63,6 +63,7 @@ class AppsPanel(private val activity: Activity, private val navigate: (Int) -> U
             }
             horizontalSpacing = dp(12); verticalSpacing = dp(12)
             setOnItemClickListener { _, _, position, _ -> launch(visibleApps[position]) }
+            setOnItemLongClickListener { _, _, position, _ -> showAppActions(position); true }
             onItemSelectedListener=object:AdapterView.OnItemSelectedListener {
                 override fun onItemSelected(parent:AdapterView<*>?,v:View?,position:Int,id:Long) { DualScreenCoordinator.refreshMedia() }
                 override fun onNothingSelected(parent:AdapterView<*>?) { DualScreenCoordinator.refreshMedia() }
@@ -88,7 +89,7 @@ class AppsPanel(private val activity: Activity, private val navigate: (Int) -> U
         else { status.visibility = View.VISIBLE; status.text = "Loading installed apps…" }
         worker.execute {
             val result = runCatching {
-                InstalledApps.load(activity.applicationContext)
+                InstalledApps.load(activity.applicationContext, forceRefresh = true)
             }
             activity.runOnUiThread {
                 if (ticket == generation && !activity.isDestroyed) {
@@ -102,8 +103,8 @@ class AppsPanel(private val activity: Activity, private val navigate: (Int) -> U
     private fun filter() {
         val query = search.text.toString().trim()
         visibleApps = allApps.filter { it.label.contains(query, true) }
-        status.text = if (visibleApps.isEmpty()) "No apps found" else ""
-        status.visibility = if (visibleApps.isEmpty()) View.VISIBLE else View.GONE
+        status.text = if (visibleApps.isEmpty()) "No apps found" else "Hold an app or press Y for options"
+        status.visibility = View.VISIBLE
         grid.adapter = object : BaseAdapter() {
             override fun getCount() = visibleApps.size
             override fun getItem(position: Int) = visibleApps[position]
@@ -125,6 +126,14 @@ class AppsPanel(private val activity: Activity, private val navigate: (Int) -> U
         }
     }
     private fun hideSearchKeyboard() { compactKeyboard.hide() }
+    private fun showAppActions(position: Int) {
+        val app = visibleApps.getOrNull(position) ?: return
+        val info = app.info.activityInfo
+        AlertDialog.Builder(activity).setTitle(app.label)
+            .setItems(arrayOf("Uninstall app")) { _, _ ->
+                AppActions.uninstall(activity, ComponentName(info.packageName, info.name))
+            }.setNegativeButton("Cancel", null).show()
+    }
     private fun showSearchKeyboard() { compactKeyboard.show() }
     private fun launch(app: InstalledApps.Entry) {
         runCatching {
@@ -149,6 +158,10 @@ class AppsPanel(private val activity: Activity, private val navigate: (Int) -> U
     private fun showError(error: Throwable) { AlertDialog.Builder(activity).setTitle("Unable to open app").setMessage(error.message ?: "The app may have been removed or disabled.").setPositiveButton("OK", null).show() }
     fun destroy() { generation++; worker.shutdownNow() }
     fun onKeyDown(keyCode: Int, event: KeyEvent): Boolean {
+        if (keyCode == KeyEvent.KEYCODE_BUTTON_Y && grid.hasFocus()) {
+            if (event.repeatCount == 0) showAppActions(grid.selectedItemPosition)
+            return true
+        }
         if (keyCode == KeyEvent.KEYCODE_BUTTON_X) {
             if (event.repeatCount == 0) {
                 search.setSelection(search.text.length)

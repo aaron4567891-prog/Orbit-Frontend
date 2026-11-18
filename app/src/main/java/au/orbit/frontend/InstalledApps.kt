@@ -16,8 +16,8 @@ object InstalledApps {
     @Volatile var cached: List<Entry>? = null
         private set
     private var loadedAt = 0L
-    @Synchronized fun load(context: Context): List<Entry> {
-        cached?.takeIf { SystemClock.elapsedRealtime() - loadedAt < 15_000 }?.let { return it }
+    @Synchronized fun load(context: Context, forceRefresh: Boolean = false): List<Entry> {
+        cached?.takeIf { !forceRefresh && SystemClock.elapsedRealtime() - loadedAt < 15_000 }?.let { return it }
         val pm = context.packageManager
         return pm.queryIntentActivities(Intent(Intent.ACTION_MAIN).addCategory(Intent.CATEGORY_LAUNCHER), 0)
             .filter { it.activityInfo.packageName != context.packageName && it.activityInfo.exported && it.activityInfo.enabled }

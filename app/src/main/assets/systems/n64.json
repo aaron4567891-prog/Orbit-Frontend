@@ -67,6 +67,16 @@
       "extra": ""
     },
     {
+      "name": "Joey64",
+      "uniqueId": "n64.com.joeysretro.joey64",
+      "description": "Supported extensions: n64, v64, z64, zip, 7z.",
+      "acceptedFilenameRegex": "^(.*)\\.(?:n64|v64|z64|zip|7z)$",
+      "amStartArguments": "-n com.joeysretro.joey64/.MainActivity\n  -a android.intent.action.VIEW\n  -d {file.uri}",
+      "killPackageProcesses": false,
+      "killPackageProcessesWarning": true,
+      "extra": ""
+    },
+    {
       "name": "RetroArch (64 bits) - mupen64plus_next_gles3",
       "uniqueId": "n64.ra64.mupen64plus_next_gles3",
       "description": "Supported extensions: bin, n64, u1, v64, z64, zip, 7z.",

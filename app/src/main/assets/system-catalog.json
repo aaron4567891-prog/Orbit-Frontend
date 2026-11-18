@@ -4214,7 +4214,7 @@
         "z64",
         "zip"
       ],
-      "players": 16,
+      "players": 17,
       "unconvertedCommands": 1,
       "metadata": {
         "source": "https://gitlab.com/es-de/emulationstation-de/-/blob/master/resources/systems/android/es_systems.xml",
@@ -4247,7 +4247,8 @@
       "additionalPlayerIds": [
         "n64.io.github.gopher64.gopher64",
         "n64.org.mupen64plusae.turnip.pwnedbygary",
-        "n64.com.omnidroid"
+        "n64.com.omnidroid",
+        "n64.com.joeysretro.joey64"
       ]
     },
     {

@@ -186,14 +186,15 @@ internal class GameWheelView(
     override fun onMeasure(widthSpec: Int, heightSpec: Int) {
         val extent = MeasureSpec.getSize(if (vertical) heightSpec else widthSpec)
         if (extent > 0) {
-            val visibleSlots = if (vertical) 5 else 3
+            val visibleSlots = if (vertical) 5 else 4
             val nextExtent = (extent * artworkScale / visibleSlots).roundToInt()
                 .coerceAtLeast(dp(48)).coerceAtMost(extent)
             if (nextExtent != itemExtent) {
                 clearSteps()
                 setMoving(false)
                 itemExtent = nextExtent
-                val inset = (extent - itemExtent) / 2
+                // Vertical wheels centre the selection; horizontal ones start at the left and run right.
+                val inset = if (vertical) (extent - itemExtent) / 2 else (itemExtent * 0.12f).roundToInt()
                 val trailingInset = extent - itemExtent - inset
                 if (vertical) setPadding(0, inset, 0, trailingInset)
                 else setPaddingRelative(inset, 0, trailingInset, 0)
@@ -209,7 +210,9 @@ internal class GameWheelView(
         updateWheelPositions()
     }
 
-    private val viewportCenter get() = (if (vertical) height else width) / 2
+    /** Where the selected game sits: the middle of a vertical wheel, the first slot of a horizontal one. */
+    private val viewportCenter get() = if (vertical) height / 2
+        else if (layoutDirection == LAYOUT_DIRECTION_RTL) width - paddingStart - itemExtent / 2 else paddingStart + itemExtent / 2
     private fun itemCenter(item: View) = if (vertical) (item.top + item.bottom) / 2 else (item.left + item.right) / 2
 
     private fun updateWheelPositions() {
@@ -247,6 +250,9 @@ internal class GameWheelView(
         val position = layout.getPosition(center)
         if (position in games.indices) moveCursor(position)
     }
+
+    /** The row showing the selected game, while it is laid out. */
+    fun selectedItemView(): View? = findViewHolderForAdapterPosition(cursor)?.itemView
 
     fun select(position: Int, animate: Boolean = true) {
         clearSteps()

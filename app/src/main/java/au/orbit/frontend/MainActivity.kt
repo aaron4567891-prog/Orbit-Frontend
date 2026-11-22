@@ -59,11 +59,12 @@ open class MainActivity : Activity() {
         EmulatorSettings.companionBrowse(this)?.let { return it }
         activeSplitTileMenu()?.shortcutBrowse()?.let { return it }
         if((activeTab==0 && !library) || activeTab==3) {
-            if (activeTab == 0 && focusedBrowseSystem == retroAchievementsSystem) {
+            if (activeTab == 0 && artworkBrowseSystem == retroAchievementsSystem) {
                 return CompanionBrowse("retroachievements", retroAchievementsSystem.title,
                     iconResource = R.drawable.ic_companion_star)
             }
-            val spec=systems.getOrNull(focusedSystemIndex)?.takeIf { it in populated } ?: populated.firstOrNull() ?: return null
+            val spec=(if (activeTab == 0) artworkBrowseSystem else focusedBrowseSystem)?.takeIf { it in populated }
+                ?: populated.firstOrNull() ?: return null
             val theme=OrbitThemes.current()
             val identity="${theme.id}/${theme.hashCode()}"
             return CompanionBrowse("system/${spec.id}/$identity",spec.title,"${pages[spec.id]?.games?.size ?: 0} games",system=spec)
@@ -84,6 +85,7 @@ open class MainActivity : Activity() {
     }
 
     private fun discardViews() {
+        systemArtworkSelection.clear()
         romLibraryScan?.onUpdate = null
         romLibraryScan?.cancel()
         mediaTransferPanel?.destroy(); mediaTransferPanel = null; mediaTransferBack = null
@@ -255,18 +257,33 @@ open class MainActivity : Activity() {
         val fallback=OrbitThemeArtwork.background(this,theme,pageRole=pageRole)
         if(activeTab!=0 || library || scanning || OrbitThemeArtwork.screen(this)=="bottom" ||
             view.findViewWithTag<View>("orbit-systems-grid")!=null)return fallback
-        val focused = focusedBrowseSystem
-        if (focused == retroAchievementsSystem) return fallback
+        val focused = artworkBrowseSystem
+        if (focused == retroAchievementsSystem || focusedSystemTile != null) return fallback
         val spec=focused?.takeIf { it in populated } ?: populated.firstOrNull() ?: return fallback
         val screen=OrbitThemeArtwork.artworkScreen(this)
-        if(theme.heroImage(screen,spec.id)==null)return fallback
-        return OrbitThemeArtwork.systemHeroBackground(this,theme,spec,screen,fallback).also { hero ->
-            OrbitThemeArtwork.requestHero(this,theme,spec,screen,hero::invalidateSelf)
+        if(!OrbitThemeArtwork.hasSystemHero(theme,spec.id,screen))return fallback
+        val previous = (view.background as? OrbitThemeArtwork.SystemHeroBackground)?.displayedImage
+        // The frosted systems panel covers the left of this screen; keep each hero's logo clear of it.
+        return OrbitThemeArtwork.systemHeroBackground(this,theme,spec,screen,fallback,previous,leftInset=if (systemsAppearance() == SystemsAppearance.HORIZONTAL_VIEW) 0f else SystemsPanel.inset(),
+            nameBottom=if (systemsAppearance() == SystemsAppearance.HORIZONTAL_VIEW) 0.72f else 0.86f).also { hero ->
+            OrbitThemeArtwork.requestHero(this,theme,spec,screen,hero::artworkReady)
         }
     }
+    /** The placeholder tile selected on the Systems screen, if any (tiles are not systems). */
+    private var focusedSystemTile: SystemSpec? = null
     private fun focusSystem(spec:SystemSpec) {
+        if (SystemTiles.isTile(spec)) {
+            focusedSystemTile = spec
+            nativeSystems?.removeCallbacks(warmWheelSelection)
+            tabViews[0]?.let { it.background = pageBackground(it) }
+            DualScreenCoordinator.refreshMedia()
+            return
+        }
+        focusedSystemTile = null
         focusedSystemIndex=systems.indexOf(spec)
-        val wheel=nativeSystems?.takeIf { it.isShown && systemsAppearance()==SystemsAppearance.VERTICAL_SCROLL }
+        // The wheel and the horizontal row both wait until scrolling settles to warm the game list.
+        val wheel=nativeSystems?.takeIf { it.isShown && systemsAppearance() in
+            listOf(SystemsAppearance.VERTICAL_SCROLL, SystemsAppearance.HORIZONTAL_VIEW) }
         if(spec==retroAchievementsSystem) wheel?.removeCallbacks(warmWheelSelection)
         else if(wheel==null)preloadListArtwork(spec)
         else {
@@ -274,8 +291,31 @@ open class MainActivity : Activity() {
             wheel.removeCallbacks(warmWheelSelection)
             wheel.postDelayed(warmWheelSelection,160L)
         }
-        if(activeTab==0 && !library)tabViews[0]?.let { it.background=pageBackground(it) }
-        DualScreenCoordinator.refreshMedia()
+        updateSystemArtwork(spec)
+    }
+    private val systemArtworkHandler = android.os.Handler(android.os.Looper.getMainLooper())
+    private val systemArtworkSelection by lazy {
+        SettledSelection<SystemSpec>(
+            post = { task, delay -> systemArtworkHandler.postDelayed(task, delay); Unit },
+            remove = { systemArtworkHandler.removeCallbacks(it) },
+            moving = { nativeSystems?.takeIf { it.isShown }?.artworkScrolling == true ||
+                (!library && activeSplitGrid()?.scrollState?.let { it != RecyclerView.SCROLL_STATE_IDLE } == true) },
+            changed = {
+                nativeSystems?.invalidate()
+                if (activeTab == 0 && !library && !isDestroyed) {
+                    tabViews[0]?.let { it.background = pageBackground(it) }
+                    DualScreenCoordinator.refreshMedia()
+                }
+            }
+        )
+    }
+    private val artworkBrowseSystem: SystemSpec? get() =
+        systemArtworkSelection.current?.takeIf {
+            SystemBackgroundTransition.waitForSelection() && (it in populated || it == retroAchievementsSystem)
+        } ?: focusedBrowseSystem
+    private fun updateSystemArtwork(spec: SystemSpec) {
+        // Native artwork and the companion read the same committed selection.
+        systemArtworkSelection.select(spec, SystemBackgroundTransition.waitForSelection())
     }
     private val warmWheelSelection=Runnable {
         if(nativeSystems?.isShown==true)systems.getOrNull(focusedSystemIndex)?.let(::preloadListArtwork)
@@ -808,6 +848,7 @@ open class MainActivity : Activity() {
     }
     private fun page(report: RomScanResult) = LibraryPage(report.games.map { Game(it.title, android.net.Uri.parse(it.uri), it.fileName,it.directory) }, report.errors)
     private fun openBrowseSystem(spec: SystemSpec) {
+        if (SystemTiles.isTile(spec)) { openSystemTile(spec); return }
         if (spec == retroAchievementsSystem) {
             openRetroAchievementsPage()
         } else openSystem(systems.indexOf(spec))
@@ -984,7 +1025,10 @@ open class MainActivity : Activity() {
                 val loaded = available.associate { spec -> spec.id to page(startupReports[spec] ?: repository.cached(spec) ?: RomScanResult(emptyList(), emptyList())) }
                 runCatching { InstalledApps.load(applicationContext) }
                 runCatching { OrbitThemes.refresh(this) }
-                runCatching { OrbitConsoleImages.load(this,first) }
+                // Restore only the tiny local logo cache before the first list frame, even with scanning off.
+                OrbitThemeArtwork.restoreSystemLogos(applicationContext, OrbitThemes.current(), available)
+                // Queue artwork before rendering, with no wait and no dependency on ROM scanning.
+                OrbitThemeArtwork.warmSystems(applicationContext, OrbitThemes.current(), available, first)
                 Triple(available, first, loaded)
             }
             runOnUiThread {
@@ -994,6 +1038,7 @@ open class MainActivity : Activity() {
                     populated = available
                     pages = loaded
                     selected = systems.indexOf(first)
+                    focusedSystemIndex = selected
                     games = loaded[first.id]?.games.orEmpty()
                     error = loaded[first.id]?.errors?.takeIf { it.isNotEmpty() }?.let { "${games.size} games · ${it.size} folder errors. Check ROM library settings." }
                     library = state?.getBoolean("library") ?: false
@@ -1075,13 +1120,13 @@ open class MainActivity : Activity() {
     override fun onResume() {
         super.onResume()
         FrontendNavigationBar.apply(this)
+        if(ready || showingCompanion)FrontendRefreshRate.apply(this)
         if(showingCompanion) {
             DualScreenCoordinator.companionResumed(this)
             return
         }
         updateSystemsMusic()
         refreshLibraryDock()
-        if(ready)FrontendRefreshRate.apply(this)
         if(ready && activeTab==1)appsPanel?.resume()
         if(ready && library && activeTab==0) {
             artworkPanel?.show(system,games.getOrNull(gameCursor),true)
@@ -1092,6 +1137,9 @@ open class MainActivity : Activity() {
         super.onWindowFocusChanged(hasFocus)
         if (hasFocus) {
             FrontendNavigationBar.apply(this)
+            // Recents can cover a still-resumed Home activity. Reassert the
+            // frontend rate when its window returns, on either display.
+            if(ready || showingCompanion)FrontendRefreshRate.apply(this)
             if (!showingCompanion) updateSystemsMusic()
         }
     }
@@ -1107,7 +1155,7 @@ open class MainActivity : Activity() {
         DualScreenCoordinator.detach(this)
         super.onStop()
     }
-    override fun onDestroy() { remoteSettingsDialog?.dismiss();systemsMusic.destroy();mediaTransferPanel?.destroy();scraperSettingsPanel?.destroy();themeBackdrop?.destroy();gamePreloader?.destroy();importedSystems?.destroy();importedScene?.destroy();gameLogos.destroy();companionPanel?.destroy();if(showingCompanion)DualScreenCoordinator.panelDestroyed(this);colorfulSystems?.destroy(); artworkPanel?.destroy(); discardPreparedArtwork(); appsPanel?.destroy(); skipStartup.set(true); generation++; libraryRefreshWorker.shutdownNow();worker.shutdownNow();retroAchievementsWorker.shutdownNow(); super.onDestroy() }
+    override fun onDestroy() { systemArtworkSelection.clear();remoteSettingsDialog?.dismiss();systemsMusic.destroy();mediaTransferPanel?.destroy();scraperSettingsPanel?.destroy();themeBackdrop?.destroy();gamePreloader?.destroy();importedSystems?.destroy();importedScene?.destroy();gameLogos.destroy();companionPanel?.destroy();if(showingCompanion)DualScreenCoordinator.panelDestroyed(this);colorfulSystems?.destroy(); artworkPanel?.destroy(); discardPreparedArtwork(); appsPanel?.destroy(); skipStartup.set(true); generation++; libraryRefreshWorker.shutdownNow();worker.shutdownNow();retroAchievementsWorker.shutdownNow(); super.onDestroy() }
     private fun dp(n: Int) = (n * resources.displayMetrics.density).toInt()
     private fun text(value: String, size: Float, color: Int = Color.WHITE) = TextView(this).apply {
         text = value; textSize = size; setTextColor(color); setPadding(0, dp(5), 0, dp(5))
@@ -1166,9 +1214,14 @@ open class MainActivity : Activity() {
         val useArtworkCarousel = verticalScroll || appearance == SystemsAppearance.HORIZONTAL_VIEW || nativeTheme.systemLayout == "artwork" ||
             OrbitThemeArtwork.image(this, nativeTheme, "hero", target = screen) != null
         if(useArtworkCarousel && !library && populated.isNotEmpty() && !scanning) {
-            val scene=OrbitSystemsView(this,visibleSystems,focusedPosition,
+            // Placeholder tiles sit among the systems in the wheel and the horizontal row.
+            val withTiles = SystemOrder.apply(SystemTiles.merge(visibleSystems), SystemSpec::id)
+            val tilePosition = focusedSystemTile?.let { tile -> withTiles.indexOfFirst { it.id == tile.id } }?.takeIf { it >= 0 }
+            val scene=OrbitSystemsView(this,withTiles,tilePosition ?: withTiles.indexOf(visibleSystems.getOrNull(focusedPosition)).coerceAtLeast(0),
                 { pages[it.id]?.games?.size ?: 0 },::focusSystem,::openBrowseSystem,
-                showHero=showSystemHero, verticalScroll=verticalScroll)
+                showHero=showSystemHero, verticalScroll=verticalScroll, artworkSelection = { artworkBrowseSystem },
+                bottomStrip = appearance == SystemsAppearance.HORIZONTAL_VIEW,
+                reordered = { order -> runCatching { SystemOrder.save(this, order.map { it.id }) }.onFailure(::showDataError) })
             root=LinearLayout(this).apply { orientation=LinearLayout.VERTICAL;setBackgroundColor(nativeTheme.background);addView(scene,LinearLayout.LayoutParams(-1,-1)) }
             nativeSystems=scene;present(root);tabFocus[0]=scene
             scene.post { if(activeTab==0 && !library)scene.requestFocus() }
@@ -1177,7 +1230,7 @@ open class MainActivity : Activity() {
         val externalTheme=ImportedThemes.active(this)
         if(externalTheme!=null && !library && populated.isNotEmpty() && !scanning) {
             val scene=ImportedSystemsView(this,externalTheme,visibleSystems,focusedPosition,
-                { pages[it.id]?.games?.size ?: 0 },{ focusedSystemIndex=systems.indexOf(it);preloadFirstGame(it);refreshThemeBackdrop();DualScreenCoordinator.refreshMedia() },::openBrowseSystem)
+                { pages[it.id]?.games?.size ?: 0 },{ focusedSystemIndex=systems.indexOf(it);preloadFirstGame(it);refreshThemeBackdrop();systemArtworkSelection.select(it, false);DualScreenCoordinator.refreshMedia() },::openBrowseSystem)
             root=LinearLayout(this).apply {
                 orientation=LinearLayout.VERTICAL
                 addView(scene,LinearLayout.LayoutParams(-1,-1))
@@ -1191,7 +1244,7 @@ open class MainActivity : Activity() {
             colorfulSystems?.destroy()
             root = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL; setBackgroundColor(Color.rgb(12,17,25)) }
             val view = ColorfulSystemsView(this,visibleSystems,focusedPosition,
-                { pages[it.id]?.games?.size ?: 0 }, { focusedSystemIndex=systems.indexOf(it);DualScreenCoordinator.refreshMedia() }, ::openBrowseSystem)
+                { pages[it.id]?.games?.size ?: 0 }, { focusedSystemIndex=systems.indexOf(it);systemArtworkSelection.select(it, false);DualScreenCoordinator.refreshMedia() }, ::openBrowseSystem)
             colorfulSystems=view
             root.addView(view,LinearLayout.LayoutParams(-1,0,1f));present(root)
             tabFocus[0]=view;view.post { if(activeTab==0 && !library)view.requestFocus() }
@@ -1232,7 +1285,7 @@ open class MainActivity : Activity() {
                     setPadding(dp(16), dp(12), dp(16), dp(12))
                     background = surface(nativeTheme.surface, Color.rgb(38, 49, 65))
                     val artworkScreen=OrbitThemeArtwork.artworkScreen(this@MainActivity)
-                    val showCardArt=if(showSystemHero)nativeTheme.systemHeroes[spec.id]?.containsKey(artworkScreen)==true ||
+                    val showCardArt=if(showSystemHero)OrbitThemeArtwork.hasSystemHero(nativeTheme,spec.id,artworkScreen) ||
                         nativeTheme.systemImages[spec.id]?.containsKey(artworkScreen)==true
                     else nativeTheme.showSystemArtwork(spec.id,artworkScreen)
                     if(showCardArt) {
@@ -1466,6 +1519,44 @@ open class MainActivity : Activity() {
 
     private fun activeGameWheel() = tabViews[6]?.findViewWithTag<GameWheelView>("orbit-game-wheel")
 
+    /** Wraps [content] (which has no parent yet) with the system header. */
+    private fun withSystemHeader(content: View, spec: SystemSpec, theme: OrbitThemes.Theme): View =
+        FrameLayout(this).apply {
+            addView(content, FrameLayout.LayoutParams(-1, -1))
+            addSystemHeader(this, spec, theme)
+        }
+
+    /** The open system's logo (or name, if it has none) in the top-left corner of [host]. */
+    private fun addSystemHeader(host: FrameLayout, spec: SystemSpec, theme: OrbitThemes.Theme) {
+        host.findViewWithTag<View>("orbit-system-header-logo")?.let(host::removeView)
+        host.findViewWithTag<View>("orbit-system-header-name")?.let(host::removeView)
+        val logo = ImageView(this).apply {
+            scaleType = ImageView.ScaleType.FIT_START
+            adjustViewBounds = true
+            colorFilter = LogoHalo.systemFilter(spec.id)
+            contentDescription = spec.title
+        }
+        val name = TextView(this).apply {
+            text = spec.title; textSize = 20f; setTextColor(theme.text); typeface = Typeface.DEFAULT_BOLD
+            setShadowLayer(dp(4).toFloat(), 0f, dp(1).toFloat(), Color.argb(170, 0, 0, 0))
+        }
+        fun bind() {
+            val bitmap = OrbitThemeArtwork.systemLogo(OrbitThemes.current(), spec)
+            logo.setImageBitmap(bitmap)
+            logo.visibility = if (bitmap == null) View.GONE else View.VISIBLE
+            name.visibility = if (bitmap == null) View.VISIBLE else View.GONE
+        }
+        bind()
+        OrbitThemeArtwork.requestSystemLogo(this, OrbitThemes.current(), spec, ::bind)
+        logo.tag = "orbit-system-header-logo"; name.tag = "orbit-system-header-name"
+        host.addView(logo, FrameLayout.LayoutParams(dp(200), dp(44), Gravity.TOP or Gravity.START).apply {
+            leftMargin = dp(20); topMargin = dp(16)
+        })
+        host.addView(name, FrameLayout.LayoutParams(-2, -2, Gravity.TOP or Gravity.START).apply {
+            leftMargin = dp(20); topMargin = dp(16)
+        })
+    }
+
     private fun renderGameWheel(theme: OrbitThemes.Theme, appearance: GameAppearance, splitDisplays: Boolean) {
         val spec = system
         val entries = games
@@ -1541,7 +1632,10 @@ open class MainActivity : Activity() {
                 panel.backgroundMediaPaused = it::pause
             }
         }
-        present(root)
+        // With background media the game view already sits in the media layer; the header goes on top of that.
+        val surface = gameMediaSurface?.takeIf { root === gameMediaRoot }
+        if (surface != null) { addSystemHeader(surface, spec, theme); present(root) }
+        else present(withSystemHeader(root, spec, theme))
         tabFocus[6] = wheel
         if (startMenu?.isShowing != true) wheel.requestFocus()
         showSelectedMedia()
@@ -1729,7 +1823,10 @@ open class MainActivity : Activity() {
             },onSelected={ position ->
                 slots.libraryIndex(position)?.let { index ->
                     if(inGames)gameCursor=index
-                    else focusedSystemIndex=systems.indexOf(systemsHere[index])
+                    else {
+                        focusedSystemIndex=systems.indexOf(systemsHere[index])
+                        updateSystemArtwork(systemsHere[index])
+                    }
                 }
                 if(!inGames)preloadSplitGames(grid)
                 DualScreenCoordinator.refreshMedia()
@@ -2524,6 +2621,24 @@ open class MainActivity : Activity() {
                     }
                     showSystems()
                 }
+                // Remove one artwork type from every system, including bundled defaults.
+                val screen = screens.first()
+                val everySystem = SystemCatalog.entries
+                for ((kind, label) in listOf("hero" to "hero images", "system" to "system images", "logo" to "system logos")) {
+                    val row = choices.size
+                    val allRemoved = everySystem.all { spec -> when (kind) {
+                        "hero" -> theme.heroRemoved(spec.id, screen)
+                        "logo" -> theme.logoRemoved(spec.id)
+                        else -> !theme.showSystemArtwork(spec.id, screen)
+                    } }
+                    if (allRemoved) continue
+                    choices += Choice("Remove all $label", "Hide $label for every system, including the bundled defaults.",
+                        section = if (choices.drop(logosRow + 1).none { it.title.startsWith("Remove all") }) "Every system" else "") {
+                        ThemeMediaSettings.setArtworkRemovedForAll(this, everySystem, kind, screen, true) {
+                            if (isCurrent(parent)) showArtworkImages(parent, row)
+                        }
+                    }
+                }
                 showChoices("Artwork images", parent, choices, focused = focused)
             }
             fun showAnimationSettings(view: TransitionSettings.View, parent: () -> Unit, focused: Int? = null) {
@@ -2532,9 +2647,35 @@ open class MainActivity : Activity() {
                         option.change()
                         if (isCurrent(parent)) showAnimationSettings(view, parent, row)
                     }
+                }.toMutableList()
+                if (view == TransitionSettings.View.SYSTEMS) {
+                    val row = choices.size
+                    val backToAnimations = { showAnimationSettings(view, parent, row) }
+                    fun backgrounds(focus: Int? = null) {
+                        val options = systemBackgroundAnimationOptions().mapIndexed { index, option ->
+                            Choice(option.title, option.description, option.value()) {
+                                option.change()
+                                if (isCurrent(backToAnimations)) backgrounds(index)
+                            }
+                        }
+                        showChoices("Backgrounds", backToAnimations, options, focused = focus)
+                    }
+                    choices.add(Choice("Backgrounds", "Choose how system backgrounds change.", SystemBackgroundTransition.style().label) {
+                        backgrounds()
+                    })
                 }
                 val title = if (view == TransitionSettings.View.SYSTEMS) "Systems animations" else "Game list animations"
                 showChoices(title, parent, choices, focused = focused)
+            }
+            /** Main Settings → Customisation → Animations: the Systems and game list animation pages. */
+            fun showAnimations(parent: () -> Unit, focused: Int? = null) {
+                val views = listOf(TransitionSettings.View.SYSTEMS to "Systems", TransitionSettings.View.GAMES to "Game list")
+                val choices = views.mapIndexed { row, (view, label) ->
+                    Choice(label, "Choose the transition and effects for this view.", pageTransitionLabels[pageTransition(view)]) {
+                        showAnimationSettings(view, { showAnimations(parent, row) })
+                    }
+                }
+                showChoices("Animations", parent, choices, focused = focused)
             }
             val section = subpage?.title ?: names[index]
             fun redrawSection() {
@@ -2545,12 +2686,6 @@ open class MainActivity : Activity() {
                 val imagesRow = optionRows.size
                 option("Artwork images", "Set backgrounds, hero images and system logos.") {
                     showArtworkImages(returnToParent(imagesRow))
-                }
-                val theme = OrbitThemes.current()
-                val screen = OrbitThemeArtwork.artworkScreen(this, mediaScreen, theme)
-                val visible = screen in theme.systemArtworkScreens
-                option("Show system artwork", "Show the foreground console image for this screen.", if (visible) "On" else "Off") {
-                    ThemeMediaSettings.setSystemArtworkVisible(this, theme, screen, !visible, ::redrawSection)
                 }
             }
             fun showUserData(parent: () -> Unit) {
@@ -2623,7 +2758,9 @@ open class MainActivity : Activity() {
                                     })
                                     add(Choice("Remove from collection") {
                                         runCatching { CustomCollections.setMember(this@MainActivity, id, entry, false) }
-                                            .onSuccess { showList(id, position + 1) }.onFailure(::showDataError)
+                                            // Focus the game that takes its place (or the one before, if it was last).
+                                        .onSuccess { showList(id, if (collection.games.size > 1) 2 + minOf(position, collection.games.size - 2) else 0) }
+                                        .onFailure(::showDataError)
                                     })
                                 }
                                 showChoices(game?.title ?: entry.title, { showList(id, position + 2) }, actions,
@@ -2827,6 +2964,12 @@ open class MainActivity : Activity() {
                             .onFailure(::showDataError)
                     }
                 } else {
+                    val statusHidden = UserDataStore.int(this, FrontendNavigationBar.HIDE_STATUS_BAR_KEY, 0) != 0
+                    option("Status bar", "Show the clock, battery and Android icons on the top screen. Swipe down from the top to see them when hidden.",
+                        if (statusHidden) "Hidden" else "Shown") {
+                        runCatching { UserDataStore.put(this, "settings", FrontendNavigationBar.HIDE_STATUS_BAR_KEY, if (statusHidden) 0 else 1) }
+                            .onSuccess { FrontendNavigationBar.apply(this); redrawSection() }.onFailure { showDataError(it) }
+                    }
                     val startup = UserDataStore.int(this, "scanOnStartup", 1) != 0
                     option("Scan on startup", "Refresh saved ROM folders when Orbit starts.", if (startup) "On" else "Off") {
                         runCatching { UserDataStore.put(this, "settings", "scanOnStartup", if (startup) 0 else 1) }
@@ -2928,12 +3071,9 @@ open class MainActivity : Activity() {
                             .onSuccess { updateSystemsMusic(); showCategory(index, true) }.onFailure { showDataError(it) }
                     }
                     artworkLinks()
-                    for ((view, label) in listOf(TransitionSettings.View.SYSTEMS to "Systems animations",
-                        TransitionSettings.View.GAMES to "Game list animations")) {
-                        val animationRow = optionRows.size
-                        option(label, "Choose the transition and effects for this view.", pageTransitionLabels[pageTransition(view)]) {
-                            showAnimationSettings(view, returnToParent(animationRow))
-                        }
+                    val animationsRow = optionRows.size
+                    option("Animations", "Choose transitions and effects for Systems and the game list.") {
+                        showAnimations(returnToParent(animationsRow))
                     }
                 }
                 "Account" -> {
@@ -3453,6 +3593,7 @@ open class MainActivity : Activity() {
 
     override fun dispatchKeyEvent(event: KeyEvent): Boolean {
         if(showingCompanion)return super.dispatchKeyEvent(event)
+        systemQuickMenu?.let { return it.handle(event) }
         remotePopups.removeAll { !it.isShowing }
         remotePopups.lastOrNull()?.let { popup ->
             val key=event.keyCode
@@ -3563,6 +3704,25 @@ open class MainActivity : Activity() {
             if (event.action == KeyEvent.ACTION_UP) onKeyUp(event.keyCode, event)
             return true
         }
+        // Y on a highlighted system: a tap opens its quick menu; holding picks it up to move it.
+        if (ready && activeTab == 0 && !library && event.keyCode == KeyEvent.KEYCODE_BUTTON_Y && startMenu?.isShowing != true &&
+            nativeSystems?.moving != true) {
+            val wheel = nativeSystems?.takeIf { it.isShown }
+            if (event.action == KeyEvent.ACTION_DOWN && event.repeatCount == 0) {
+                yHoldStarted = false
+                wheel?.let { view -> view.removeCallbacks(startSystemMove); view.postDelayed(startSystemMove, 450L) }
+            } else if (event.action == KeyEvent.ACTION_DOWN && !yHoldStarted && event.eventTime - event.downTime >= 400L) {
+                // Android repeats a held button; this starts rearranging even if the timer and release race.
+                wheel?.removeCallbacks(startSystemMove)
+                startSystemMove.run()
+            } else if (event.action == KeyEvent.ACTION_UP) {
+                wheel?.removeCallbacks(startSystemMove)
+                if (!yHoldStarted && !event.isCanceled)
+                    (focusedSystemTile ?: focusedBrowseSystem?.takeIf { it != retroAchievementsSystem })?.let(::showSystemQuickMenu)
+                yHoldStarted = false
+            }
+            return true
+        }
         if (ready && activeTab in listOf(2,4) && settingsKeyHandlers[activeTab]?.invoke(event) == true) return true
         if (ready && activeTab==3 && themeGallery?.handleNavigation(event)==true)return true
         if(ready && activeTab==0 && !library && startMenu?.isShowing!=true && nativeSystems?.handle(event)==true)return true
@@ -3631,9 +3791,85 @@ open class MainActivity : Activity() {
             },
             toggle("Tile cascade", "Tiles appear one after another when this view opens.", SplitLibraryGrid.TILE_CASCADE_KEY),
             toggle("Gliding selection", "The selection outline slides from tile to tile.", SplitLibraryGrid.GLIDING_SELECTION_KEY,
-                refreshSelection = true),
-            toggle("Artwork crossfade", "Blend between artwork as you browse this view.", GameMediaSurface.ART_CROSSFADE_KEY)
-        ) + if (systems) emptyList() else listOf(artworkAnimationOption(), launchAnimationOption())
+                refreshSelection = true)
+        ) + if (systems) listOf(systemLogoAnimationOption()) else listOf(
+            toggle("Artwork crossfade", "Blend between artwork as you browse this view.", GameMediaSurface.ART_CROSSFADE_KEY),
+            artworkAnimationOption(), launchAnimationOption())
+    }
+
+    private fun saveSystemBackgroundSetting(key: String, value: Int) {
+        runCatching { TransitionSettings.put(this, key, value, TransitionSettings.View.SYSTEMS) }
+            .onSuccess { if (key == SystemBackgroundTransition.WAIT_KEY) focusedBrowseSystem?.let(::updateSystemArtwork) }
+            .onFailure(::showDataError)
+    }
+
+    private fun systemBackgroundAnimationOptions(): List<AnimationOption> = listOf(
+        AnimationOption("Transition style", "Choose how artwork blends or moves when changing systems.",
+            { SystemBackgroundTransition.style().label }) {
+            val styles = SystemBackgroundTransition.Style.entries
+            saveSystemBackgroundSetting(SystemBackgroundTransition.STYLE_KEY,
+                styles[(SystemBackgroundTransition.style().ordinal + 1) % styles.size].id)
+        },
+        AnimationOption("Speed", "Change how quickly the background transition finishes.",
+            { SystemBackgroundTransition.speed().label }) {
+            saveSystemBackgroundSetting(SystemBackgroundTransition.SPEED_KEY,
+                (SystemBackgroundTransition.speed().ordinal + 1) % SystemBackgroundTransition.Speed.entries.size)
+        },
+        AnimationOption("Direction", "Choose the movement direction for Slide.",
+            { if (SystemBackgroundTransition.style() == SystemBackgroundTransition.Style.SLIDE)
+                SystemBackgroundTransition.direction().label else "Not used" }) {
+            if (SystemBackgroundTransition.style() == SystemBackgroundTransition.Style.SLIDE)
+                saveSystemBackgroundSetting(SystemBackgroundTransition.DIRECTION_KEY,
+                    (SystemBackgroundTransition.direction().ordinal + 1) % SystemBackgroundTransition.Direction.entries.size)
+        },
+        AnimationOption("Wait for selection", "Wait until scrolling settles on a system before changing its artwork on both screens.",
+            { if (SystemBackgroundTransition.waitForSelection()) "On" else "Off" }) {
+            saveSystemBackgroundSetting(SystemBackgroundTransition.WAIT_KEY, if (SystemBackgroundTransition.waitForSelection()) 0 else 1)
+        },
+        AnimationOption("Apply to", "Share system animation settings across all themes or remember them for each theme.",
+            { if (TransitionSettings.perTheme(TransitionSettings.View.SYSTEMS)) "Each theme (${OrbitThemes.current().name})" else "All themes" }) {
+            runCatching { TransitionSettings.setPerTheme(this, TransitionSettings.View.SYSTEMS,
+                !TransitionSettings.perTheme(TransitionSettings.View.SYSTEMS)) }.onFailure(::showDataError)
+        }
+    )
+
+    private fun showSystemBackgroundAnimations(menu: EmulatorSettings.MenuWindow, back: () -> Unit, focused: Int = 0) {
+        val options = systemBackgroundAnimationOptions()
+        menu.liveActions("Backgrounds", options.map { option -> { "${option.title} · ${option.value()}" } }, { index ->
+            val returnToBackgrounds = { showSystemBackgroundAnimations(menu, back, index) }
+            fun values(title: String, labels: List<String>, selected: () -> Int, key: String, ids: List<Int> = labels.indices.toList()) {
+                menu.liveActions(title, labels.mapIndexed { row, label ->
+                    { if (row == selected()) "✓  $label" else label }
+                }, { saveSystemBackgroundSetting(key, ids[it]) }, returnToBackgrounds, initialSelection = selected())
+            }
+            when (index) {
+                0 -> values("Transition style", SystemBackgroundTransition.Style.entries.map { it.label },
+                    { SystemBackgroundTransition.style().ordinal }, SystemBackgroundTransition.STYLE_KEY,
+                    SystemBackgroundTransition.Style.entries.map { it.id })
+                1 -> values("Speed", SystemBackgroundTransition.Speed.entries.map { it.label },
+                    { SystemBackgroundTransition.speed().ordinal }, SystemBackgroundTransition.SPEED_KEY)
+                2 -> if (SystemBackgroundTransition.style() == SystemBackgroundTransition.Style.SLIDE)
+                    values("Direction", SystemBackgroundTransition.Direction.entries.map { it.label },
+                        { SystemBackgroundTransition.direction().ordinal }, SystemBackgroundTransition.DIRECTION_KEY)
+                else -> options[index].change()
+            }
+        }, back, initialSelection = focused)
+    }
+
+    private fun showSystemAnimations(menu: EmulatorSettings.MenuWindow, back: () -> Unit) {
+        val logo = systemLogoAnimationOption()
+        menu.liveActions("Animation", listOf({ "Backgrounds" }, { "${logo.title} · ${logo.value()}" }), { index ->
+            if (index == 0) showSystemBackgroundAnimations(menu, { showSystemAnimations(menu, back) })
+            else logo.change()
+        }, back)
+    }
+
+    private fun systemLogoAnimationOption() = AnimationOption("Zoom selected logo",
+        "Smoothly enlarge the system name logo as it scrolls into selection.",
+        { if (SystemLogoAnimation.enabled()) "On" else "Off" }) {
+        runCatching { TransitionSettings.put(this, SystemLogoAnimation.KEY,
+            if (SystemLogoAnimation.enabled()) 0 else 1, TransitionSettings.View.SYSTEMS) }
+            .onSuccess { nativeSystems?.refreshLogoAnimation() }.onFailure(::showDataError)
     }
 
     private fun artworkAnimationOption() = AnimationOption(
@@ -3648,15 +3884,6 @@ open class MainActivity : Activity() {
         runCatching {
             TransitionSettings.put(this, TransitionSettings.ArtworkAnimation.KEY, style.id, TransitionSettings.View.GAMES)
         }.onFailure(::showDataError)
-    }
-
-    private fun showGameArtworkAnimations(menu: EmulatorSettings.MenuWindow, back: () -> Unit) {
-        val styles = TransitionSettings.ArtworkAnimation.entries
-        val labels = styles.map { style ->
-            { if (style == TransitionSettings.ArtworkAnimation.selected()) "✓  ${style.label}" else style.label }
-        }
-        menu.liveActions("Background animation", labels, { saveArtworkAnimation(styles[it]) },
-            back, initialSelection = TransitionSettings.ArtworkAnimation.selected().ordinal)
     }
 
     private fun launchAnimationOption() = AnimationOption(
@@ -3700,6 +3927,15 @@ open class MainActivity : Activity() {
         }, back, initialSelection = focused)
     }
 
+    private fun showGameArtworkAnimations(menu: EmulatorSettings.MenuWindow, back: () -> Unit) {
+        val styles = TransitionSettings.ArtworkAnimation.entries
+        val labels = styles.map { style ->
+            { if (style == TransitionSettings.ArtworkAnimation.selected()) "✓  ${style.label}" else style.label }
+        }
+        menu.liveActions("Background animation", labels, { saveArtworkAnimation(styles[it]) },
+            back, initialSelection = TransitionSettings.ArtworkAnimation.selected().ordinal)
+    }
+
     private fun showSystemSwitchAnimations(menu: EmulatorSettings.MenuWindow, back: () -> Unit) {
         val labels = listOf<() -> String>(
             { "Animation · ${systemSwitchAnimation().label}" },
@@ -3729,6 +3965,305 @@ open class MainActivity : Activity() {
                 Unit
             }.onFailure(::showDataError)
         }, back)
+    }
+
+    private var systemQuickMenu: QuickMenuOverlay? = null
+    private var yHoldStarted = false
+    /** Holding Y on the Systems screen picks up the selected system or tile to move it. */
+    private val startSystemMove = Runnable {
+        nativeSystems?.takeIf { it.isShown }?.let { yHoldStarted = true; it.startMove() }
+    }
+
+    /** Rebuilds the Systems screen with its tiles, keeping the selection on [tileId] when given. */
+    private fun refreshSystemTiles(tileId: String? = null) {
+        focusedSystemTile = tileId?.let { id -> SystemTiles.merge(browsingSystems).firstOrNull { it.id == id } }
+        tabViews.remove(0)?.let { screenHost?.removeView(it) }; tabFocus.remove(0)
+        render()
+    }
+
+    /** A filled tile launches its app or game; an empty one opens its Y menu to fill it. */
+    private fun openSystemTile(spec: SystemSpec) {
+        val tile = SystemTiles.tile(spec) ?: return
+        when (tile.kind) {
+            SystemTiles.Kind.EMPTY -> showSystemQuickMenu(spec)
+            SystemTiles.Kind.APP -> tile.target?.let(android.content.ComponentName::unflattenFromString)?.let { AppDock.launchApp(this, it) }
+            SystemTiles.Kind.GAME -> {
+                val (systemId, uri) = tile.target?.split("|", limit = 2)?.takeIf { it.size == 2 } ?: return
+                val target = systems.firstOrNull { it.id == systemId } ?: return
+                val game = pages[systemId]?.games?.firstOrNull { it.uri.toString() == uri }
+                if (game == null) android.widget.Toast.makeText(this, "${tile.label} is no longer in your library.", android.widget.Toast.LENGTH_SHORT).show()
+                else chooseEmulator(game, spec = target)
+            }
+        }
+    }
+
+    /** Y menu for a placeholder tile: fill it with an app or game, open, change or clear it, or remove it. */
+    /**
+     * App and game choices for the system list. [chosen] receives an app (component, label) or a game (its system
+     * and the game) and saves it.
+     */
+    private fun gameOrAppPages(overlay: () -> QuickMenuOverlay,
+        chosenApp: (String, String) -> Unit, chosenGame: (SystemSpec, Game) -> Unit): List<QuickMenuOverlay.Action> {
+        fun appPage(): List<QuickMenuOverlay.Action> {
+            val launcher = android.content.Intent(android.content.Intent.ACTION_MAIN).addCategory(android.content.Intent.CATEGORY_LAUNCHER)
+            return packageManager.queryIntentActivities(launcher, 0)
+                .filter { it.activityInfo.packageName != packageName }
+                .map { it to it.loadLabel(packageManager).toString() }
+                .sortedBy { it.second.lowercase() }
+                .map { (info, label) ->
+                    QuickMenuOverlay.Action({ label }, closes = true) {
+                        chosenApp(android.content.ComponentName(info.activityInfo.packageName, info.activityInfo.name).flattenToString(), label)
+                    }
+                }
+        }
+        fun gamePage(source: SystemSpec): List<QuickMenuOverlay.Action> = pages[source.id]?.games.orEmpty().map { game ->
+            QuickMenuOverlay.Action({ game.title }, closes = true) { chosenGame(source, game) }
+        }
+        return listOf(
+            QuickMenuOverlay.Action({ "Game" }) {
+                overlay().openPage("Choose system", populated.map { source ->
+                    QuickMenuOverlay.Action({ source.title }) { overlay().openPage(source.title, gamePage(source)) }
+                })
+            },
+            QuickMenuOverlay.Action({ "App" }) { overlay().openPage("Choose app", appPage()) }
+        )
+    }
+
+    /** Adds a game or app straight into the system list, after [anchor]. */
+    private fun addToSystemList(overlay: () -> QuickMenuOverlay, anchor: SystemSpec) = gameOrAppPages(overlay,
+        chosenApp = { component, label ->
+            runCatching {
+                val id = SystemTiles.insertAfter(this, anchor)
+                SystemTiles.assignApp(this, SystemSpec(id, "", "", "", emptySet()), component, label); id
+            }.onSuccess(::refreshSystemTiles).onFailure(::showDataError)
+        },
+        chosenGame = { source, game ->
+            runCatching {
+                val id = SystemTiles.insertAfter(this, anchor)
+                SystemTiles.assignGame(this, SystemSpec(id, "", "", "", emptySet()), source.id, game); id
+            }.onSuccess(::refreshSystemTiles).onFailure(::showDataError)
+        })
+
+    /** Y menu for a game or app in the system list: open it, change it, or remove it from the list. */
+    private fun systemTileActions(overlay: () -> QuickMenuOverlay, spec: SystemSpec): List<QuickMenuOverlay.Action> {
+        val tile = SystemTiles.tile(spec) ?: return emptyList()
+        fun change() = gameOrAppPages(overlay,
+            chosenApp = { component, label ->
+                runCatching { SystemTiles.assignApp(this, spec, component, label) }.onSuccess { refreshSystemTiles(spec.id) }.onFailure(::showDataError)
+            },
+            chosenGame = { source, game ->
+                runCatching { SystemTiles.assignGame(this, spec, source.id, game) }.onSuccess { refreshSystemTiles(spec.id) }.onFailure(::showDataError)
+            })
+        val remove = QuickMenuOverlay.Action({ "Remove from system list" }, closes = true) {
+            runCatching { SystemTiles.remove(this, spec) }.onSuccess { refreshSystemTiles() }.onFailure(::showDataError)
+        }
+        // Entries added before games and apps went straight into the list can still be empty.
+        return if (tile.kind == SystemTiles.Kind.EMPTY) listOf(
+            QuickMenuOverlay.Action({ "Add game or app" }) { overlay().openPage("Add game or app", change()) },
+            remove
+        ) else listOf(
+            QuickMenuOverlay.Action({ "Open ${tile.label}" }, closes = true) { openSystemTile(spec) },
+            QuickMenuOverlay.Action({ "Change" }) { overlay().openPage("Change", change()) },
+            remove
+        )
+    }
+
+    /**
+     * Emulator choices for a Y menu page: a system's default emulator, or one game's (with "Use system
+     * default"). RetroArch builds open in place to show their cores.
+     */
+    private fun emulatorActions(overlay: () -> QuickMenuOverlay, spec: SystemSpec, game: Game?): List<QuickMenuOverlay.Action> {
+        val repository = EmulatorProfileRepository(this)
+        val profiles = InstalledEmulators.available(this, repository.forSystem(spec), false)
+            .sortedWith(compareBy<EmulatorProfile> { "LIBRETRO" in it.stringExtras }.thenBy { !it.installed(this) })
+        fun selected() = if (game == null) repository.selected(spec)?.id else repository.gameOverride(spec, game)?.id
+        fun save(profile: EmulatorProfile?) {
+            if (profile != null && !profile.installed(this)) {
+                android.widget.Toast.makeText(this, "Install ${profile.name} first", android.widget.Toast.LENGTH_SHORT).show(); return
+            }
+            runCatching { if (game == null) repository.select(spec, profile) else repository.selectForGame(spec, game, profile) }
+                .onFailure { android.widget.Toast.makeText(this, "Unable to save emulator: ${it.message}", android.widget.Toast.LENGTH_LONG).show() }
+        }
+        val entries = EmulatorGroups.group(profiles)
+        val expanded = entries.filterIsInstance<EmulatorGroups.Entry.Build>()
+            .filter { build -> build.cores.any { it.id == selected() } }.map { it.key }.toMutableSet()
+        fun installedNote(profile: EmulatorProfile) = if (!profile.installed(this)) " · Not installed" else ""
+        val leading = if (game == null) 0 else 1
+        lateinit var page: () -> List<QuickMenuOverlay.Action>
+        page = {
+            (if (game == null) emptyList()
+            else listOf(QuickMenuOverlay.Action({ "${if (selected() == null) "✓  " else ""}Use system default" }) { save(null) })) +
+                EmulatorGroups.rows(entries, expanded).mapIndexed { i, row ->
+                    when (row) {
+                        is EmulatorGroups.Row.Choose -> QuickMenuOverlay.Action({
+                            "${if (row.core) "      " else ""}${if (row.profile.id == selected()) "✓  " else ""}" +
+                                "${if (row.core) EmulatorGroups.coreLabel(row.profile) else row.profile.name}${installedNote(row.profile)}"
+                        }) { save(row.profile) }
+                        is EmulatorGroups.Row.Toggle -> QuickMenuOverlay.Action({
+                            val chosen = row.build.cores.firstOrNull { it.id == selected() }
+                            "${if (chosen != null) "✓  " else ""}${row.build.label}${chosen?.let { " · ${EmulatorGroups.coreLabel(it)}" } ?: ""}" +
+                                if (row.build.key in expanded) "  ▾" else "  ▸"
+                        }) {
+                            if (!expanded.remove(row.build.key)) expanded.add(row.build.key)
+                            overlay().replaceActions(page(), i + leading)
+                        }
+                    }
+                }
+        }
+        return page()
+    }
+
+    /** Where [view] is in the window. */
+    private fun windowRect(view: View): android.graphics.RectF {
+        val location = IntArray(2).also(view::getLocationInWindow)
+        return android.graphics.RectF(location[0].toFloat(), location[1].toFloat(), location[0] + view.width.toFloat(), location[1] + view.height.toFloat())
+    }
+
+    /** What [view] shows right now, so the Y menu can lift exactly that artwork. */
+    private fun snapshot(view: View): android.graphics.Bitmap? = runCatching {
+        if (view.width <= 0 || view.height <= 0) return null
+        android.graphics.Bitmap.createBitmap(view.width, view.height, android.graphics.Bitmap.Config.ARGB_8888).also {
+            view.draw(android.graphics.Canvas(it))
+        }
+    }.getOrNull()
+
+    /**
+     * Y menu for the selected game: its artwork lifts towards the centre and the game options slide up.
+     * Scraping and emulator choices continue in the settings window.
+     */
+    private fun showGameQuickMenu(game: Game) {
+        if (systemQuickMenu != null) return
+        val theme = OrbitThemes.current()
+        val content = findViewById<View>(android.R.id.content)
+        val source = activeGameWheel()?.takeIf { it.isShown }?.selectedItemView()
+            ?: gameList?.takeIf { it.isShown }?.selectedView
+            ?: currentFocus?.takeIf { it.isShown && it !== content }
+        // Only a single item lifts and hides; a whole-screen scene (imported themes) stays put.
+        val item = source?.takeIf { it.width < content.width * 0.6f && it.height < content.height * 0.6f }
+        val from = (item ?: source)?.let(::windowRect)
+            ?: android.graphics.RectF(content.width * 0.35f, content.height * 0.45f, content.width * 0.65f, content.height * 0.55f)
+        // The disc holds its angle while lifted, so it lands as it left and spins on only after landing.
+        fun discs(view: View): List<GameTileArtworkView> = when (view) {
+            is GameTileArtworkView -> listOf(view)
+            is android.view.ViewGroup -> (0 until view.childCount).flatMap { discs(view.getChildAt(it)) }
+            else -> emptyList()
+        }
+        val spinning = item?.let(::discs).orEmpty()
+        spinning.forEach { it.pauseSpin(true) }
+        lateinit var overlay: QuickMenuOverlay
+        val gameSystem = system
+        // Scraping runs in the background, as before; its progress and result appear as usual.
+        fun scrape(provider: String) {
+            GameScraperPopup(EmulatorSettings.MenuWindow(this, compact = true), gameSystem, game, ::onGameScraped).scrape(provider)
+        }
+        val actions = mutableListOf(
+            QuickMenuOverlay.Action({ "Scrape game" }) {
+                overlay.openPage("Scrape game", listOf("ScreenScraper", "NeoAssets", "TheGamesDB", "SteamGridDB").map { provider ->
+                    QuickMenuOverlay.Action({ provider }, closes = true) { scrape(provider) }
+                })
+            },
+            QuickMenuOverlay.Action({ "Choose emulator" }) { overlay.openPage("Emulator", emulatorActions({ overlay }, gameSystem, game)) }
+        )
+
+        if (ImportedThemes.active(this) == null && EsDeTheme.enabled(this)) {
+            actions += QuickMenuOverlay.Action({ "Game list · ${if (UserDataStore.int(this, "colorfulListLogos", 0) == 1) "Logos" else "Text"}" }) {
+                UserDataStore.put(this, "settings", "colorfulListLogos", if (UserDataStore.int(this, "colorfulListLogos", 0) == 1) 0 else 1)
+                onGameScraped()
+            }
+            actions += QuickMenuOverlay.Action({ "Artwork logo · ${if (UserDataStore.int(this, "colorfulMarquees", 1) == 1) "On" else "Off"}" }) {
+                UserDataStore.put(this, "settings", "colorfulMarquees", if (UserDataStore.int(this, "colorfulMarquees", 1) == 1) 0 else 1)
+                onGameScraped()
+            }
+        }
+        overlay = QuickMenuOverlay(this, theme, game.title, item?.let(::snapshot), null, from, actions, item, grow = item == null) {
+            spinning.forEach { it.pauseSpin(false) }
+            systemQuickMenu = null
+            (activeGameWheel() ?: gameList)?.requestFocus()
+        }
+        systemQuickMenu = overlay
+        overlay.open()
+    }
+
+    /**
+     * Y menu for the highlighted system, in every systems view: its logo lifts towards the centre and the
+     * options (open, and its own logo colour and text size) slide up in the theme's colours.
+     */
+    private fun showSystemQuickMenu(spec: SystemSpec) {
+        if (systemQuickMenu != null) return
+        val theme = OrbitThemes.current()
+        val content = findViewById<View>(android.R.id.content)
+        val from = nativeSystems?.takeIf { it.isShown }?.selectedLogoRectInWindow()
+            ?: currentFocus?.takeIf { it.isShown && it !== content }?.let { focus ->
+                val location = IntArray(2).also(focus::getLocationInWindow)
+                android.graphics.RectF(location[0].toFloat(), location[1].toFloat(), location[0] + focus.width.toFloat(), location[1] + focus.height.toFloat())
+            }
+            ?: android.graphics.RectF(content.width * 0.35f, content.height * 0.45f, content.width * 0.65f, content.height * 0.55f)
+        fun redraw() { nativeSystems?.invalidate(); importedSystems?.invalidate(); colorfulSystems?.invalidate() }
+        lateinit var menu: QuickMenuOverlay
+        if (SystemTiles.isTile(spec)) {
+            menu = QuickMenuOverlay(this, theme, spec.title, null, null, from, systemTileActions({ menu }, spec)) {
+                systemQuickMenu = null
+                nativeSystems?.liftedSystem = null
+            }
+            systemQuickMenu = menu
+            nativeSystems?.liftedSystem = spec
+            menu.open()
+            return
+        }
+        menu = QuickMenuOverlay(this, theme, spec.title, OrbitThemeArtwork.systemLogo(theme, spec), LogoHalo.systemFilter(spec.id), from, listOf(
+            QuickMenuOverlay.Action({ "Open ${spec.title}" }, closes = true) { openSystem(systems.indexOf(spec)) },
+            QuickMenuOverlay.Action({ "Emulator" }) { menu.openPage("Emulator", emulatorActions({ menu }, spec, null)) },
+            QuickMenuOverlay.Action({ "Selection colour · ${SystemsPanel.selectionColour(spec.id).label}" }) {
+                runCatching { SystemsPanel.cycleSelectionColour(this, spec.id) }.onSuccess { redraw() }.onFailure(::showDataError)
+            },
+            QuickMenuOverlay.Action({ "Logo colour · ${SystemsPanel.systemLogoColour(spec.id).label}" }) {
+                runCatching { SystemsPanel.cycleSystemLogoColour(this, spec.id) }.onSuccess { redraw() }.onFailure(::showDataError)
+            },
+            QuickMenuOverlay.Action({ "Text size · ${SystemsPanel.textSize().label}" }) {
+                runCatching { SystemsPanel.cycleTextSize(this) }.onSuccess { redraw() }.onFailure(::showDataError)
+            },
+            // A game or app added to the system list, straight after this system.
+            QuickMenuOverlay.Action({ "Add game or app" }) { menu.openPage("Add game or app", addToSystemList({ menu }, spec)) }
+        )) {
+            systemQuickMenu = null
+            nativeSystems?.liftedSystem = null
+        }
+        systemQuickMenu = menu
+        nativeSystems?.liftedSystem = spec
+        menu.open()
+        SystemSounds.play(this, spec.id)
+    }
+
+    /** The panel down the left of the Systems screen: style, width, blur, tint, colours and border. */
+    private fun showSystemsPanel(menu: EmulatorSettings.MenuWindow, back: () -> Unit, focused: Int = 0) {
+        val labels = listOf<() -> String>(
+            { "Style · ${SystemsPanel.style().label}" },
+            { "Width · ${SystemsPanel.width().label}" },
+            { "Blur · ${if (SystemsPanel.style() == SystemsPanel.Style.GLASS) SystemsPanel.blur().label else "Glass only"}" },
+            { "Tint strength · ${if (SystemsPanel.style() == SystemsPanel.Style.GLASS) SystemsPanel.tint().label else "Glass only"}" },
+            { "Colour · ${SystemsPanel.colour().label}" },
+            { "Logo colour · ${SystemsPanel.logoColour().label}" },
+            { "Text size · ${SystemsPanel.textSize().label}" },
+            { "Border · ${if (SystemsPanel.border()) "On" else "Off"}" },
+            { "Border colour · ${SystemsPanel.borderColour().label}" },
+            { "Y menu sound · ${if (SystemSounds.enabled()) "On" else "Off"}" }
+        )
+        menu.liveActions("Systems panel", labels, { index ->
+            runCatching {
+                when (index) {
+                    0 -> SystemsPanel.cycleStyle(this)
+                    1 -> SystemsPanel.cycleWidth(this)
+                    2 -> if (SystemsPanel.style() == SystemsPanel.Style.GLASS) SystemsPanel.cycleBlur(this)
+                    3 -> if (SystemsPanel.style() == SystemsPanel.Style.GLASS) SystemsPanel.cycleTint(this)
+                    4 -> SystemsPanel.cycleColour(this)
+                    5 -> SystemsPanel.cycleLogoColour(this)
+                    6 -> SystemsPanel.cycleTextSize(this)
+                    7 -> SystemsPanel.toggleBorder(this)
+                    9 -> SystemSounds.toggle(this)
+                    else -> SystemsPanel.cycleBorderColour(this)
+                }
+            }.onSuccess { mediaArtworkVisibilityChanged(OrbitThemes.current().id) }.onFailure(::showDataError)
+        }, back, initialSelection = focused)
     }
 
     private fun showSystemViews(menu: EmulatorSettings.MenuWindow, back: () -> Unit) {
@@ -4007,7 +4542,6 @@ open class MainActivity : Activity() {
                 add { artworkLabel }
                 add { "Media types" }
                 add { "Hide Media" }
-                if (customArtwork == null) add { "Choose a game to scrape" }
             }
             menu.liveActions("Scraper", labels, { position ->
                 val back = { showScraper(position) }
@@ -4016,10 +4550,6 @@ open class MainActivity : Activity() {
                         else SystemArtworkSettingsPanel(this, menu, spec).show(back)
                     1 -> showScraperMediaTypes(menu, back)
                     2 -> GameMediaSettingsPanel(this, menu).show(back)
-                    3 -> {
-                        menu.dialog.dismiss()
-                        openSystem(systems.indexOf(spec))
-                    }
                 }
             }, menu.dialog::dismiss, initialSelection = selected)
         }
@@ -4033,9 +4563,12 @@ open class MainActivity : Activity() {
                 "Customisation" -> menu.actions("Customisation", buildList {
                     add("Animation" to {
                         if (currentGame != null) showGameAnimations(menu, ::home)
-                        else menu.actions("Animation", emptyList(), ::home)
+                        else showSystemAnimations(menu, ::home)
                     })
-                    if (currentGame == null) add("System views" to { showSystemViews(menu, ::home) })
+                    if (currentGame == null) {
+                        add("System views" to { showSystemViews(menu, ::home) })
+                        add("Systems panel" to { showSystemsPanel(menu, ::home) })
+                    }
                     else {
                         add("Game Views" to { showGameViews(menu, ::home) })
                         add("Collections" to { showGameCollections(menu, spec, currentGame, ::home) })
@@ -4105,16 +4638,7 @@ open class MainActivity : Activity() {
         }
         if (keyCode == KeyEvent.KEYCODE_BUTTON_Y) {
             if (ready && activeTab == 0 && library && !event.isCanceled && startMenu?.isShowing != true) {
-                games.getOrNull(gameCursor)?.let { game ->
-                    val menu = EmulatorSettings.MenuWindow(this, compact = true)
-                    val popup = GameScraperPopup(menu, system, game, ::onGameScraped)
-                    startMenu = menu.dialog
-                    menu.dialog.setOnDismissListener {
-                        popup.destroy(); startMenu = null; (activeGameWheel() ?: gameList)?.requestFocus()
-                        DualScreenCoordinator.refreshMedia()
-                    }
-                    popup.show()
-                }
+                games.getOrNull(gameCursor)?.let(::showGameQuickMenu)
             }
             return true
         }

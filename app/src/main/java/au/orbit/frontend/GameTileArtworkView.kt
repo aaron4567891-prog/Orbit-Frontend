@@ -45,6 +45,11 @@ internal class GameTileArtworkView(context: Context) : ImageView(context) {
         updateSpin()
     }
 
+    /** Holds the disc at its current angle (while its artwork is lifted into a menu), then carries on. */
+    fun pauseSpin(paused: Boolean) {
+        if (paused) animation?.pause() else animation?.resume()
+    }
+
     fun setSpinSelected(selected: Boolean) {
         spinSelected = selected
         updateSpin()

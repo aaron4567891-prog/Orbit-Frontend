@@ -59,6 +59,9 @@ class GameScraperPopup(
         menu.actions("Game options",actions)
     }
 
+    /** Scrapes this game from [provider] in the background, without showing a window. */
+    fun scrape(provider: String) = search(provider, game.title)
+
     fun providers() {
         menu.actions("Scrape game", listOf("ScreenScraper", "NeoAssets", "TheGamesDB", "SteamGridDB").map { provider ->
             provider to { search(provider, game.title) }

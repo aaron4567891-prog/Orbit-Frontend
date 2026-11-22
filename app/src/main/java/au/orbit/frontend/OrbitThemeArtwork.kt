@@ -321,6 +321,18 @@ object OrbitThemeArtwork {
         }
     }
     private val panelPaint=Paint(Paint.ANTI_ALIAS_FLAG)
+    private val glassLuminances=java.util.WeakHashMap<Bitmap,Float>()
+    /** Average brightness (0–1) of a glass source, cached per bitmap. */
+    private fun glassLuminance(bitmap:Bitmap):Float = synchronized(glassLuminances) {
+        glassLuminances.getOrPut(bitmap) {
+            val small=Bitmap.createScaledBitmap(bitmap,16,8,true)
+            val pixels=IntArray(128).also { small.getPixels(it,0,16,0,0,16,8) }
+            if(small!==bitmap)small.recycle()
+            pixels.map { (0.2126f*Color.red(it)+0.7152f*Color.green(it)+0.0722f*Color.blue(it))/255f }.average().toFloat()
+        }
+    }
+    /** Brightness the glass is brought down to before tinting. */
+    private const val GLASS_LUMINANCE=0.3f
     /**
      * The Systems panel over [panel], in the style chosen in System Settings: glass (the selected hero,
      * softened and lined up with the background drawn across [screen]) or solid grey, with an optional border.
@@ -334,8 +346,12 @@ object OrbitThemeArtwork {
         if(style==SystemsPanel.Style.GLASS) {
             val target=artworkScreen(context,theme=theme)
             image(context,theme,"hero",system)?.let { bitmap ->
-                drawHero(canvas,glassSource(bitmap,SystemsPanel.blur().pixels),screen,
+                val source=glassSource(bitmap,SystemsPanel.blur().pixels)
+                drawHero(canvas,source,screen,
                     focus=heroFocus(context,systemHeroKey(theme,system.id,target)),inset=heroInset)
+                // Even out the brightness under the tint, so the panel keeps the same shade on light and dark heroes.
+                val luminance=glassLuminance(source)
+                if(luminance>GLASS_LUMINANCE)canvas.drawColor(Color.argb(((1f-GLASS_LUMINANCE/luminance)*255).toInt(),0,0,0))
             }
             canvas.drawColor(SystemsPanel.glassTint(theme))
         } else canvas.drawColor(SystemsPanel.fillColor(style,theme))

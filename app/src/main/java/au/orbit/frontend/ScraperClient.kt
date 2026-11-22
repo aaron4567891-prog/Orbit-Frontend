@@ -36,6 +36,18 @@ class ScraperClient(private val context: Context, val provider: String) {
         ss("ssuserInfos")
         return downloadConcurrency
     }
+    fun systemArtworkCatalogue(): Map<String, JSONObject> {
+        require(provider == "ScreenScraper")
+        return objects(ss("systemesListe").opt("systemes"))
+            .filter { it.optString("id").isNotBlank() }.associateBy { it.getString("id") }
+    }
+
+    fun systemArtworkBytes(url: String): ByteArray {
+        require(provider == "ScreenScraper")
+        ScreenScraperRequests.acquire()
+        try { return downloadBytes(url, maxMegabytes = 32) }
+        finally { ScreenScraperRequests.release() }
+    }
     private class InvalidProviderResponse(provider: String) :
         IllegalStateException("$provider returned an invalid response.")
 
@@ -228,6 +240,9 @@ class ScraperClient(private val context: Context, val provider: String) {
     }
     fun packs() = objects(json("https://api.neoassets.dev/api/v1/packs").opt("themes"))
     fun pack(folder: String) = json("https://api.neoassets.dev/api/v1/packs/${Uri.encode(folder)}/download")
+    internal fun packDetails(folder: String) = json("https://api.neoassets.dev/api/v1/packs/${Uri.encode(folder)}")
+    internal fun backgroundJson(url: String) = json(url)
+    internal fun backgroundBytes(url: String) = downloadBytes(url, maxMegabytes = 32)
     internal fun packPreview(path:String) = downloadBytes("https://cdn.neoassets.dev/$path",maxMegabytes=8)
     companion object {
         internal fun screenScraperAllowance(response: JSONObject): Int? =

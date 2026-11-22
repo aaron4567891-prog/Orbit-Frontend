@@ -4,7 +4,8 @@ import android.graphics.Bitmap
 
 /** Fit the visible console, rather than the theme asset's transparent canvas. */
 internal object SystemTileArtwork {
-    fun trim(bitmap:Bitmap):Bitmap {
+    fun trim(bitmap:Bitmap):Bitmap = trim(bitmap, 0.015f)
+    fun trim(bitmap:Bitmap,marginFraction:Float):Bitmap {
         if(!bitmap.hasAlpha())return bitmap
         var left=bitmap.width;var top=bitmap.height;var right=-1;var bottom=-1
         val pixels=IntArray(bitmap.width)
@@ -16,7 +17,7 @@ internal object SystemTileArtwork {
             }
         }
         if(right<left || bottom<top)return bitmap
-        val margin=(maxOf(right-left+1,bottom-top+1)*0.015f).toInt()
+        val margin=(maxOf(right-left+1,bottom-top+1)*marginFraction).toInt()
         left=(left-margin).coerceAtLeast(0);top=(top-margin).coerceAtLeast(0)
         right=(right+margin).coerceAtMost(bitmap.width-1)
         bottom=(bottom+margin).coerceAtMost(bitmap.height-1)

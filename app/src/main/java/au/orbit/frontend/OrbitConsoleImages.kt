@@ -16,9 +16,9 @@ object OrbitConsoleImages {
     private val cache=object:LruCache<String,Bitmap>(32*1024*1024) {
         override fun sizeOf(key:String,value:Bitmap)=value.allocationByteCount
     }
-    fun cached(system:SystemSpec)=cache.get(system.id)
+    fun cached(system:SystemSpec)=cache.get(system.id) ?: SystemArtworkPreviews.cached(SystemArtworkPreviews.consoleKey(system))
     fun load(context:Context,system:SystemSpec):Bitmap? {
-        cached(system)?.let { return it }
+        cache.get(system.id)?.let { return it }
         if(system.id in missing)return null
         val result=runCatching {
             val bytes=context.assets.open("system-artwork/${system.id}.webp").use { it.readBytes() }
@@ -31,7 +31,7 @@ object OrbitConsoleImages {
         return result
     }
     fun request(context:Context,system:SystemSpec,ready:()->Unit={}) {
-        if(cached(system)!=null || system.id in missing)return
+        if(cache.get(system.id)!=null || system.id in missing)return
         val app=context.applicationContext
         worker.execute { load(app,system);handler.post(ready) }
     }

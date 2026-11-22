@@ -10,3 +10,5 @@ License: Creative Commons Attribution-NonCommercial-ShareAlike 2.0
 https://creativecommons.org/licenses/by-nc-sa/2.0/
 
 Images are bundled unchanged, with filename aliases for Orbit system IDs. Transparent borders are fitted at display time. The original credits and source notices are retained in SOURCE-NOTICES.md. Orbit uses its own native layouts; no ES-DE theme XML is loaded.
+
+The `n3ds.webp` filename is an alias of `3ds.webp` for the catalogue's Nintendo 3DS entry.

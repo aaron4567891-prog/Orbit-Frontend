@@ -1,0 +1,7256 @@
+[
+  {
+    "id": "3do",
+    "matches": [
+      {
+        "id": 5459298,
+        "name": "3DO Action Pak"
+      },
+      {
+        "id": 5496257,
+        "name": "3DO (Console)"
+      }
+    ],
+    "query": "3DO Interactive Multiplayer",
+    "status": 200,
+    "title": "3DO Interactive Multiplayer"
+  },
+  {
+    "id": "adam",
+    "matches": [],
+    "query": "Coleco Adam",
+    "status": 200,
+    "title": "Coleco Adam"
+  },
+  {
+    "id": "ags",
+    "matches": [
+      {
+        "id": 24996,
+        "name": "Adventure Game"
+      },
+      {
+        "id": 5247355,
+        "name": "Treasure Adventure Game"
+      },
+      {
+        "id": 5271892,
+        "name": "Rugrats Adventure Game"
+      },
+      {
+        "id": 5279086,
+        "name": "Treasure Adventure Game"
+      },
+      {
+        "id": 5506881,
+        "name": "Tiny Adventure Game"
+      },
+      {
+        "id": 4776,
+        "name": "The Witcher Adventure Game"
+      },
+      {
+        "id": 9261,
+        "name": "Alpha Polaris : A Horror Adventure Game"
+      },
+      {
+        "id": 29334,
+        "name": "Tango: The Adventure Game"
+      },
+      {
+        "id": 5272329,
+        "name": "3x3 the adventure game"
+      },
+      {
+        "id": 5293104,
+        "name": "Tar Alterra Adventure Game"
+      }
+    ],
+    "query": "Adventure Game Studio",
+    "status": 200,
+    "title": "Adventure Game Studio Game Engine"
+  },
+  {
+    "id": "amiga",
+    "matches": [
+      {
+        "id": 5460042,
+        "name": "Commodore 64 Games System (C64GS)"
+      },
+      {
+        "id": 5460043,
+        "name": "Commodore CDTV"
+      },
+      {
+        "id": 5500690,
+        "name": "Commodore 64 (C64)"
+      },
+      {
+        "id": 5511429,
+        "name": "Commodore 16"
+      },
+      {
+        "id": 5511430,
+        "name": "Commodore PET"
+      },
+      {
+        "id": 5511444,
+        "name": "Commodore VIC-20"
+      },
+      {
+        "id": 5255411,
+        "name": "Memeow & Comodore: Reloaded"
+      },
+      {
+        "id": 5260635,
+        "name": "Cosmodome"
+      }
+    ],
+    "query": "Commodore Amiga",
+    "status": 200,
+    "title": "Commodore Amiga"
+  },
+  {
+    "id": "amiga1200",
+    "matches": [
+      {
+        "id": 5460042,
+        "name": "Commodore 64 Games System (C64GS)"
+      },
+      {
+        "id": 5460043,
+        "name": "Commodore CDTV"
+      },
+      {
+        "id": 5500690,
+        "name": "Commodore 64 (C64)"
+      },
+      {
+        "id": 5511429,
+        "name": "Commodore 16"
+      },
+      {
+        "id": 5511430,
+        "name": "Commodore PET"
+      },
+      {
+        "id": 5511444,
+        "name": "Commodore VIC-20"
+      },
+      {
+        "id": 5255411,
+        "name": "Memeow & Comodore: Reloaded"
+      },
+      {
+        "id": 5260635,
+        "name": "Cosmodome"
+      }
+    ],
+    "query": "Commodore Amiga 1200",
+    "status": 200,
+    "title": "Commodore Amiga 1200"
+  },
+  {
+    "id": "amiga600",
+    "matches": [
+      {
+        "id": 5460042,
+        "name": "Commodore 64 Games System (C64GS)"
+      },
+      {
+        "id": 5460043,
+        "name": "Commodore CDTV"
+      },
+      {
+        "id": 5500690,
+        "name": "Commodore 64 (C64)"
+      },
+      {
+        "id": 5511429,
+        "name": "Commodore 16"
+      },
+      {
+        "id": 5511430,
+        "name": "Commodore PET"
+      },
+      {
+        "id": 5511444,
+        "name": "Commodore VIC-20"
+      },
+      {
+        "id": 5255411,
+        "name": "Memeow & Comodore: Reloaded"
+      },
+      {
+        "id": 5260635,
+        "name": "Cosmodome"
+      }
+    ],
+    "query": "Commodore Amiga 600",
+    "status": 200,
+    "title": "Commodore Amiga 600"
+  },
+  {
+    "id": "amigacd32",
+    "matches": [
+      {
+        "id": 5460042,
+        "name": "Commodore 64 Games System (C64GS)"
+      },
+      {
+        "id": 5460043,
+        "name": "Commodore CDTV"
+      },
+      {
+        "id": 5500690,
+        "name": "Commodore 64 (C64)"
+      },
+      {
+        "id": 5511429,
+        "name": "Commodore 16"
+      },
+      {
+        "id": 5511430,
+        "name": "Commodore PET"
+      },
+      {
+        "id": 5511444,
+        "name": "Commodore VIC-20"
+      },
+      {
+        "id": 5255411,
+        "name": "Memeow & Comodore: Reloaded"
+      },
+      {
+        "id": 5260635,
+        "name": "Cosmodome"
+      }
+    ],
+    "query": "Commodore Amiga CD32",
+    "status": 200,
+    "title": "Commodore Amiga CD32"
+  },
+  {
+    "id": "amstradcpc",
+    "matches": [
+      {
+        "id": 5459989,
+        "name": "Amstrad GX4000"
+      }
+    ],
+    "query": "Amstrad CPC",
+    "status": 200,
+    "title": "Amstrad CPC"
+  },
+  {
+    "id": "android",
+    "matches": [
+      {
+        "id": 5269782,
+        "name": "Android"
+      },
+      {
+        "id": 12602,
+        "name": "Android John"
+      },
+      {
+        "id": 23814,
+        "name": "Android John 2.1"
+      },
+      {
+        "id": 5245929,
+        "name": "Android Amazones"
+      },
+      {
+        "id": 5247935,
+        "name": "Android Helipad"
+      },
+      {
+        "id": 5261876,
+        "name": "Android Hunter A"
+      },
+      {
+        "id": 5267004,
+        "name": "Android Assault: The Revenge of Bari-Arm"
+      },
+      {
+        "id": 5268710,
+        "name": "Android (Operating System)"
+      },
+      {
+        "id": 5285429,
+        "name": "Android LIFE"
+      },
+      {
+        "id": 5325201,
+        "name": "Android Simulator"
+      }
+    ],
+    "query": "Android",
+    "status": 200,
+    "title": "Google Android"
+  },
+  {
+    "id": "androidapps",
+    "matches": [
+      {
+        "id": 5269782,
+        "name": "Android"
+      },
+      {
+        "id": 12602,
+        "name": "Android John"
+      },
+      {
+        "id": 23814,
+        "name": "Android John 2.1"
+      },
+      {
+        "id": 5245929,
+        "name": "Android Amazones"
+      },
+      {
+        "id": 5247935,
+        "name": "Android Helipad"
+      },
+      {
+        "id": 5261876,
+        "name": "Android Hunter A"
+      },
+      {
+        "id": 5267004,
+        "name": "Android Assault: The Revenge of Bari-Arm"
+      },
+      {
+        "id": 5268710,
+        "name": "Android (Operating System)"
+      },
+      {
+        "id": 5285429,
+        "name": "Android LIFE"
+      },
+      {
+        "id": 5325201,
+        "name": "Android Simulator"
+      }
+    ],
+    "query": "Android",
+    "status": 200,
+    "title": "Android Apps"
+  },
+  {
+    "id": "androidgames",
+    "matches": [
+      {
+        "id": 5269782,
+        "name": "Android"
+      },
+      {
+        "id": 12602,
+        "name": "Android John"
+      },
+      {
+        "id": 23814,
+        "name": "Android John 2.1"
+      },
+      {
+        "id": 5245929,
+        "name": "Android Amazones"
+      },
+      {
+        "id": 5247935,
+        "name": "Android Helipad"
+      },
+      {
+        "id": 5261876,
+        "name": "Android Hunter A"
+      },
+      {
+        "id": 5267004,
+        "name": "Android Assault: The Revenge of Bari-Arm"
+      },
+      {
+        "id": 5268710,
+        "name": "Android (Operating System)"
+      },
+      {
+        "id": 5285429,
+        "name": "Android LIFE"
+      },
+      {
+        "id": 5325201,
+        "name": "Android Simulator"
+      }
+    ],
+    "query": "Android",
+    "status": 200,
+    "title": "Android Games"
+  },
+  {
+    "id": "apple2",
+    "matches": [
+      {
+        "id": 5269194,
+        "name": "Apple II (Operating System)"
+      },
+      {
+        "id": 5269197,
+        "name": "Apple III"
+      },
+      {
+        "id": 5269196,
+        "name": "Apple IIGS"
+      },
+      {
+        "id": 5518657,
+        "name": "Wriggle apple 2"
+      },
+      {
+        "id": 5493845,
+        "name": "Gravity's Apple 2"
+      },
+      {
+        "id": 5489297,
+        "name": "The Apple Simulator 2"
+      },
+      {
+        "id": 6790,
+        "name": "Apple Jack 1&2"
+      },
+      {
+        "id": 5456518,
+        "name": "Apple"
+      },
+      {
+        "id": 5456718,
+        "name": "Apple"
+      },
+      {
+        "id": 5491415,
+        "name": "Apple"
+      }
+    ],
+    "query": "Apple II",
+    "status": 200,
+    "title": "Apple II"
+  },
+  {
+    "id": "apple2gs",
+    "matches": [
+      {
+        "id": 5269196,
+        "name": "Apple IIGS"
+      },
+      {
+        "id": 5456518,
+        "name": "Apple"
+      },
+      {
+        "id": 5456718,
+        "name": "Apple"
+      },
+      {
+        "id": 5491415,
+        "name": "Apple"
+      },
+      {
+        "id": 6790,
+        "name": "Apple Jack 1&2"
+      },
+      {
+        "id": 5246523,
+        "name": "Apple Pop"
+      },
+      {
+        "id": 5249285,
+        "name": "Apple Slash"
+      },
+      {
+        "id": 5258008,
+        "name": "Apple Knight"
+      },
+      {
+        "id": 5263999,
+        "name": "Apple Hopper"
+      },
+      {
+        "id": 5268706,
+        "name": "Apple SOS (Operating System)"
+      }
+    ],
+    "query": "Apple IIGS",
+    "status": 200,
+    "title": "Apple IIGS"
+  },
+  {
+    "id": "arcade",
+    "matches": [
+      {
+        "id": 5260946,
+        "name": "ARCADE"
+      },
+      {
+        "id": 8757,
+        "name": "Arcade Game Series: Pac-Man"
+      },
+      {
+        "id": 9156,
+        "name": "Arcade Game Series: Dig Dug"
+      },
+      {
+        "id": 9157,
+        "name": "Arcade Game Series: Ms. Pac-Man"
+      },
+      {
+        "id": 9158,
+        "name": "Arcade Game Series: Galaga"
+      },
+      {
+        "id": 11633,
+        "name": "Arcade Saga"
+      },
+      {
+        "id": 17735,
+        "name": "Arcade Tale"
+      },
+      {
+        "id": 22429,
+        "name": "Arcade Moonlander"
+      },
+      {
+        "id": 23396,
+        "name": "Arcade Tycoon"
+      },
+      {
+        "id": 23482,
+        "name": "Arcade Love"
+      }
+    ],
+    "query": "ARCADE",
+    "status": 200,
+    "title": "Arcade"
+  },
+  {
+    "id": "arcadia",
+    "matches": [
+      {
+        "id": 5459719,
+        "name": "Emerson Arcadia-2001"
+      },
+      {
+        "id": 5253638,
+        "name": "Agent Emerson"
+      },
+      {
+        "id": 5390267,
+        "name": "Dr. Emmerson's Nocturnes"
+      }
+    ],
+    "query": "Emerson Arcadia 2001",
+    "status": 200,
+    "title": "Emerson Arcadia 2001"
+  },
+  {
+    "id": "archimedes",
+    "matches": [
+      {
+        "id": 5514891,
+        "name": "Acorn Archimedes"
+      },
+      {
+        "id": 9445,
+        "name": "Acorn Assault: Rodent Revolution"
+      },
+      {
+        "id": 5285681,
+        "name": "Acorn City: Tropical!"
+      },
+      {
+        "id": 5445606,
+        "name": "Acorn Cop"
+      },
+      {
+        "id": 5447239,
+        "name": "Acorn Hunt"
+      },
+      {
+        "id": 5529388,
+        "name": "Acorn Eater"
+      },
+      {
+        "id": 5552178,
+        "name": "Acorn Heist!"
+      },
+      {
+        "id": 5553306,
+        "name": "ACORN: Seed of Resistance"
+      },
+      {
+        "id": 5262690,
+        "name": "Sally Acorn in Sonic 2"
+      },
+      {
+        "id": 5364677,
+        "name": "Sally Acorn in Sonic 1"
+      }
+    ],
+    "query": "Acorn Archimedes",
+    "status": 200,
+    "title": "Acorn Archimedes"
+  },
+  {
+    "id": "arduboy",
+    "matches": [],
+    "query": "Arduboy",
+    "status": 200,
+    "title": "Arduboy Miniature Game System"
+  },
+  {
+    "id": "astrocde",
+    "matches": [
+      {
+        "id": 5459697,
+        "name": "Bally Astrocade"
+      },
+      {
+        "id": 5481295,
+        "name": "Bally Fears : The Paradox"
+      },
+      {
+        "id": 5436119,
+        "name": "Tron (Bally Midway)"
+      },
+      {
+        "id": 5270190,
+        "name": "The Life of Bally"
+      },
+      {
+        "id": 1360,
+        "name": "Bully: Scholarship Edition"
+      },
+      {
+        "id": 7108,
+        "name": "Balls of Steel"
+      },
+      {
+        "id": 12230,
+        "name": "Ball 3D: Soccer Online"
+      },
+      {
+        "id": 13292,
+        "name": "Ball of Wonder"
+      },
+      {
+        "id": 14548,
+        "name": "Ball of Light"
+      },
+      {
+        "id": 21378,
+        "name": "Ball 2D: Soccer Online"
+      }
+    ],
+    "query": "Bally Astrocade",
+    "status": 200,
+    "title": "Bally Astrocade"
+  },
+  {
+    "id": "atari2600",
+    "matches": [
+      {
+        "id": 5459692,
+        "name": "Atari 2600"
+      },
+      {
+        "id": 5352211,
+        "name": "Bowling Atari 2600"
+      },
+      {
+        "id": 5352471,
+        "name": "Alien Atari 2600"
+      },
+      {
+        "id": 5520328,
+        "name": "Tennis (Atari 2600)"
+      },
+      {
+        "id": 5461207,
+        "name": "SpongeBob SquarePants (Atari 2600)"
+      },
+      {
+        "id": 5335289,
+        "name": "A Collection of Activision Classic Games for the Atari 2600"
+      },
+      {
+        "id": 3844,
+        "name": "Atari: 80 Classic Games in One!"
+      },
+      {
+        "id": 9025,
+        "name": "Atari Vault"
+      },
+      {
+        "id": 36169,
+        "name": "Atari Anniversary Advance"
+      },
+      {
+        "id": 5264463,
+        "name": "Atari Classics Evolved"
+      }
+    ],
+    "query": "Atari 2600",
+    "status": 200,
+    "title": "Atari 2600"
+  },
+  {
+    "id": "atari5200",
+    "matches": [
+      {
+        "id": 5459724,
+        "name": "Atari 5200"
+      },
+      {
+        "id": 3844,
+        "name": "Atari: 80 Classic Games in One!"
+      },
+      {
+        "id": 9025,
+        "name": "Atari Vault"
+      },
+      {
+        "id": 36169,
+        "name": "Atari Anniversary Advance"
+      },
+      {
+        "id": 5264463,
+        "name": "Atari Classics Evolved"
+      },
+      {
+        "id": 5276799,
+        "name": "Atari Greatest Hits: Volume 1"
+      },
+      {
+        "id": 5283040,
+        "name": "Atari Greatest Hits"
+      },
+      {
+        "id": 5331972,
+        "name": "Atari's Greatest Hits: Volume 2"
+      },
+      {
+        "id": 5336105,
+        "name": "Atari Mania"
+      },
+      {
+        "id": 5336892,
+        "name": "Atari Anniversary Edition"
+      }
+    ],
+    "query": "Atari 5200",
+    "status": 200,
+    "title": "Atari 5200"
+  },
+  {
+    "id": "atari7800",
+    "matches": [
+      {
+        "id": 5459760,
+        "name": "Atari 7800"
+      },
+      {
+        "id": 3844,
+        "name": "Atari: 80 Classic Games in One!"
+      },
+      {
+        "id": 9025,
+        "name": "Atari Vault"
+      },
+      {
+        "id": 36169,
+        "name": "Atari Anniversary Advance"
+      },
+      {
+        "id": 5264463,
+        "name": "Atari Classics Evolved"
+      },
+      {
+        "id": 5276799,
+        "name": "Atari Greatest Hits: Volume 1"
+      },
+      {
+        "id": 5283040,
+        "name": "Atari Greatest Hits"
+      },
+      {
+        "id": 5331972,
+        "name": "Atari's Greatest Hits: Volume 2"
+      },
+      {
+        "id": 5336105,
+        "name": "Atari Mania"
+      },
+      {
+        "id": 5336892,
+        "name": "Atari Anniversary Edition"
+      }
+    ],
+    "query": "Atari 7800",
+    "status": 200,
+    "title": "Atari 7800 ProSystem"
+  },
+  {
+    "id": "atari800",
+    "matches": [
+      {
+        "id": 5516514,
+        "name": "Atari 800"
+      },
+      {
+        "id": 3844,
+        "name": "Atari: 80 Classic Games in One!"
+      },
+      {
+        "id": 9025,
+        "name": "Atari Vault"
+      },
+      {
+        "id": 36169,
+        "name": "Atari Anniversary Advance"
+      },
+      {
+        "id": 5264463,
+        "name": "Atari Classics Evolved"
+      },
+      {
+        "id": 5276799,
+        "name": "Atari Greatest Hits: Volume 1"
+      },
+      {
+        "id": 5283040,
+        "name": "Atari Greatest Hits"
+      },
+      {
+        "id": 5331972,
+        "name": "Atari's Greatest Hits: Volume 2"
+      },
+      {
+        "id": 5336105,
+        "name": "Atari Mania"
+      },
+      {
+        "id": 5336892,
+        "name": "Atari Anniversary Edition"
+      }
+    ],
+    "query": "Atari 800",
+    "status": 200,
+    "title": "Atari 800"
+  },
+  {
+    "id": "atarijaguar",
+    "matches": [
+      {
+        "id": 5501337,
+        "name": "Atari Jaguar"
+      },
+      {
+        "id": 5501401,
+        "name": "Atari Jaguar CD"
+      },
+      {
+        "id": 3844,
+        "name": "Atari: 80 Classic Games in One!"
+      },
+      {
+        "id": 9025,
+        "name": "Atari Vault"
+      },
+      {
+        "id": 36169,
+        "name": "Atari Anniversary Advance"
+      },
+      {
+        "id": 5264463,
+        "name": "Atari Classics Evolved"
+      },
+      {
+        "id": 5276799,
+        "name": "Atari Greatest Hits: Volume 1"
+      },
+      {
+        "id": 5283040,
+        "name": "Atari Greatest Hits"
+      },
+      {
+        "id": 5331972,
+        "name": "Atari's Greatest Hits: Volume 2"
+      },
+      {
+        "id": 5336105,
+        "name": "Atari Mania"
+      }
+    ],
+    "query": "Atari Jaguar",
+    "status": 200,
+    "title": "Atari Jaguar"
+  },
+  {
+    "id": "atarijaguarcd",
+    "matches": [
+      {
+        "id": 5501401,
+        "name": "Atari Jaguar CD"
+      },
+      {
+        "id": 5501337,
+        "name": "Atari Jaguar"
+      },
+      {
+        "id": 3844,
+        "name": "Atari: 80 Classic Games in One!"
+      },
+      {
+        "id": 9025,
+        "name": "Atari Vault"
+      },
+      {
+        "id": 36169,
+        "name": "Atari Anniversary Advance"
+      },
+      {
+        "id": 5264463,
+        "name": "Atari Classics Evolved"
+      },
+      {
+        "id": 5276799,
+        "name": "Atari Greatest Hits: Volume 1"
+      },
+      {
+        "id": 5283040,
+        "name": "Atari Greatest Hits"
+      },
+      {
+        "id": 5331972,
+        "name": "Atari's Greatest Hits: Volume 2"
+      },
+      {
+        "id": 5336105,
+        "name": "Atari Mania"
+      }
+    ],
+    "query": "Atari Jaguar CD",
+    "status": 200,
+    "title": "Atari Jaguar CD"
+  },
+  {
+    "id": "atarilynx",
+    "matches": [
+      {
+        "id": 5501402,
+        "name": "Atari Lynx"
+      },
+      {
+        "id": 3844,
+        "name": "Atari: 80 Classic Games in One!"
+      },
+      {
+        "id": 9025,
+        "name": "Atari Vault"
+      },
+      {
+        "id": 36169,
+        "name": "Atari Anniversary Advance"
+      },
+      {
+        "id": 5264463,
+        "name": "Atari Classics Evolved"
+      },
+      {
+        "id": 5276799,
+        "name": "Atari Greatest Hits: Volume 1"
+      },
+      {
+        "id": 5283040,
+        "name": "Atari Greatest Hits"
+      },
+      {
+        "id": 5331972,
+        "name": "Atari's Greatest Hits: Volume 2"
+      },
+      {
+        "id": 5336105,
+        "name": "Atari Mania"
+      },
+      {
+        "id": 5336892,
+        "name": "Atari Anniversary Edition"
+      }
+    ],
+    "query": "Atari Lynx",
+    "status": 200,
+    "title": "Atari Lynx"
+  },
+  {
+    "id": "atarist",
+    "matches": [
+      {
+        "id": 5511426,
+        "name": "Atari ST"
+      },
+      {
+        "id": 5467859,
+        "name": "Star Wars (Atari Games)"
+      },
+      {
+        "id": 37183,
+        "name": "Star Wars: The Empire Strikes Back (Atari Games)"
+      },
+      {
+        "id": 3844,
+        "name": "Atari: 80 Classic Games in One!"
+      },
+      {
+        "id": 9025,
+        "name": "Atari Vault"
+      },
+      {
+        "id": 36169,
+        "name": "Atari Anniversary Advance"
+      },
+      {
+        "id": 5264463,
+        "name": "Atari Classics Evolved"
+      },
+      {
+        "id": 5276799,
+        "name": "Atari Greatest Hits: Volume 1"
+      },
+      {
+        "id": 5283040,
+        "name": "Atari Greatest Hits"
+      },
+      {
+        "id": 5331972,
+        "name": "Atari's Greatest Hits: Volume 2"
+      }
+    ],
+    "query": "Atari ST",
+    "status": 200,
+    "title": "Atari ST"
+  },
+  {
+    "id": "atarixe",
+    "matches": [
+      {
+        "id": 5459763,
+        "name": "Atari XEGS"
+      },
+      {
+        "id": 3844,
+        "name": "Atari: 80 Classic Games in One!"
+      },
+      {
+        "id": 9025,
+        "name": "Atari Vault"
+      },
+      {
+        "id": 36169,
+        "name": "Atari Anniversary Advance"
+      },
+      {
+        "id": 5264463,
+        "name": "Atari Classics Evolved"
+      },
+      {
+        "id": 5276799,
+        "name": "Atari Greatest Hits: Volume 1"
+      },
+      {
+        "id": 5283040,
+        "name": "Atari Greatest Hits"
+      },
+      {
+        "id": 5331972,
+        "name": "Atari's Greatest Hits: Volume 2"
+      },
+      {
+        "id": 5336105,
+        "name": "Atari Mania"
+      },
+      {
+        "id": 5336892,
+        "name": "Atari Anniversary Edition"
+      }
+    ],
+    "query": "Atari XE",
+    "status": 200,
+    "title": "Atari XE"
+  },
+  {
+    "id": "atomiswave",
+    "matches": [
+      {
+        "id": 5474476,
+        "name": "sammy."
+      },
+      {
+        "id": 5246867,
+        "name": "Sammy Sosa Softball Slam"
+      },
+      {
+        "id": 5271891,
+        "name": "Sammy Sosa High Heat Baseball 2001"
+      },
+      {
+        "id": 5324595,
+        "name": "Sammy Da Square vs da forces ove evul"
+      },
+      {
+        "id": 5455589,
+        "name": "Sammy Jukes: Twin Lakes"
+      },
+      {
+        "id": 5497842,
+        "name": "Sammy the Suricate in Lion Land"
+      },
+      {
+        "id": 5505967,
+        "name": "Sammy the sharky"
+      },
+      {
+        "id": 5404734,
+        "name": "Slippery Sammy"
+      },
+      {
+        "id": 5321259,
+        "name": "10K & The Kriminal World - Sammy's Attack"
+      },
+      {
+        "id": 5476622,
+        "name": "Samly's Merge"
+      }
+    ],
+    "query": "Sammy Corporation Atomiswave",
+    "status": 200,
+    "title": "Sammy Corporation Atomiswave"
+  },
+  {
+    "id": "bbcmicro",
+    "matches": [
+      {
+        "id": 9445,
+        "name": "Acorn Assault: Rodent Revolution"
+      },
+      {
+        "id": 5285681,
+        "name": "Acorn City: Tropical!"
+      },
+      {
+        "id": 5445606,
+        "name": "Acorn Cop"
+      },
+      {
+        "id": 5447239,
+        "name": "Acorn Hunt"
+      },
+      {
+        "id": 5529388,
+        "name": "Acorn Eater"
+      },
+      {
+        "id": 5514891,
+        "name": "Acorn Archimedes"
+      },
+      {
+        "id": 5552178,
+        "name": "Acorn Heist!"
+      },
+      {
+        "id": 5553306,
+        "name": "ACORN: Seed of Resistance"
+      },
+      {
+        "id": 5262690,
+        "name": "Sally Acorn in Sonic 2"
+      },
+      {
+        "id": 5364677,
+        "name": "Sally Acorn in Sonic 1"
+      }
+    ],
+    "query": "Acorn Computers BBC Micro",
+    "status": 200,
+    "title": "Acorn Computers BBC Micro"
+  },
+  {
+    "id": "c64",
+    "matches": [
+      {
+        "id": 5460042,
+        "name": "Commodore 64 Games System (C64GS)"
+      },
+      {
+        "id": 5500690,
+        "name": "Commodore 64 (C64)"
+      },
+      {
+        "id": 5460043,
+        "name": "Commodore CDTV"
+      },
+      {
+        "id": 5511429,
+        "name": "Commodore 16"
+      },
+      {
+        "id": 5511430,
+        "name": "Commodore PET"
+      },
+      {
+        "id": 5511444,
+        "name": "Commodore VIC-20"
+      },
+      {
+        "id": 5255411,
+        "name": "Memeow & Comodore: Reloaded"
+      },
+      {
+        "id": 5260635,
+        "name": "Cosmodome"
+      }
+    ],
+    "query": "Commodore 64",
+    "status": 200,
+    "title": "Commodore 64"
+  },
+  {
+    "id": "cdimono1",
+    "matches": [
+      {
+        "id": 5460044,
+        "name": "Philips CD-i"
+      },
+      {
+        "id": 5459748,
+        "name": "Philips Videopac+ G7400"
+      },
+      {
+        "id": 18588,
+        "name": "Howard Phillips Lovecar"
+      },
+      {
+        "id": 29938,
+        "name": "Hegemony: Philip of Macedon"
+      }
+    ],
+    "query": "Philips CD-i",
+    "status": 200,
+    "title": "Philips CD-i"
+  },
+  {
+    "id": "cdtv",
+    "matches": [
+      {
+        "id": 5460043,
+        "name": "Commodore CDTV"
+      },
+      {
+        "id": 5460042,
+        "name": "Commodore 64 Games System (C64GS)"
+      },
+      {
+        "id": 5500690,
+        "name": "Commodore 64 (C64)"
+      },
+      {
+        "id": 5511429,
+        "name": "Commodore 16"
+      },
+      {
+        "id": 5511430,
+        "name": "Commodore PET"
+      },
+      {
+        "id": 5511444,
+        "name": "Commodore VIC-20"
+      },
+      {
+        "id": 5255411,
+        "name": "Memeow & Comodore: Reloaded"
+      },
+      {
+        "id": 5260635,
+        "name": "Cosmodome"
+      }
+    ],
+    "query": "Commodore CDTV",
+    "status": 200,
+    "title": "Commodore CDTV"
+  },
+  {
+    "id": "chailove",
+    "matches": [],
+    "query": "ChaiLove",
+    "status": 200,
+    "title": "ChaiLove Game Engine"
+  },
+  {
+    "id": "channelf",
+    "matches": [
+      {
+        "id": 5459690,
+        "name": "Fairchild Channel F"
+      }
+    ],
+    "query": "Fairchild Channel F",
+    "status": 200,
+    "title": "Fairchild Channel F"
+  },
+  {
+    "id": "coco",
+    "matches": [
+      {
+        "id": 5516171,
+        "name": "Tandy TRS-80 Color Computer"
+      },
+      {
+        "id": 5516170,
+        "name": "Tandy TRS-80"
+      },
+      {
+        "id": 5259992,
+        "name": "Тетрис (Tetris): The Soviet Challenge (Tandy)"
+      },
+      {
+        "id": 26289,
+        "name": "Tardy"
+      },
+      {
+        "id": 5245587,
+        "name": "Tanky Tanks"
+      },
+      {
+        "id": 5255026,
+        "name": "Tanky Tanks VR"
+      },
+      {
+        "id": 5261164,
+        "name": "Tanky Panky"
+      },
+      {
+        "id": 5274186,
+        "name": "Tanxy"
+      },
+      {
+        "id": 5276577,
+        "name": "Tanky Tanks"
+      },
+      {
+        "id": 5321271,
+        "name": "TENDY: Robot Gardener"
+      }
+    ],
+    "query": "Tandy Color Computer",
+    "status": 200,
+    "title": "Tandy Color Computer"
+  },
+  {
+    "id": "colecovision",
+    "matches": [
+      {
+        "id": 5459722,
+        "name": "ColecoVision"
+      },
+      {
+        "id": 14210,
+        "name": "ColecoVision Flashback"
+      }
+    ],
+    "query": "ColecoVision",
+    "status": 200,
+    "title": "Coleco ColecoVision"
+  },
+  {
+    "id": "consolearcade",
+    "matches": [
+      {
+        "id": 5273784,
+        "name": "Console Simulator"
+      },
+      {
+        "id": 5482112,
+        "name": "Console Shop Simulator"
+      },
+      {
+        "id": 5485540,
+        "name": "Console Store Simulator"
+      },
+      {
+        "id": 5508017,
+        "name": "Console War Giant"
+      },
+      {
+        "id": 5517803,
+        "name": "Console Cafe Simulator"
+      },
+      {
+        "id": 5535818,
+        "name": "Console Kingdom"
+      },
+      {
+        "id": 5547561,
+        "name": "Console Space"
+      },
+      {
+        "id": 5551210,
+        "name": "Console Companions"
+      },
+      {
+        "id": 5552081,
+        "name": "console.log"
+      },
+      {
+        "id": 5557701,
+        "name": "Console Repair Simulator"
+      }
+    ],
+    "query": "Console Arcade Systems",
+    "status": 200,
+    "title": "Console Arcade Systems"
+  },
+  {
+    "id": "cps",
+    "matches": [
+      {
+        "id": 19633,
+        "name": "Capcom Classics Mini Mix"
+      },
+      {
+        "id": 25596,
+        "name": "Capcom's Soccer Shootout"
+      },
+      {
+        "id": 29210,
+        "name": "Capcom Beat 'Em Up Bundle"
+      },
+      {
+        "id": 34156,
+        "name": "Capcom's MVP Football"
+      },
+      {
+        "id": 35039,
+        "name": "Capcom vs. SNK 2: Mark of the Millennium 2001"
+      },
+      {
+        "id": 36548,
+        "name": "Capcom's Gold Medal Challenge '92"
+      },
+      {
+        "id": 37877,
+        "name": "Capcom vs. SNK: Millennium Fight 2000 Pro"
+      },
+      {
+        "id": 37968,
+        "name": "Capcom vs. SNK: Millennium Fight 2000"
+      },
+      {
+        "id": 38731,
+        "name": "Capcom Fighting Evolution"
+      },
+      {
+        "id": 5245257,
+        "name": "Capcom Fighting Collection"
+      }
+    ],
+    "query": "Capcom Play System",
+    "status": 200,
+    "title": "Capcom Play System"
+  },
+  {
+    "id": "cps1",
+    "matches": [
+      {
+        "id": 19633,
+        "name": "Capcom Classics Mini Mix"
+      },
+      {
+        "id": 25596,
+        "name": "Capcom's Soccer Shootout"
+      },
+      {
+        "id": 29210,
+        "name": "Capcom Beat 'Em Up Bundle"
+      },
+      {
+        "id": 34156,
+        "name": "Capcom's MVP Football"
+      },
+      {
+        "id": 35039,
+        "name": "Capcom vs. SNK 2: Mark of the Millennium 2001"
+      },
+      {
+        "id": 36548,
+        "name": "Capcom's Gold Medal Challenge '92"
+      },
+      {
+        "id": 37877,
+        "name": "Capcom vs. SNK: Millennium Fight 2000 Pro"
+      },
+      {
+        "id": 37968,
+        "name": "Capcom vs. SNK: Millennium Fight 2000"
+      },
+      {
+        "id": 38731,
+        "name": "Capcom Fighting Evolution"
+      },
+      {
+        "id": 5245257,
+        "name": "Capcom Fighting Collection"
+      }
+    ],
+    "query": "Capcom Play System I",
+    "status": 200,
+    "title": "Capcom Play System I"
+  },
+  {
+    "id": "cps2",
+    "matches": [
+      {
+        "id": 19633,
+        "name": "Capcom Classics Mini Mix"
+      },
+      {
+        "id": 25596,
+        "name": "Capcom's Soccer Shootout"
+      },
+      {
+        "id": 29210,
+        "name": "Capcom Beat 'Em Up Bundle"
+      },
+      {
+        "id": 34156,
+        "name": "Capcom's MVP Football"
+      },
+      {
+        "id": 35039,
+        "name": "Capcom vs. SNK 2: Mark of the Millennium 2001"
+      },
+      {
+        "id": 36548,
+        "name": "Capcom's Gold Medal Challenge '92"
+      },
+      {
+        "id": 37877,
+        "name": "Capcom vs. SNK: Millennium Fight 2000 Pro"
+      },
+      {
+        "id": 37968,
+        "name": "Capcom vs. SNK: Millennium Fight 2000"
+      },
+      {
+        "id": 38731,
+        "name": "Capcom Fighting Evolution"
+      },
+      {
+        "id": 5245257,
+        "name": "Capcom Fighting Collection"
+      }
+    ],
+    "query": "Capcom Play System II",
+    "status": 200,
+    "title": "Capcom Play System II"
+  },
+  {
+    "id": "cps3",
+    "matches": [
+      {
+        "id": 19633,
+        "name": "Capcom Classics Mini Mix"
+      },
+      {
+        "id": 25596,
+        "name": "Capcom's Soccer Shootout"
+      },
+      {
+        "id": 29210,
+        "name": "Capcom Beat 'Em Up Bundle"
+      },
+      {
+        "id": 34156,
+        "name": "Capcom's MVP Football"
+      },
+      {
+        "id": 35039,
+        "name": "Capcom vs. SNK 2: Mark of the Millennium 2001"
+      },
+      {
+        "id": 36548,
+        "name": "Capcom's Gold Medal Challenge '92"
+      },
+      {
+        "id": 37877,
+        "name": "Capcom vs. SNK: Millennium Fight 2000 Pro"
+      },
+      {
+        "id": 37968,
+        "name": "Capcom vs. SNK: Millennium Fight 2000"
+      },
+      {
+        "id": 38731,
+        "name": "Capcom Fighting Evolution"
+      },
+      {
+        "id": 5245257,
+        "name": "Capcom Fighting Collection"
+      }
+    ],
+    "query": "Capcom Play System III",
+    "status": 200,
+    "title": "Capcom Play System III"
+  },
+  {
+    "id": "crvision",
+    "matches": [
+      {
+        "id": 5459717,
+        "name": "VTech CreatiVision"
+      },
+      {
+        "id": 5459780,
+        "name": "VTech Socrates"
+      },
+      {
+        "id": 5459804,
+        "name": "VTech V.Flash"
+      }
+    ],
+    "query": "VTech CreatiVision",
+    "status": 200,
+    "title": "VTech CreatiVision"
+  },
+  {
+    "id": "daphne",
+    "matches": [
+      {
+        "id": 5265673,
+        "name": "Princess Daphne and the Orcs"
+      },
+      {
+        "id": 5478767,
+        "name": "Wizardry Variants Daphne"
+      },
+      {
+        "id": 5497289,
+        "name": "A Lucky Hunt With Daphne"
+      }
+    ],
+    "query": "Daphne Arcade LaserDisc Emulator",
+    "status": 200,
+    "title": "Daphne Arcade LaserDisc Emulator"
+  },
+  {
+    "id": "desktop",
+    "matches": [
+      {
+        "id": 2416,
+        "name": "Desktop Dungeons"
+      },
+      {
+        "id": 30209,
+        "name": "Desktop Dynasties"
+      },
+      {
+        "id": 30349,
+        "name": "Desktop Tree"
+      },
+      {
+        "id": 33244,
+        "name": "Desktop Soccer / 机でサッカー"
+      },
+      {
+        "id": 5250999,
+        "name": "Desktop Magic Engine"
+      },
+      {
+        "id": 5251089,
+        "name": "Desktop Girls"
+      },
+      {
+        "id": 5251220,
+        "name": "Desktop Visual Media"
+      },
+      {
+        "id": 5251364,
+        "name": "Desktop Audio Visualizer"
+      },
+      {
+        "id": 5251535,
+        "name": "Desktop Mascot Engine"
+      },
+      {
+        "id": 5256800,
+        "name": "Desktop Portal"
+      }
+    ],
+    "query": "Desktop Applications",
+    "status": 200,
+    "title": "Desktop Applications"
+  },
+  {
+    "id": "doom",
+    "matches": [
+      {
+        "id": 2460,
+        "name": "Doom"
+      },
+      {
+        "id": 8103,
+        "name": "Doom"
+      },
+      {
+        "id": 1167,
+        "name": "DooM in the Dark"
+      },
+      {
+        "id": 1933,
+        "name": "DOOM 3: BFG Edition"
+      },
+      {
+        "id": 2492,
+        "name": "DOOM II"
+      },
+      {
+        "id": 5269,
+        "name": "Doom & Destiny"
+      },
+      {
+        "id": 7221,
+        "name": "Doom & Destiny Advanced"
+      },
+      {
+        "id": 9591,
+        "name": "Doom Rails"
+      },
+      {
+        "id": 18776,
+        "name": "DOOM VFR"
+      },
+      {
+        "id": 25626,
+        "name": "DOOM 64"
+      }
+    ],
+    "query": "Doom",
+    "status": 200,
+    "title": "Doom"
+  },
+  {
+    "id": "dos",
+    "matches": [
+      {
+        "id": 5268705,
+        "name": "MS-DOS (Operating System)"
+      },
+      {
+        "id": 1222,
+        "name": "Ms. Splosion Man"
+      },
+      {
+        "id": 31259,
+        "name": "Ms. Squeaker's Home for the Sick"
+      },
+      {
+        "id": 34136,
+        "name": "Ms. Pac-Man: Maze Madness"
+      },
+      {
+        "id": 35089,
+        "name": "Ms. Pac-Man"
+      },
+      {
+        "id": 36127,
+        "name": "MS Saga: A New Dawn"
+      },
+      {
+        "id": 36675,
+        "name": "Ms. Pac-Man: Quest for the Golden Maze"
+      },
+      {
+        "id": 38757,
+        "name": "Ms. Pac-Man: Special Color Edition"
+      },
+      {
+        "id": 5102882,
+        "name": "Ms. Holmes: The Monster of the Baskervilles Collector's Edition"
+      },
+      {
+        "id": 5261136,
+        "name": "Ms. Holmes: Five Orange Pips Collector's Edition"
+      }
+    ],
+    "query": "MS-DOS",
+    "status": 200,
+    "title": "DOS (PC)"
+  },
+  {
+    "id": "dragon32",
+    "matches": [
+      {
+        "id": 56,
+        "name": "Dragon Ball Z: Budokai 2"
+      },
+      {
+        "id": 294,
+        "name": "Dragon's Hope"
+      },
+      {
+        "id": 457,
+        "name": "Dragon Roller Coaster VR"
+      },
+      {
+        "id": 494,
+        "name": "Dragon Chase"
+      },
+      {
+        "id": 511,
+        "name": "Dragon Iris"
+      },
+      {
+        "id": 1335,
+        "name": "Dragon Nest"
+      },
+      {
+        "id": 1557,
+        "name": "Dragon Age: Origins"
+      },
+      {
+        "id": 1701,
+        "name": "Dragon Ball Z: Budokai 3"
+      },
+      {
+        "id": 2444,
+        "name": "Dragon's Lair"
+      },
+      {
+        "id": 2477,
+        "name": "Dragon's Prophet"
+      }
+    ],
+    "query": "Dragon Data Dragon 32",
+    "status": 200,
+    "title": "Dragon Data Dragon 32"
+  },
+  {
+    "id": "dreamcast",
+    "matches": [
+      {
+        "id": 5327256,
+        "name": "Sega Dreamcast"
+      },
+      {
+        "id": 5336969,
+        "name": "PlanetWeb Sega Dreamcast Web Browser"
+      },
+      {
+        "id": 5336970,
+        "name": "PlanetWeb Sega Dreamcast Web Browser 2.0"
+      },
+      {
+        "id": 8,
+        "name": "Sega Ages 2500 Vol.16: Virtua Fighter 2"
+      },
+      {
+        "id": 1195,
+        "name": "Sega Rally"
+      },
+      {
+        "id": 6360,
+        "name": "Sega Mega Drive & Genesis Classics"
+      },
+      {
+        "id": 12108,
+        "name": "SEGA Rally Revo"
+      },
+      {
+        "id": 21137,
+        "name": "Sega Rally Championship"
+      },
+      {
+        "id": 21782,
+        "name": "Sega Bass Fishing"
+      },
+      {
+        "id": 35225,
+        "name": "Sega Smash Pack"
+      }
+    ],
+    "query": "Sega Dreamcast",
+    "status": 200,
+    "title": "Sega Dreamcast"
+  },
+  {
+    "id": "easyrpg",
+    "matches": [
+      {
+        "id": 5373712,
+        "name": "EasyRPG Player (Program)"
+      }
+    ],
+    "query": "EasyRPG",
+    "status": 200,
+    "title": "EasyRPG Game Engine"
+  },
+  {
+    "id": "electron",
+    "matches": [
+      {
+        "id": 9445,
+        "name": "Acorn Assault: Rodent Revolution"
+      },
+      {
+        "id": 5285681,
+        "name": "Acorn City: Tropical!"
+      },
+      {
+        "id": 5445606,
+        "name": "Acorn Cop"
+      },
+      {
+        "id": 5447239,
+        "name": "Acorn Hunt"
+      },
+      {
+        "id": 5529388,
+        "name": "Acorn Eater"
+      },
+      {
+        "id": 5514891,
+        "name": "Acorn Archimedes"
+      },
+      {
+        "id": 5552178,
+        "name": "Acorn Heist!"
+      },
+      {
+        "id": 5553306,
+        "name": "ACORN: Seed of Resistance"
+      },
+      {
+        "id": 5262690,
+        "name": "Sally Acorn in Sonic 2"
+      },
+      {
+        "id": 5364677,
+        "name": "Sally Acorn in Sonic 1"
+      }
+    ],
+    "query": "Acorn Electron",
+    "status": 200,
+    "title": "Acorn Electron"
+  },
+  {
+    "id": "emulators",
+    "matches": [
+      {
+        "id": 33118,
+        "name": "Fusion (Emulator)"
+      },
+      {
+        "id": 33205,
+        "name": "The Emulator"
+      },
+      {
+        "id": 34101,
+        "name": "ePSXe (Emulator)"
+      },
+      {
+        "id": 34218,
+        "name": "Snes9x (Emulator)"
+      },
+      {
+        "id": 34230,
+        "name": "DeSmuME (Emulator)"
+      },
+      {
+        "id": 34346,
+        "name": "Dolphin (Emulator)"
+      },
+      {
+        "id": 35439,
+        "name": "PCSX2 (Emulator)"
+      },
+      {
+        "id": 35778,
+        "name": "Project64 (Emulator)"
+      },
+      {
+        "id": 35790,
+        "name": "ZSNES (Emulator)"
+      },
+      {
+        "id": 36024,
+        "name": "Cemu (Emulator)"
+      }
+    ],
+    "query": "Emulators",
+    "status": 200,
+    "title": "Emulators"
+  },
+  {
+    "id": "epic",
+    "matches": [
+      {
+        "id": 5255885,
+        "name": "Epic Games Store (Program)"
+      },
+      {
+        "id": 5469629,
+        "name": "Never Stop Gaming - An EPIC Video Game Store Simulation"
+      },
+      {
+        "id": 31034,
+        "name": "Epic Game Theory"
+      },
+      {
+        "id": 5507456,
+        "name": "Epic Game Maker"
+      },
+      {
+        "id": 5492872,
+        "name": "One Epic Game"
+      },
+      {
+        "id": 825528,
+        "name": "Real Life Battle Royale: It's gonna be an... EPIC game"
+      },
+      {
+        "id": 5256585,
+        "name": "Epic Card Game"
+      },
+      {
+        "id": 5367055,
+        "name": "Epic Hero Game"
+      },
+      {
+        "id": 5546586,
+        "name": "Epic Goose Game"
+      },
+      {
+        "id": 5309880,
+        "name": "Sphere Game Epic"
+      }
+    ],
+    "query": "Epic Games Store",
+    "status": 200,
+    "title": "Epic Games Store"
+  },
+  {
+    "id": "famicom",
+    "matches": [
+      {
+        "id": 5454226,
+        "name": "Nintendo Family Computer (Famicom)"
+      },
+      {
+        "id": 5454227,
+        "name": "Nintendo Family Computer Disk System"
+      },
+      {
+        "id": 5440568,
+        "name": "Family Computer: Nintendo Switch Online"
+      },
+      {
+        "id": 36570,
+        "name": "Nintendo Land"
+      },
+      {
+        "id": 37030,
+        "name": "Nintendo World Cup"
+      },
+      {
+        "id": 37331,
+        "name": "Nintendo World Championships 1990"
+      },
+      {
+        "id": 5252214,
+        "name": "Nintendo Campus Challenge 1991"
+      },
+      {
+        "id": 5252913,
+        "name": "Nintendo Puzzle Collection"
+      },
+      {
+        "id": 5256599,
+        "name": "Nintendo TVii"
+      },
+      {
+        "id": 5256600,
+        "name": "Nintendo eShop"
+      }
+    ],
+    "query": "Nintendo Family Computer",
+    "status": 200,
+    "title": "Nintendo Family Computer"
+  },
+  {
+    "id": "fba",
+    "matches": [
+      {
+        "id": 5351300,
+        "name": "FinalBurn Neo (Emulator)"
+      }
+    ],
+    "query": "FinalBurn Alpha",
+    "status": 200,
+    "title": "FinalBurn Alpha"
+  },
+  {
+    "id": "fbneo",
+    "matches": [
+      {
+        "id": 5351300,
+        "name": "FinalBurn Neo (Emulator)"
+      }
+    ],
+    "query": "FinalBurn Neo",
+    "status": 200,
+    "title": "FinalBurn Neo"
+  },
+  {
+    "id": "fds",
+    "matches": [
+      {
+        "id": 5454229,
+        "name": "Nintendo Super Famicom"
+      },
+      {
+        "id": 5440569,
+        "name": "Super Famicom: Nintendo Switch Online"
+      },
+      {
+        "id": 5454226,
+        "name": "Nintendo Family Computer (Famicom)"
+      },
+      {
+        "id": 36570,
+        "name": "Nintendo Land"
+      },
+      {
+        "id": 37030,
+        "name": "Nintendo World Cup"
+      },
+      {
+        "id": 37331,
+        "name": "Nintendo World Championships 1990"
+      },
+      {
+        "id": 5252214,
+        "name": "Nintendo Campus Challenge 1991"
+      },
+      {
+        "id": 5252913,
+        "name": "Nintendo Puzzle Collection"
+      },
+      {
+        "id": 5256599,
+        "name": "Nintendo TVii"
+      },
+      {
+        "id": 5256600,
+        "name": "Nintendo eShop"
+      }
+    ],
+    "query": "Nintendo Famicom Disk System",
+    "status": 200,
+    "title": "Nintendo Famicom Disk System"
+  },
+  {
+    "id": "flash",
+    "matches": [
+      {
+        "id": 5290525,
+        "name": "Adobe Flash Player (Program)"
+      },
+      {
+        "id": 5260300,
+        "name": "Adobe Photoshop (Program)"
+      },
+      {
+        "id": 5260301,
+        "name": "Adobe Audition (Program)"
+      },
+      {
+        "id": 5260302,
+        "name": "Adobe Premiere (Program)"
+      },
+      {
+        "id": 5261148,
+        "name": "Adobe After Effects (Program)"
+      },
+      {
+        "id": 5261149,
+        "name": "Adobe Media Encoder (Program)"
+      },
+      {
+        "id": 5261150,
+        "name": "Adobe Dreamweaver (Program)"
+      },
+      {
+        "id": 5264672,
+        "name": "Adobe Bridge (Program)"
+      },
+      {
+        "id": 5264673,
+        "name": "Adobe Illustrator (Program)"
+      },
+      {
+        "id": 5264674,
+        "name": "Adobe Fuse (Program)"
+      }
+    ],
+    "query": "Adobe Flash",
+    "status": 200,
+    "title": "Adobe Flash"
+  },
+  {
+    "id": "fm7",
+    "matches": [
+      {
+        "id": 5461938,
+        "name": "Fujitsu FM Towns Marty"
+      }
+    ],
+    "query": "Fujitsu FM-7",
+    "status": 200,
+    "title": "Fujitsu FM-7"
+  },
+  {
+    "id": "fmtowns",
+    "matches": [
+      {
+        "id": 5461938,
+        "name": "Fujitsu FM Towns Marty"
+      }
+    ],
+    "query": "Fujitsu FM Towns",
+    "status": 200,
+    "title": "Fujitsu FM Towns"
+  },
+  {
+    "id": "fpinball",
+    "matches": [
+      {
+        "id": 342,
+        "name": "Future Aero Racing S Ultra"
+      },
+      {
+        "id": 3934,
+        "name": "Future Perfect"
+      },
+      {
+        "id": 11652,
+        "name": "Future Wars"
+      },
+      {
+        "id": 14547,
+        "name": "Future Unfolding"
+      },
+      {
+        "id": 25272,
+        "name": "Future Ghost"
+      },
+      {
+        "id": 26556,
+        "name": "Future City Coaster"
+      },
+      {
+        "id": 27445,
+        "name": "Future Proof"
+      },
+      {
+        "id": 32308,
+        "name": "Future GPX CyberFormula SIN VIER"
+      },
+      {
+        "id": 34573,
+        "name": "Future Cop LAPD"
+      },
+      {
+        "id": 1056371,
+        "name": "Future Futures - Command Z"
+      }
+    ],
+    "query": "Future Pinball",
+    "status": 200,
+    "title": "Future Pinball"
+  },
+  {
+    "id": "gamate",
+    "matches": [
+      {
+        "id": 5522315,
+        "name": "Bit"
+      },
+      {
+        "id": 1833,
+        "name": "BIT.TRIP CORE"
+      },
+      {
+        "id": 1834,
+        "name": "BIT.TRIP VOID"
+      },
+      {
+        "id": 1835,
+        "name": "BIT.TRIP FATE"
+      },
+      {
+        "id": 1837,
+        "name": "BIT.TRIP FLUX"
+      },
+      {
+        "id": 2204,
+        "name": "BIT.TRIP Presents... Runner2: Future Legend of Rhythm Alien"
+      },
+      {
+        "id": 2205,
+        "name": "Bit Trip Runner 2 Pre-order"
+      },
+      {
+        "id": 5687,
+        "name": "Bit Odyssey"
+      },
+      {
+        "id": 5783,
+        "name": "bit Dungeon II"
+      },
+      {
+        "id": 6320,
+        "name": "BiT Evolution"
+      }
+    ],
+    "query": "Bit Corporation Gamate",
+    "status": 200,
+    "title": "Bit Corporation Gamate"
+  },
+  {
+    "id": "gameandwatch",
+    "matches": [
+      {
+        "id": 5330114,
+        "name": "Nintendo Game Boy"
+      },
+      {
+        "id": 5436013,
+        "name": "Jinsei Game for Nintendo Switch"
+      },
+      {
+        "id": 5440004,
+        "name": "Game Boy: Nintendo Switch Online"
+      },
+      {
+        "id": 5445933,
+        "name": "Game Boy Advance: Nintendo Switch Online"
+      },
+      {
+        "id": 36570,
+        "name": "Nintendo Land"
+      },
+      {
+        "id": 37030,
+        "name": "Nintendo World Cup"
+      },
+      {
+        "id": 37331,
+        "name": "Nintendo World Championships 1990"
+      },
+      {
+        "id": 5252214,
+        "name": "Nintendo Campus Challenge 1991"
+      },
+      {
+        "id": 5252913,
+        "name": "Nintendo Puzzle Collection"
+      },
+      {
+        "id": 5256599,
+        "name": "Nintendo TVii"
+      }
+    ],
+    "query": "Nintendo Game and Watch",
+    "status": 200,
+    "title": "Nintendo Game and Watch"
+  },
+  {
+    "id": "gamecom",
+    "matches": [
+      {
+        "id": 1109,
+        "name": "Tiger Tank 59 Ⅰ Break The Fog"
+      },
+      {
+        "id": 1200,
+        "name": "Tiger Fighter 1931 Tora!"
+      },
+      {
+        "id": 9648,
+        "name": "Tiger Knight: Empire War"
+      },
+      {
+        "id": 19014,
+        "name": "Tiger Hunt"
+      },
+      {
+        "id": 28773,
+        "name": "Tiger Tank 59 Ⅰ"
+      },
+      {
+        "id": 30319,
+        "name": "Tiger Fighter 1931"
+      },
+      {
+        "id": 31596,
+        "name": "Tiger Striker"
+      },
+      {
+        "id": 32223,
+        "name": "Tiger Tank 59 Ⅰ A-Gun"
+      },
+      {
+        "id": 32898,
+        "name": "Tiger Soldier Ⅰ"
+      },
+      {
+        "id": 33701,
+        "name": "Tiger Woods PGA Tour 10"
+      }
+    ],
+    "query": "Tiger Electronics Game.com",
+    "status": 200,
+    "title": "Tiger Electronics Game.com"
+  },
+  {
+    "id": "gamegear",
+    "matches": [
+      {
+        "id": 5432252,
+        "name": "Sega Game Gear"
+      },
+      {
+        "id": 5376533,
+        "name": "Sega Game Pack 4 in 1"
+      },
+      {
+        "id": 5374697,
+        "name": "Pringles Game (Sega Homebrew)"
+      },
+      {
+        "id": 8,
+        "name": "Sega Ages 2500 Vol.16: Virtua Fighter 2"
+      },
+      {
+        "id": 1195,
+        "name": "Sega Rally"
+      },
+      {
+        "id": 6360,
+        "name": "Sega Mega Drive & Genesis Classics"
+      },
+      {
+        "id": 12108,
+        "name": "SEGA Rally Revo"
+      },
+      {
+        "id": 21137,
+        "name": "Sega Rally Championship"
+      },
+      {
+        "id": 21782,
+        "name": "Sega Bass Fishing"
+      },
+      {
+        "id": 35225,
+        "name": "Sega Smash Pack"
+      }
+    ],
+    "query": "Sega Game Gear",
+    "status": 200,
+    "title": "Sega Game Gear"
+  },
+  {
+    "id": "gb",
+    "matches": [
+      {
+        "id": 5330114,
+        "name": "Nintendo Game Boy"
+      },
+      {
+        "id": 5440004,
+        "name": "Game Boy: Nintendo Switch Online"
+      },
+      {
+        "id": 5445933,
+        "name": "Game Boy Advance: Nintendo Switch Online"
+      },
+      {
+        "id": 5436013,
+        "name": "Jinsei Game for Nintendo Switch"
+      },
+      {
+        "id": 36570,
+        "name": "Nintendo Land"
+      },
+      {
+        "id": 37030,
+        "name": "Nintendo World Cup"
+      },
+      {
+        "id": 37331,
+        "name": "Nintendo World Championships 1990"
+      },
+      {
+        "id": 5252214,
+        "name": "Nintendo Campus Challenge 1991"
+      },
+      {
+        "id": 5252913,
+        "name": "Nintendo Puzzle Collection"
+      },
+      {
+        "id": 5256599,
+        "name": "Nintendo TVii"
+      }
+    ],
+    "query": "Nintendo Game Boy",
+    "status": 200,
+    "title": "Nintendo Game Boy"
+  },
+  {
+    "id": "gba",
+    "matches": [
+      {
+        "id": 5321240,
+        "name": "Game Boy Advance"
+      },
+      {
+        "id": 5445933,
+        "name": "Game Boy Advance: Nintendo Switch Online"
+      },
+      {
+        "id": 5256341,
+        "name": "Game Boy Wars Advance 1+2"
+      },
+      {
+        "id": 5330158,
+        "name": "Game Boy Gallery"
+      },
+      {
+        "id": 5331036,
+        "name": "Game Boy Color"
+      },
+      {
+        "id": 5439935,
+        "name": "Game Boy Wars 2"
+      },
+      {
+        "id": 5440004,
+        "name": "Game Boy: Nintendo Switch Online"
+      },
+      {
+        "id": 5447915,
+        "name": "Game Boy Wars"
+      },
+      {
+        "id": 5510914,
+        "name": "Game Boy Gallery 2"
+      },
+      {
+        "id": 5249689,
+        "name": "Tetris (Game Boy)"
+      }
+    ],
+    "query": "Game Boy Advance",
+    "status": 200,
+    "title": "Nintendo Game Boy Advance"
+  },
+  {
+    "id": "gbc",
+    "matches": [
+      {
+        "id": 5331036,
+        "name": "Game Boy Color"
+      },
+      {
+        "id": 5412715,
+        "name": "Carmageddon (Game Boy Color)"
+      },
+      {
+        "id": 5310854,
+        "name": "Pokémon Picross (Game Boy Color)"
+      },
+      {
+        "id": 5459604,
+        "name": "Frogger 2 (Game Boy Color)"
+      },
+      {
+        "id": 5256341,
+        "name": "Game Boy Wars Advance 1+2"
+      },
+      {
+        "id": 5321240,
+        "name": "Game Boy Advance"
+      },
+      {
+        "id": 5330158,
+        "name": "Game Boy Gallery"
+      },
+      {
+        "id": 5439935,
+        "name": "Game Boy Wars 2"
+      },
+      {
+        "id": 5440004,
+        "name": "Game Boy: Nintendo Switch Online"
+      },
+      {
+        "id": 5445933,
+        "name": "Game Boy Advance: Nintendo Switch Online"
+      }
+    ],
+    "query": "Game Boy Color",
+    "status": 200,
+    "title": "Nintendo Game Boy Color"
+  },
+  {
+    "id": "gc",
+    "matches": [
+      {
+        "id": 5327259,
+        "name": "Nintendo GameCube"
+      },
+      {
+        "id": 5483962,
+        "name": "Nintendo Gamecube: Nintendo Classics"
+      },
+      {
+        "id": 5516978,
+        "name": "Nintendo GameCube Service Disc v1.0/03"
+      },
+      {
+        "id": 36570,
+        "name": "Nintendo Land"
+      },
+      {
+        "id": 37030,
+        "name": "Nintendo World Cup"
+      },
+      {
+        "id": 37331,
+        "name": "Nintendo World Championships 1990"
+      },
+      {
+        "id": 5252214,
+        "name": "Nintendo Campus Challenge 1991"
+      },
+      {
+        "id": 5252913,
+        "name": "Nintendo Puzzle Collection"
+      },
+      {
+        "id": 5256599,
+        "name": "Nintendo TVii"
+      },
+      {
+        "id": 5256600,
+        "name": "Nintendo eShop"
+      }
+    ],
+    "query": "Nintendo GameCube",
+    "status": 200,
+    "title": "Nintendo GameCube"
+  },
+  {
+    "id": "genesis",
+    "matches": [
+      {
+        "id": 5355019,
+        "name": "Sega Genesis"
+      },
+      {
+        "id": 5251752,
+        "name": "SEGA Genesis & Mega Drive Classics Workshop Tool"
+      },
+      {
+        "id": 5264466,
+        "name": "Sega Genesis Collection"
+      },
+      {
+        "id": 5325031,
+        "name": "Sega Genesis: Nintendo Switch Online"
+      },
+      {
+        "id": 6360,
+        "name": "Sega Mega Drive & Genesis Classics"
+      },
+      {
+        "id": 8,
+        "name": "Sega Ages 2500 Vol.16: Virtua Fighter 2"
+      },
+      {
+        "id": 1195,
+        "name": "Sega Rally"
+      },
+      {
+        "id": 12108,
+        "name": "SEGA Rally Revo"
+      },
+      {
+        "id": 21137,
+        "name": "Sega Rally Championship"
+      },
+      {
+        "id": 21782,
+        "name": "Sega Bass Fishing"
+      }
+    ],
+    "query": "Sega Genesis",
+    "status": 200,
+    "title": "Sega Genesis"
+  },
+  {
+    "id": "gmaster",
+    "matches": [],
+    "query": "Hartung Game Master",
+    "status": 200,
+    "title": "Hartung Game Master"
+  },
+  {
+    "id": "gx4000",
+    "matches": [
+      {
+        "id": 5459989,
+        "name": "Amstrad GX4000"
+      }
+    ],
+    "query": "Amstrad GX4000",
+    "status": 200,
+    "title": "Amstrad GX4000"
+  },
+  {
+    "id": "intellivision",
+    "matches": [
+      {
+        "id": 5459714,
+        "name": "Mattel Intellivision"
+      },
+      {
+        "id": 5459805,
+        "name": "Mattel HyperScan"
+      },
+      {
+        "id": 31122,
+        "name": "Mathel"
+      },
+      {
+        "id": 32792,
+        "name": "Matter"
+      },
+      {
+        "id": 5173427,
+        "name": "Matter of the Dreams"
+      },
+      {
+        "id": 5492273,
+        "name": "Matter of Factory"
+      },
+      {
+        "id": 5538519,
+        "name": "Matter MazeBall: Element Trials"
+      },
+      {
+        "id": 5549790,
+        "name": "Matter Scatter"
+      },
+      {
+        "id": 5564780,
+        "name": "Matter of State"
+      },
+      {
+        "id": 3046,
+        "name": "Dark Matter"
+      }
+    ],
+    "query": "Mattel Electronics Intellivision",
+    "status": 200,
+    "title": "Mattel Electronics Intellivision"
+  },
+  {
+    "id": "j2me",
+    "matches": [
+      {
+        "id": 5443393,
+        "name": "Java 2, Micro Edition (Operating System)"
+      },
+      {
+        "id": 5400158,
+        "name": "Java Saga"
+      },
+      {
+        "id": 5450337,
+        "name": "Java Journey"
+      },
+      {
+        "id": 5248835,
+        "name": "Minecraft: Java Edition"
+      },
+      {
+        "id": 5434774,
+        "name": "Iggy&Java"
+      },
+      {
+        "id": 5396648,
+        "name": "Code Wizard: Java Edition"
+      }
+    ],
+    "query": "Java 2 Micro Edition (J2ME)",
+    "status": 200,
+    "title": "Java 2 Micro Edition (J2ME)"
+  },
+  {
+    "id": "kodi",
+    "matches": [
+      {
+        "id": 5247915,
+        "name": "Kodi (Program)"
+      }
+    ],
+    "query": "Kodi",
+    "status": 200,
+    "title": "Kodi Home Theatre Software"
+  },
+  {
+    "id": "laserdisc",
+    "matches": [],
+    "query": "LaserDisc Games",
+    "status": 200,
+    "title": "LaserDisc Games"
+  },
+  {
+    "id": "lcdgames",
+    "matches": [
+      {
+        "id": 33435,
+        "name": "LCD Sports: American Football"
+      },
+      {
+        "id": 5418578,
+        "name": "Castlevania Dracula LCD Chronicles"
+      }
+    ],
+    "query": "LCD Handheld Games",
+    "status": 200,
+    "title": "LCD Handheld Games"
+  },
+  {
+    "id": "lowresnx",
+    "matches": [],
+    "query": "LowRes NX",
+    "status": 200,
+    "title": "LowRes NX Fantasy Console"
+  },
+  {
+    "id": "lutris",
+    "matches": [
+      {
+        "id": 5267809,
+        "name": "Lutris"
+      },
+      {
+        "id": 5345876,
+        "name": "I.C.O. - Machina Lutris"
+      }
+    ],
+    "query": "Lutris",
+    "status": 200,
+    "title": "Lutris Open Gaming Platform"
+  },
+  {
+    "id": "lutro",
+    "matches": [
+      {
+        "id": 5267809,
+        "name": "Lutris"
+      },
+      {
+        "id": 5304906,
+        "name": "Luto"
+      },
+      {
+        "id": 5345876,
+        "name": "I.C.O. - Machina Lutris"
+      },
+      {
+        "id": 5531853,
+        "name": "Gardens Of Lutonia"
+      }
+    ],
+    "query": "Lutro",
+    "status": 200,
+    "title": "Lutro Game Engine"
+  },
+  {
+    "id": "macintosh",
+    "matches": [
+      {
+        "id": 5269210,
+        "name": "Apple Macintosh"
+      },
+      {
+        "id": 5456518,
+        "name": "Apple"
+      },
+      {
+        "id": 5456718,
+        "name": "Apple"
+      },
+      {
+        "id": 5491415,
+        "name": "Apple"
+      },
+      {
+        "id": 6790,
+        "name": "Apple Jack 1&2"
+      },
+      {
+        "id": 5246523,
+        "name": "Apple Pop"
+      },
+      {
+        "id": 5249285,
+        "name": "Apple Slash"
+      },
+      {
+        "id": 5258008,
+        "name": "Apple Knight"
+      },
+      {
+        "id": 5263999,
+        "name": "Apple Hopper"
+      },
+      {
+        "id": 5268706,
+        "name": "Apple SOS (Operating System)"
+      }
+    ],
+    "query": "Apple Macintosh",
+    "status": 200,
+    "title": "Apple Macintosh"
+  },
+  {
+    "id": "mame",
+    "matches": [
+      {
+        "id": 5250066,
+        "name": "MAME (Emulator)"
+      },
+      {
+        "id": 5558502,
+        "name": "Mame, Kana Desktop Companion"
+      },
+      {
+        "id": 5495695,
+        "name": "Jumpin' Kid: Jack to Mame no Ki Monogatari"
+      },
+      {
+        "id": 5493182,
+        "name": "Mamegoma: Honobono Nikki"
+      },
+      {
+        "id": 5494393,
+        "name": "Mamegoma 2 – Uchi no Ko ga Ichiban!"
+      },
+      {
+        "id": 5494394,
+        "name": "Mamegoma 3 – Kawaii ga Ippai!"
+      },
+      {
+        "id": 5494392,
+        "name": "Kupuu!! Mamegoma"
+      },
+      {
+        "id": 5437233,
+        "name": "Mortadelo y Filemón: Mamelucos a la Romana"
+      },
+      {
+        "id": 5440875,
+        "name": "Otogi Katsugeki Mameda no Bakeru: Oracle Saitarou no Sainan!!"
+      },
+      {
+        "id": 5488226,
+        "name": "Ten ｍade Jack: Odoroki Mamenoki Daitoubou!!"
+      }
+    ],
+    "query": "MAME",
+    "status": 200,
+    "title": "Multiple Arcade Machine Emulator"
+  },
+  {
+    "id": "mame-advmame",
+    "matches": [],
+    "query": "AdvanceMAME",
+    "status": 200,
+    "title": "AdvanceMAME"
+  },
+  {
+    "id": "mark3",
+    "matches": [
+      {
+        "id": 5448950,
+        "name": "Sega Mark III"
+      },
+      {
+        "id": 8,
+        "name": "Sega Ages 2500 Vol.16: Virtua Fighter 2"
+      },
+      {
+        "id": 1195,
+        "name": "Sega Rally"
+      },
+      {
+        "id": 6360,
+        "name": "Sega Mega Drive & Genesis Classics"
+      },
+      {
+        "id": 12108,
+        "name": "SEGA Rally Revo"
+      },
+      {
+        "id": 21137,
+        "name": "Sega Rally Championship"
+      },
+      {
+        "id": 21782,
+        "name": "Sega Bass Fishing"
+      },
+      {
+        "id": 35225,
+        "name": "Sega Smash Pack"
+      },
+      {
+        "id": 36246,
+        "name": "Sega Rally Championship 2"
+      },
+      {
+        "id": 37514,
+        "name": "Sega Touring Car Championship"
+      }
+    ],
+    "query": "Sega Mark III",
+    "status": 200,
+    "title": "Sega Mark III"
+  },
+  {
+    "id": "mastersystem",
+    "matches": [
+      {
+        "id": 5450226,
+        "name": "Sega Master System"
+      },
+      {
+        "id": 5249680,
+        "name": "Sonic the Hedgehog (Sega Master System)"
+      },
+      {
+        "id": 5249683,
+        "name": "Sonic the Hedgehog 2 (Sega Master System)"
+      },
+      {
+        "id": 8,
+        "name": "Sega Ages 2500 Vol.16: Virtua Fighter 2"
+      },
+      {
+        "id": 1195,
+        "name": "Sega Rally"
+      },
+      {
+        "id": 6360,
+        "name": "Sega Mega Drive & Genesis Classics"
+      },
+      {
+        "id": 12108,
+        "name": "SEGA Rally Revo"
+      },
+      {
+        "id": 21137,
+        "name": "Sega Rally Championship"
+      },
+      {
+        "id": 21782,
+        "name": "Sega Bass Fishing"
+      },
+      {
+        "id": 35225,
+        "name": "Sega Smash Pack"
+      }
+    ],
+    "query": "Sega Master System",
+    "status": 200,
+    "title": "Sega Master System"
+  },
+  {
+    "id": "megacd",
+    "matches": [
+      {
+        "id": 5415874,
+        "name": "Sega Mega-CD"
+      },
+      {
+        "id": 6360,
+        "name": "Sega Mega Drive & Genesis Classics"
+      },
+      {
+        "id": 5325030,
+        "name": "Sega Mega Drive: Nintendo Switch Online"
+      },
+      {
+        "id": 5346682,
+        "name": "Sega Mega Drive Collection"
+      },
+      {
+        "id": 5353218,
+        "name": "Sega Mega Drive"
+      },
+      {
+        "id": 5251752,
+        "name": "SEGA Genesis & Mega Drive Classics Workshop Tool"
+      },
+      {
+        "id": 8,
+        "name": "Sega Ages 2500 Vol.16: Virtua Fighter 2"
+      },
+      {
+        "id": 1195,
+        "name": "Sega Rally"
+      },
+      {
+        "id": 12108,
+        "name": "SEGA Rally Revo"
+      },
+      {
+        "id": 21137,
+        "name": "Sega Rally Championship"
+      }
+    ],
+    "query": "Sega Mega-CD",
+    "status": 200,
+    "title": "Sega Mega-CD"
+  },
+  {
+    "id": "megacdjp",
+    "matches": [
+      {
+        "id": 5415874,
+        "name": "Sega Mega-CD"
+      },
+      {
+        "id": 6360,
+        "name": "Sega Mega Drive & Genesis Classics"
+      },
+      {
+        "id": 5325030,
+        "name": "Sega Mega Drive: Nintendo Switch Online"
+      },
+      {
+        "id": 5346682,
+        "name": "Sega Mega Drive Collection"
+      },
+      {
+        "id": 5353218,
+        "name": "Sega Mega Drive"
+      },
+      {
+        "id": 5251752,
+        "name": "SEGA Genesis & Mega Drive Classics Workshop Tool"
+      },
+      {
+        "id": 8,
+        "name": "Sega Ages 2500 Vol.16: Virtua Fighter 2"
+      },
+      {
+        "id": 1195,
+        "name": "Sega Rally"
+      },
+      {
+        "id": 12108,
+        "name": "SEGA Rally Revo"
+      },
+      {
+        "id": 21137,
+        "name": "Sega Rally Championship"
+      }
+    ],
+    "query": "Sega Mega-CD",
+    "status": 200,
+    "title": "Sega Mega-CD"
+  },
+  {
+    "id": "megadrive",
+    "matches": [
+      {
+        "id": 5353218,
+        "name": "Sega Mega Drive"
+      },
+      {
+        "id": 6360,
+        "name": "Sega Mega Drive & Genesis Classics"
+      },
+      {
+        "id": 5325030,
+        "name": "Sega Mega Drive: Nintendo Switch Online"
+      },
+      {
+        "id": 5346682,
+        "name": "Sega Mega Drive Collection"
+      },
+      {
+        "id": 5251752,
+        "name": "SEGA Genesis & Mega Drive Classics Workshop Tool"
+      },
+      {
+        "id": 5415874,
+        "name": "Sega Mega-CD"
+      },
+      {
+        "id": 8,
+        "name": "Sega Ages 2500 Vol.16: Virtua Fighter 2"
+      },
+      {
+        "id": 1195,
+        "name": "Sega Rally"
+      },
+      {
+        "id": 12108,
+        "name": "SEGA Rally Revo"
+      },
+      {
+        "id": 21137,
+        "name": "Sega Rally Championship"
+      }
+    ],
+    "query": "Sega Mega Drive",
+    "status": 200,
+    "title": "Sega Mega Drive"
+  },
+  {
+    "id": "megadrivejp",
+    "matches": [
+      {
+        "id": 5353218,
+        "name": "Sega Mega Drive"
+      },
+      {
+        "id": 6360,
+        "name": "Sega Mega Drive & Genesis Classics"
+      },
+      {
+        "id": 5325030,
+        "name": "Sega Mega Drive: Nintendo Switch Online"
+      },
+      {
+        "id": 5346682,
+        "name": "Sega Mega Drive Collection"
+      },
+      {
+        "id": 5251752,
+        "name": "SEGA Genesis & Mega Drive Classics Workshop Tool"
+      },
+      {
+        "id": 5415874,
+        "name": "Sega Mega-CD"
+      },
+      {
+        "id": 8,
+        "name": "Sega Ages 2500 Vol.16: Virtua Fighter 2"
+      },
+      {
+        "id": 1195,
+        "name": "Sega Rally"
+      },
+      {
+        "id": 12108,
+        "name": "SEGA Rally Revo"
+      },
+      {
+        "id": 21137,
+        "name": "Sega Rally Championship"
+      }
+    ],
+    "query": "Sega Mega Drive",
+    "status": 200,
+    "title": "Sega Mega Drive"
+  },
+  {
+    "id": "megaduck",
+    "matches": [],
+    "query": "Creatronic Mega Duck",
+    "status": 200,
+    "title": "Creatronic Mega Duck"
+  },
+  {
+    "id": "mess",
+    "matches": [
+      {
+        "id": 24155,
+        "name": "Multi-Quest"
+      },
+      {
+        "id": 36487,
+        "name": "Multi Theft Auto"
+      },
+      {
+        "id": 5252536,
+        "name": "Multi-dimension Conflict 冲突次元"
+      },
+      {
+        "id": 5322289,
+        "name": "Multi Idle"
+      },
+      {
+        "id": 5429352,
+        "name": "Multi Turret Academy"
+      },
+      {
+        "id": 5431029,
+        "name": "Multi Turret Academy: Prologue"
+      },
+      {
+        "id": 5445113,
+        "name": "Multi Game Party"
+      },
+      {
+        "id": 5454816,
+        "name": "multi-Path"
+      },
+      {
+        "id": 5483743,
+        "name": "Multi Championchip Futsal"
+      },
+      {
+        "id": 5492428,
+        "name": "Multi Clicker"
+      }
+    ],
+    "query": "Multi Emulator Super System",
+    "status": 200,
+    "title": "Multi Emulator Super System"
+  },
+  {
+    "id": "model2",
+    "matches": [
+      {
+        "id": 8,
+        "name": "Sega Ages 2500 Vol.16: Virtua Fighter 2"
+      },
+      {
+        "id": 1195,
+        "name": "Sega Rally"
+      },
+      {
+        "id": 6360,
+        "name": "Sega Mega Drive & Genesis Classics"
+      },
+      {
+        "id": 12108,
+        "name": "SEGA Rally Revo"
+      },
+      {
+        "id": 21137,
+        "name": "Sega Rally Championship"
+      },
+      {
+        "id": 21782,
+        "name": "Sega Bass Fishing"
+      },
+      {
+        "id": 35225,
+        "name": "Sega Smash Pack"
+      },
+      {
+        "id": 36246,
+        "name": "Sega Rally Championship 2"
+      },
+      {
+        "id": 37514,
+        "name": "Sega Touring Car Championship"
+      },
+      {
+        "id": 38681,
+        "name": "Sega Arcade Gallery"
+      }
+    ],
+    "query": "Sega Model 2",
+    "status": 200,
+    "title": "Sega Model 2"
+  },
+  {
+    "id": "model3",
+    "matches": [
+      {
+        "id": 8,
+        "name": "Sega Ages 2500 Vol.16: Virtua Fighter 2"
+      },
+      {
+        "id": 1195,
+        "name": "Sega Rally"
+      },
+      {
+        "id": 6360,
+        "name": "Sega Mega Drive & Genesis Classics"
+      },
+      {
+        "id": 12108,
+        "name": "SEGA Rally Revo"
+      },
+      {
+        "id": 21137,
+        "name": "Sega Rally Championship"
+      },
+      {
+        "id": 21782,
+        "name": "Sega Bass Fishing"
+      },
+      {
+        "id": 35225,
+        "name": "Sega Smash Pack"
+      },
+      {
+        "id": 36246,
+        "name": "Sega Rally Championship 2"
+      },
+      {
+        "id": 37514,
+        "name": "Sega Touring Car Championship"
+      },
+      {
+        "id": 38681,
+        "name": "Sega Arcade Gallery"
+      }
+    ],
+    "query": "Sega Model 3",
+    "status": 200,
+    "title": "Sega Model 3"
+  },
+  {
+    "id": "moto",
+    "matches": [],
+    "query": "Thomson MO/TO Series",
+    "status": 200,
+    "title": "Thomson MO/TO Series"
+  },
+  {
+    "id": "msx",
+    "matches": [
+      {
+        "id": 899,
+        "name": "Nogalious MSX"
+      },
+      {
+        "id": 5434317,
+        "name": "Batman (MSX)"
+      },
+      {
+        "id": 5457296,
+        "name": "Project MSX"
+      },
+      {
+        "id": 5511445,
+        "name": "ASCII MSX"
+      },
+      {
+        "id": 5519483,
+        "name": "EGGCONSOLE ZANAC EX MSX2"
+      },
+      {
+        "id": 5530443,
+        "name": "EGGCONSOLE RELICS MSX2"
+      }
+    ],
+    "query": "MSX",
+    "status": 200,
+    "title": "MSX"
+  },
+  {
+    "id": "msx1",
+    "matches": [],
+    "query": "MSX1",
+    "status": 200,
+    "title": "MSX1"
+  },
+  {
+    "id": "msx2",
+    "matches": [
+      {
+        "id": 5519483,
+        "name": "EGGCONSOLE ZANAC EX MSX2"
+      },
+      {
+        "id": 5530443,
+        "name": "EGGCONSOLE RELICS MSX2"
+      }
+    ],
+    "query": "MSX2",
+    "status": 200,
+    "title": "MSX2"
+  },
+  {
+    "id": "msxturbor",
+    "matches": [
+      {
+        "id": 899,
+        "name": "Nogalious MSX"
+      },
+      {
+        "id": 5434317,
+        "name": "Batman (MSX)"
+      },
+      {
+        "id": 5457296,
+        "name": "Project MSX"
+      },
+      {
+        "id": 5511445,
+        "name": "ASCII MSX"
+      }
+    ],
+    "query": "MSX Turbo R",
+    "status": 200,
+    "title": "MSX Turbo R"
+  },
+  {
+    "id": "mugen",
+    "matches": [
+      {
+        "id": 5249163,
+        "name": "M.U.G.E.N."
+      },
+      {
+        "id": 5471655,
+        "name": "MU-GEN NO TOU"
+      },
+      {
+        "id": 5439452,
+        "name": "Mug Smashers"
+      },
+      {
+        "id": 5453413,
+        "name": "MUG 🍺"
+      },
+      {
+        "id": 5461165,
+        "name": "Mug's Orb"
+      },
+      {
+        "id": 5518530,
+        "name": "King's Mug"
+      },
+      {
+        "id": 5552792,
+        "name": "The Bottomless Mug"
+      },
+      {
+        "id": 10413,
+        "name": "M.U.D. TV"
+      },
+      {
+        "id": 37605,
+        "name": "M.U.L.E."
+      },
+      {
+        "id": 5173856,
+        "name": "M.U.S.H.A.: Metallic Uniframe Super Hybrid Armor"
+      }
+    ],
+    "query": "M.U.G.E.N",
+    "status": 200,
+    "title": "M.U.G.E.N Game Engine"
+  },
+  {
+    "id": "multivision",
+    "matches": [
+      {
+        "id": 4888,
+        "name": "Othello"
+      },
+      {
+        "id": 36994,
+        "name": "Othello"
+      },
+      {
+        "id": 5298454,
+        "name": "Othello"
+      },
+      {
+        "id": 28742,
+        "name": "Othello 2018"
+      },
+      {
+        "id": 5264780,
+        "name": "Othello Let's Go"
+      },
+      {
+        "id": 5486816,
+        "name": "Othello: Battle Royale"
+      },
+      {
+        "id": 5533024,
+        "name": "Othello – The Official Game for Mac"
+      },
+      {
+        "id": 5326351,
+        "name": "黑白棋：昼夜纷争/Othello：Daynight Time Clash"
+      },
+      {
+        "id": 5459470,
+        "name": "Dog vs Cat Othello"
+      }
+    ],
+    "query": "Othello Multivision",
+    "status": 200,
+    "title": "Othello Multivision"
+  },
+  {
+    "id": "n3ds",
+    "matches": [
+      {
+        "id": 5283557,
+        "name": "Nintendo 3DS"
+      },
+      {
+        "id": 5451750,
+        "name": "Nintendo 3DS Camera"
+      },
+      {
+        "id": 5451751,
+        "name": "Nintendo 3DS Sound"
+      },
+      {
+        "id": 5245292,
+        "name": "Super Smash Bros. For Nintendo 3DS"
+      },
+      {
+        "id": 5269931,
+        "name": "Super Mario Maker for Nintendo 3DS"
+      },
+      {
+        "id": 5282790,
+        "name": "Minecraft: New Nintendo 3DS Edition"
+      },
+      {
+        "id": 5331426,
+        "name": "System Settings (Nintendo 3DS)"
+      },
+      {
+        "id": 36570,
+        "name": "Nintendo Land"
+      },
+      {
+        "id": 37030,
+        "name": "Nintendo World Cup"
+      },
+      {
+        "id": 37331,
+        "name": "Nintendo World Championships 1990"
+      }
+    ],
+    "query": "Nintendo 3DS",
+    "status": 200,
+    "title": "Nintendo 3DS"
+  },
+  {
+    "id": "n64",
+    "matches": [
+      {
+        "id": 5321187,
+        "name": "Nintendo 64 (N64)"
+      },
+      {
+        "id": 5325028,
+        "name": "Nintendo 64: Nintendo Switch Online"
+      },
+      {
+        "id": 5445918,
+        "name": "Nintendo 64: Nintendo Switch Online 18+"
+      },
+      {
+        "id": 5455526,
+        "name": "Nintendo 64: Nintendo Switch Online - Mature"
+      },
+      {
+        "id": 5455527,
+        "name": "Nintendo 64: Nintendo Switch Online - Mature 17+"
+      },
+      {
+        "id": 33703,
+        "name": "Mystical Ninja Starring Goemon (Nintendo 64)"
+      },
+      {
+        "id": 5258566,
+        "name": "Quake II (Nintendo 64)"
+      },
+      {
+        "id": 36570,
+        "name": "Nintendo Land"
+      },
+      {
+        "id": 37030,
+        "name": "Nintendo World Cup"
+      },
+      {
+        "id": 37331,
+        "name": "Nintendo World Championships 1990"
+      }
+    ],
+    "query": "Nintendo 64",
+    "status": 200,
+    "title": "Nintendo 64"
+  },
+  {
+    "id": "n64dd",
+    "matches": [
+      {
+        "id": 36570,
+        "name": "Nintendo Land"
+      },
+      {
+        "id": 37030,
+        "name": "Nintendo World Cup"
+      },
+      {
+        "id": 37331,
+        "name": "Nintendo World Championships 1990"
+      },
+      {
+        "id": 5252214,
+        "name": "Nintendo Campus Challenge 1991"
+      },
+      {
+        "id": 5252913,
+        "name": "Nintendo Puzzle Collection"
+      },
+      {
+        "id": 5256599,
+        "name": "Nintendo TVii"
+      },
+      {
+        "id": 5256600,
+        "name": "Nintendo eShop"
+      },
+      {
+        "id": 5260299,
+        "name": "Nintendo DS Browser"
+      },
+      {
+        "id": 5264700,
+        "name": "Nintendo Pocket Football Club"
+      },
+      {
+        "id": 5271313,
+        "name": "Nintendo 2DS"
+      }
+    ],
+    "query": "Nintendo 64DD",
+    "status": 200,
+    "title": "Nintendo 64DD"
+  },
+  {
+    "id": "naomi",
+    "matches": [
+      {
+        "id": 5534397,
+        "name": "Sega NAOMI"
+      },
+      {
+        "id": 8,
+        "name": "Sega Ages 2500 Vol.16: Virtua Fighter 2"
+      },
+      {
+        "id": 1195,
+        "name": "Sega Rally"
+      },
+      {
+        "id": 6360,
+        "name": "Sega Mega Drive & Genesis Classics"
+      },
+      {
+        "id": 12108,
+        "name": "SEGA Rally Revo"
+      },
+      {
+        "id": 21137,
+        "name": "Sega Rally Championship"
+      },
+      {
+        "id": 21782,
+        "name": "Sega Bass Fishing"
+      },
+      {
+        "id": 35225,
+        "name": "Sega Smash Pack"
+      },
+      {
+        "id": 36246,
+        "name": "Sega Rally Championship 2"
+      },
+      {
+        "id": 37514,
+        "name": "Sega Touring Car Championship"
+      }
+    ],
+    "query": "Sega NAOMI",
+    "status": 200,
+    "title": "Sega NAOMI"
+  },
+  {
+    "id": "naomi2",
+    "matches": [
+      {
+        "id": 5534397,
+        "name": "Sega NAOMI"
+      },
+      {
+        "id": 8,
+        "name": "Sega Ages 2500 Vol.16: Virtua Fighter 2"
+      },
+      {
+        "id": 1195,
+        "name": "Sega Rally"
+      },
+      {
+        "id": 6360,
+        "name": "Sega Mega Drive & Genesis Classics"
+      },
+      {
+        "id": 12108,
+        "name": "SEGA Rally Revo"
+      },
+      {
+        "id": 21137,
+        "name": "Sega Rally Championship"
+      },
+      {
+        "id": 21782,
+        "name": "Sega Bass Fishing"
+      },
+      {
+        "id": 35225,
+        "name": "Sega Smash Pack"
+      },
+      {
+        "id": 36246,
+        "name": "Sega Rally Championship 2"
+      },
+      {
+        "id": 37514,
+        "name": "Sega Touring Car Championship"
+      }
+    ],
+    "query": "Sega NAOMI 2",
+    "status": 200,
+    "title": "Sega NAOMI 2"
+  },
+  {
+    "id": "naomigd",
+    "matches": [
+      {
+        "id": 5534397,
+        "name": "Sega NAOMI"
+      },
+      {
+        "id": 8,
+        "name": "Sega Ages 2500 Vol.16: Virtua Fighter 2"
+      },
+      {
+        "id": 1195,
+        "name": "Sega Rally"
+      },
+      {
+        "id": 6360,
+        "name": "Sega Mega Drive & Genesis Classics"
+      },
+      {
+        "id": 12108,
+        "name": "SEGA Rally Revo"
+      },
+      {
+        "id": 21137,
+        "name": "Sega Rally Championship"
+      },
+      {
+        "id": 21782,
+        "name": "Sega Bass Fishing"
+      },
+      {
+        "id": 35225,
+        "name": "Sega Smash Pack"
+      },
+      {
+        "id": 36246,
+        "name": "Sega Rally Championship 2"
+      },
+      {
+        "id": 37514,
+        "name": "Sega Touring Car Championship"
+      }
+    ],
+    "query": "Sega NAOMI GD-ROM",
+    "status": 200,
+    "title": "Sega NAOMI GD-ROM"
+  },
+  {
+    "id": "nds",
+    "matches": [
+      {
+        "id": 5327260,
+        "name": "Nintendo DS"
+      },
+      {
+        "id": 5260299,
+        "name": "Nintendo DS Browser"
+      },
+      {
+        "id": 37591,
+        "name": "Nintendogs: Shiba & Friends"
+      },
+      {
+        "id": 5301204,
+        "name": "Nintendogs + Cats: Toy Poodle & New Friends"
+      },
+      {
+        "id": 5333880,
+        "name": "Nintendogs + Cats: French Bulldog & New Friends"
+      },
+      {
+        "id": 5333881,
+        "name": "Nintendogs + Cats: Golden Retriever & New Friends"
+      },
+      {
+        "id": 5404802,
+        "name": "Nintendogs: Dachshund & Friends"
+      },
+      {
+        "id": 5404803,
+        "name": "Nintendogs: Chihuahua & Friends"
+      },
+      {
+        "id": 5404804,
+        "name": "Nintendogs: Labrador & Friends"
+      },
+      {
+        "id": 5404805,
+        "name": "Nintendogs: Best Friends"
+      }
+    ],
+    "query": "Nintendo DS",
+    "status": 200,
+    "title": "Nintendo DS"
+  },
+  {
+    "id": "neogeo",
+    "matches": [
+      {
+        "id": 5459988,
+        "name": "SNK NEO•GEO"
+      },
+      {
+        "id": 5461961,
+        "name": "SNK NEO•GEO CD"
+      },
+      {
+        "id": 5513111,
+        "name": "Picross S: SNK Classics & Neo Geo Edition"
+      },
+      {
+        "id": 25338,
+        "name": "SNK Heroines: Tag Team Frenzy"
+      },
+      {
+        "id": 37160,
+        "name": "SNK vs. Capcom: Card Fighters' Clash"
+      },
+      {
+        "id": 5128055,
+        "name": "SNK 40th Anniversary Collection"
+      },
+      {
+        "id": 5209424,
+        "name": "SNK vs. Capcom: SVC Chaos"
+      },
+      {
+        "id": 5264495,
+        "name": "SNK Arcade Classics Vol. 1"
+      },
+      {
+        "id": 5278343,
+        "name": "SNK Gals' Fighters"
+      },
+      {
+        "id": 5298038,
+        "name": "SNK VS. CAPCOM: THE MATCH OF THE MILLENNIUM"
+      }
+    ],
+    "query": "SNK Neo Geo",
+    "status": 200,
+    "title": "SNK Neo Geo"
+  },
+  {
+    "id": "neogeocd",
+    "matches": [
+      {
+        "id": 5461961,
+        "name": "SNK NEO•GEO CD"
+      },
+      {
+        "id": 5459988,
+        "name": "SNK NEO•GEO"
+      },
+      {
+        "id": 5513111,
+        "name": "Picross S: SNK Classics & Neo Geo Edition"
+      },
+      {
+        "id": 25338,
+        "name": "SNK Heroines: Tag Team Frenzy"
+      },
+      {
+        "id": 37160,
+        "name": "SNK vs. Capcom: Card Fighters' Clash"
+      },
+      {
+        "id": 5128055,
+        "name": "SNK 40th Anniversary Collection"
+      },
+      {
+        "id": 5209424,
+        "name": "SNK vs. Capcom: SVC Chaos"
+      },
+      {
+        "id": 5264495,
+        "name": "SNK Arcade Classics Vol. 1"
+      },
+      {
+        "id": 5278343,
+        "name": "SNK Gals' Fighters"
+      },
+      {
+        "id": 5298038,
+        "name": "SNK VS. CAPCOM: THE MATCH OF THE MILLENNIUM"
+      }
+    ],
+    "query": "SNK Neo Geo CD",
+    "status": 200,
+    "title": "SNK Neo Geo CD"
+  },
+  {
+    "id": "neogeocdjp",
+    "matches": [
+      {
+        "id": 5461961,
+        "name": "SNK NEO•GEO CD"
+      },
+      {
+        "id": 5459988,
+        "name": "SNK NEO•GEO"
+      },
+      {
+        "id": 5513111,
+        "name": "Picross S: SNK Classics & Neo Geo Edition"
+      },
+      {
+        "id": 25338,
+        "name": "SNK Heroines: Tag Team Frenzy"
+      },
+      {
+        "id": 37160,
+        "name": "SNK vs. Capcom: Card Fighters' Clash"
+      },
+      {
+        "id": 5128055,
+        "name": "SNK 40th Anniversary Collection"
+      },
+      {
+        "id": 5209424,
+        "name": "SNK vs. Capcom: SVC Chaos"
+      },
+      {
+        "id": 5264495,
+        "name": "SNK Arcade Classics Vol. 1"
+      },
+      {
+        "id": 5278343,
+        "name": "SNK Gals' Fighters"
+      },
+      {
+        "id": 5298038,
+        "name": "SNK VS. CAPCOM: THE MATCH OF THE MILLENNIUM"
+      }
+    ],
+    "query": "SNK Neo Geo CD",
+    "status": 200,
+    "title": "SNK Neo Geo CD"
+  },
+  {
+    "id": "nes",
+    "matches": [
+      {
+        "id": 5321195,
+        "name": "Nintendo Entertainment System (NES)"
+      },
+      {
+        "id": 5325029,
+        "name": "Nintendo Entertainment System: Nintendo Switch Online"
+      },
+      {
+        "id": 5321369,
+        "name": "Super Nintendo Entertainment System (SNES)"
+      },
+      {
+        "id": 5325027,
+        "name": "Super Nintendo Entertainment System: Nintendo Switch Online"
+      },
+      {
+        "id": 36570,
+        "name": "Nintendo Land"
+      },
+      {
+        "id": 37030,
+        "name": "Nintendo World Cup"
+      },
+      {
+        "id": 37331,
+        "name": "Nintendo World Championships 1990"
+      },
+      {
+        "id": 5252214,
+        "name": "Nintendo Campus Challenge 1991"
+      },
+      {
+        "id": 5252913,
+        "name": "Nintendo Puzzle Collection"
+      },
+      {
+        "id": 5256599,
+        "name": "Nintendo TVii"
+      }
+    ],
+    "query": "Nintendo Entertainment System",
+    "status": 200,
+    "title": "Nintendo Entertainment System"
+  },
+  {
+    "id": "ngage",
+    "matches": [
+      {
+        "id": 5287748,
+        "name": "Nokia World"
+      },
+      {
+        "id": 5373689,
+        "name": "Nokta"
+      },
+      {
+        "id": 5377593,
+        "name": "Noxia Somnia"
+      },
+      {
+        "id": 5478902,
+        "name": "Noxia Somnia: Ultimate Edition"
+      },
+      {
+        "id": 5483003,
+        "name": "NOMIA"
+      },
+      {
+        "id": 5330050,
+        "name": "Drago Noka"
+      }
+    ],
+    "query": "Nokia N-Gage",
+    "status": 200,
+    "title": "Nokia N-Gage"
+  },
+  {
+    "id": "ngp",
+    "matches": [
+      {
+        "id": 5432303,
+        "name": "Neo Geo Pocket Color"
+      },
+      {
+        "id": 5298039,
+        "name": "NEOGEO POCKET COLOR SELECTION Vol.1 Steam Edition"
+      },
+      {
+        "id": 5363822,
+        "name": "NEOGEO POCKET COLOR SELECTION Vol.2"
+      },
+      {
+        "id": 5249364,
+        "name": "NEO GEO CUP '98 : THE ROAD TO THE VICTORY"
+      },
+      {
+        "id": 5249901,
+        "name": "Neo Geo Battle Coliseum"
+      },
+      {
+        "id": 5283624,
+        "name": "Neo Geo Heroes: Ultimate Shooting"
+      },
+      {
+        "id": 5344857,
+        "name": "Neo Geo Cup '98 Plus Color"
+      },
+      {
+        "id": 5459988,
+        "name": "SNK NEO•GEO"
+      },
+      {
+        "id": 5461961,
+        "name": "SNK NEO•GEO CD"
+      },
+      {
+        "id": 5513111,
+        "name": "Picross S: SNK Classics & Neo Geo Edition"
+      }
+    ],
+    "query": "Neo Geo Pocket",
+    "status": 200,
+    "title": "SNK Neo Geo Pocket"
+  },
+  {
+    "id": "ngpc",
+    "matches": [
+      {
+        "id": 5432303,
+        "name": "Neo Geo Pocket Color"
+      },
+      {
+        "id": 5298039,
+        "name": "NEOGEO POCKET COLOR SELECTION Vol.1 Steam Edition"
+      },
+      {
+        "id": 5363822,
+        "name": "NEOGEO POCKET COLOR SELECTION Vol.2"
+      },
+      {
+        "id": 5249364,
+        "name": "NEO GEO CUP '98 : THE ROAD TO THE VICTORY"
+      },
+      {
+        "id": 5249901,
+        "name": "Neo Geo Battle Coliseum"
+      },
+      {
+        "id": 5283624,
+        "name": "Neo Geo Heroes: Ultimate Shooting"
+      },
+      {
+        "id": 5344857,
+        "name": "Neo Geo Cup '98 Plus Color"
+      },
+      {
+        "id": 5459988,
+        "name": "SNK NEO•GEO"
+      },
+      {
+        "id": 5461961,
+        "name": "SNK NEO•GEO CD"
+      },
+      {
+        "id": 5513111,
+        "name": "Picross S: SNK Classics & Neo Geo Edition"
+      }
+    ],
+    "query": "Neo Geo Pocket Color",
+    "status": 200,
+    "title": "SNK Neo Geo Pocket Color"
+  },
+  {
+    "id": "odyssey2",
+    "matches": [
+      {
+        "id": 5459701,
+        "name": "Magnavox Odyssey²"
+      },
+      {
+        "id": 5459689,
+        "name": "Magnavox Odyssey"
+      }
+    ],
+    "query": "Magnavox Odyssey 2",
+    "status": 200,
+    "title": "Magnavox Odyssey 2"
+  },
+  {
+    "id": "openbor",
+    "matches": [
+      {
+        "id": 5468828,
+        "name": "OpenBOR"
+      },
+      {
+        "id": 5526668,
+        "name": "Ovenborn"
+      }
+    ],
+    "query": "OpenBOR",
+    "status": 200,
+    "title": "OpenBOR Game Engine"
+  },
+  {
+    "id": "oric",
+    "matches": [
+      {
+        "id": 21291,
+        "name": "Short Stories Collection of Class Tangerine"
+      },
+      {
+        "id": 5496420,
+        "name": "神学校-Noil me tangere-"
+      }
+    ],
+    "query": "Tangerine Computer Systems Oric",
+    "status": 200,
+    "title": "Tangerine Computer Systems Oric"
+  },
+  {
+    "id": "palm",
+    "matches": [
+      {
+        "id": 5251399,
+        "name": "Palm Reading Premium"
+      },
+      {
+        "id": 5400406,
+        "name": "PALM TETRIS"
+      },
+      {
+        "id": 5438012,
+        "name": "Palm Simulator"
+      },
+      {
+        "id": 5439195,
+        "name": "Palm House Pursuit"
+      },
+      {
+        "id": 5442540,
+        "name": "Palm Sugar: A Village Story"
+      },
+      {
+        "id": 5443093,
+        "name": "Palm Paradise Garden"
+      },
+      {
+        "id": 5444356,
+        "name": "Palm Sex Night's"
+      },
+      {
+        "id": 5474189,
+        "name": "Palm Cracker"
+      },
+      {
+        "id": 5494993,
+        "name": "Palm Kingdoms 3"
+      },
+      {
+        "id": 5504344,
+        "name": "Palm Simulator 2"
+      }
+    ],
+    "query": "Palm OS",
+    "status": 200,
+    "title": "Palm OS"
+  },
+  {
+    "id": "pc",
+    "matches": [
+      {
+        "id": 5269316,
+        "name": "IBM O/S2 Warp"
+      },
+      {
+        "id": 5430124,
+        "name": "IBM OS/2 v1.x (Operating System)"
+      },
+      {
+        "id": 36990,
+        "name": "Tetris (IBM DOS)"
+      }
+    ],
+    "query": "IBM PC",
+    "status": 200,
+    "title": "IBM PC"
+  },
+  {
+    "id": "pc88",
+    "matches": [
+      {
+        "id": 5454240,
+        "name": "NEC PC Engine"
+      },
+      {
+        "id": 5454242,
+        "name": "NEC PC Engine Super CD-ROM²"
+      },
+      {
+        "id": 5459987,
+        "name": "NEC PC Engine SuperGrafx"
+      },
+      {
+        "id": 5459782,
+        "name": "NEC CD-ROM²"
+      },
+      {
+        "id": 5459986,
+        "name": "NEC TurboGrafx-16"
+      },
+      {
+        "id": 5260002,
+        "name": "Tetris (NEC Mini5)"
+      }
+    ],
+    "query": "NEC PC-8800 Series",
+    "status": 200,
+    "title": "NEC PC-8800 Series"
+  },
+  {
+    "id": "pc98",
+    "matches": [
+      {
+        "id": 5454240,
+        "name": "NEC PC Engine"
+      },
+      {
+        "id": 5454242,
+        "name": "NEC PC Engine Super CD-ROM²"
+      },
+      {
+        "id": 5459987,
+        "name": "NEC PC Engine SuperGrafx"
+      },
+      {
+        "id": 5459782,
+        "name": "NEC CD-ROM²"
+      },
+      {
+        "id": 5459986,
+        "name": "NEC TurboGrafx-16"
+      },
+      {
+        "id": 5260002,
+        "name": "Tetris (NEC Mini5)"
+      }
+    ],
+    "query": "NEC PC-9800 Series",
+    "status": 200,
+    "title": "NEC PC-9800 Series"
+  },
+  {
+    "id": "pcarcade",
+    "matches": [
+      {
+        "id": 5520158,
+        "name": "Pc"
+      },
+      {
+        "id": 17871,
+        "name": "PC Building Simulator"
+      },
+      {
+        "id": 30817,
+        "name": "PC Gamer (Website)"
+      },
+      {
+        "id": 5249454,
+        "name": "PC Futbol Stars"
+      },
+      {
+        "id": 5251257,
+        "name": "PC Check & Tuning 2019 Steam Edition"
+      },
+      {
+        "id": 5289546,
+        "name": "PC Hockey League"
+      },
+      {
+        "id": 5307485,
+        "name": "PC Creator - PC Building Simulator"
+      },
+      {
+        "id": 5339089,
+        "name": "PC Virtual LAB"
+      },
+      {
+        "id": 5357980,
+        "name": "PC Building Simulator 2"
+      },
+      {
+        "id": 5437076,
+        "name": "PC_001"
+      }
+    ],
+    "query": "PC Arcade Systems",
+    "status": 200,
+    "title": "PC Arcade Systems"
+  },
+  {
+    "id": "pcengine",
+    "matches": [
+      {
+        "id": 5454240,
+        "name": "NEC PC Engine"
+      },
+      {
+        "id": 5454242,
+        "name": "NEC PC Engine Super CD-ROM²"
+      },
+      {
+        "id": 5459987,
+        "name": "NEC PC Engine SuperGrafx"
+      },
+      {
+        "id": 5459782,
+        "name": "NEC CD-ROM²"
+      },
+      {
+        "id": 5459986,
+        "name": "NEC TurboGrafx-16"
+      },
+      {
+        "id": 5260002,
+        "name": "Tetris (NEC Mini5)"
+      }
+    ],
+    "query": "NEC PC Engine",
+    "status": 200,
+    "title": "NEC PC Engine"
+  },
+  {
+    "id": "pcenginecd",
+    "matches": [
+      {
+        "id": 5454242,
+        "name": "NEC PC Engine Super CD-ROM²"
+      },
+      {
+        "id": 5454240,
+        "name": "NEC PC Engine"
+      },
+      {
+        "id": 5459987,
+        "name": "NEC PC Engine SuperGrafx"
+      },
+      {
+        "id": 5459782,
+        "name": "NEC CD-ROM²"
+      },
+      {
+        "id": 5459986,
+        "name": "NEC TurboGrafx-16"
+      },
+      {
+        "id": 5260002,
+        "name": "Tetris (NEC Mini5)"
+      }
+    ],
+    "query": "NEC PC Engine CD",
+    "status": 200,
+    "title": "NEC PC Engine CD"
+  },
+  {
+    "id": "pcfx",
+    "matches": [
+      {
+        "id": 5454240,
+        "name": "NEC PC Engine"
+      },
+      {
+        "id": 5454242,
+        "name": "NEC PC Engine Super CD-ROM²"
+      },
+      {
+        "id": 5459987,
+        "name": "NEC PC Engine SuperGrafx"
+      },
+      {
+        "id": 5459782,
+        "name": "NEC CD-ROM²"
+      },
+      {
+        "id": 5459986,
+        "name": "NEC TurboGrafx-16"
+      },
+      {
+        "id": 5260002,
+        "name": "Tetris (NEC Mini5)"
+      }
+    ],
+    "query": "NEC PC-FX",
+    "status": 200,
+    "title": "NEC PC-FX"
+  },
+  {
+    "id": "pico8",
+    "matches": [
+      {
+        "id": 36618,
+        "name": "PICO-8"
+      },
+      {
+        "id": 11471,
+        "name": "PICO PARK:Classic Edition"
+      },
+      {
+        "id": 5282730,
+        "name": "PICO PARK"
+      },
+      {
+        "id": 5293378,
+        "name": "Pico's School"
+      },
+      {
+        "id": 5293945,
+        "name": "Pico's School Reunion"
+      },
+      {
+        "id": 5294069,
+        "name": "Pico Vs Überkids"
+      },
+      {
+        "id": 5317095,
+        "name": "Pico Islands"
+      },
+      {
+        "id": 5323468,
+        "name": "pico sonic"
+      },
+      {
+        "id": 5327392,
+        "name": "Pico Link"
+      },
+      {
+        "id": 5433931,
+        "name": "Pico Topia"
+      }
+    ],
+    "query": "PICO-8",
+    "status": 200,
+    "title": "PICO-8 Fantasy Console"
+  },
+  {
+    "id": "plus4",
+    "matches": [
+      {
+        "id": 5460042,
+        "name": "Commodore 64 Games System (C64GS)"
+      },
+      {
+        "id": 5460043,
+        "name": "Commodore CDTV"
+      },
+      {
+        "id": 5500690,
+        "name": "Commodore 64 (C64)"
+      },
+      {
+        "id": 5511429,
+        "name": "Commodore 16"
+      },
+      {
+        "id": 5511430,
+        "name": "Commodore PET"
+      },
+      {
+        "id": 5511444,
+        "name": "Commodore VIC-20"
+      },
+      {
+        "id": 5255411,
+        "name": "Memeow & Comodore: Reloaded"
+      },
+      {
+        "id": 5260635,
+        "name": "Cosmodome"
+      }
+    ],
+    "query": "Commodore Plus/4",
+    "status": 200,
+    "title": "Commodore Plus/4"
+  },
+  {
+    "id": "pokemini",
+    "matches": [
+      {
+        "id": 5483969,
+        "name": "Pokémon Legends: Z-A - Nintendo Switch 2 Edition"
+      },
+      {
+        "id": 36570,
+        "name": "Nintendo Land"
+      },
+      {
+        "id": 37030,
+        "name": "Nintendo World Cup"
+      },
+      {
+        "id": 37331,
+        "name": "Nintendo World Championships 1990"
+      },
+      {
+        "id": 5252214,
+        "name": "Nintendo Campus Challenge 1991"
+      },
+      {
+        "id": 5252913,
+        "name": "Nintendo Puzzle Collection"
+      },
+      {
+        "id": 5256599,
+        "name": "Nintendo TVii"
+      },
+      {
+        "id": 5256600,
+        "name": "Nintendo eShop"
+      },
+      {
+        "id": 5260299,
+        "name": "Nintendo DS Browser"
+      },
+      {
+        "id": 5264700,
+        "name": "Nintendo Pocket Football Club"
+      }
+    ],
+    "query": "Nintendo Pokémon Mini",
+    "status": 200,
+    "title": "Nintendo Pokémon Mini"
+  },
+  {
+    "id": "ports",
+    "matches": [
+      {
+        "id": 4923463,
+        "name": "Ports of Call Classic"
+      },
+      {
+        "id": 5450504,
+        "name": "Ports Of Call Deluxe 3D 2024"
+      },
+      {
+        "id": 5553729,
+        "name": "Portscape"
+      },
+      {
+        "id": 1206,
+        "name": "Portal 2: The Final Hours"
+      },
+      {
+        "id": 1383,
+        "name": "Port Royale 2"
+      },
+      {
+        "id": 1699,
+        "name": "Portal: Still Alive"
+      },
+      {
+        "id": 1852,
+        "name": "Port Royale 3"
+      },
+      {
+        "id": 2087,
+        "name": "Portal 2: Educational Version"
+      },
+      {
+        "id": 2918,
+        "name": "Portal 2: Sixense Perceptual Pack"
+      },
+      {
+        "id": 5242,
+        "name": "Portal Stories: Mel"
+      }
+    ],
+    "query": "Ports",
+    "status": 200,
+    "title": "Ports"
+  },
+  {
+    "id": "ps2",
+    "matches": [
+      {
+        "id": 5327252,
+        "name": "Sony PlayStation 2"
+      },
+      {
+        "id": 5327253,
+        "name": "Sony PlayStation 3"
+      },
+      {
+        "id": 5327254,
+        "name": "Sony PlayStation 4"
+      },
+      {
+        "id": 5327255,
+        "name": "Sony PlayStation 5"
+      },
+      {
+        "id": 5327257,
+        "name": "Sony PSP (PlayStation Portable)"
+      },
+      {
+        "id": 5327258,
+        "name": "Sony PSVita (PlayStation Vita)"
+      },
+      {
+        "id": 5327251,
+        "name": "Sony PlayStation"
+      },
+      {
+        "id": 5285113,
+        "name": "Sony PlayTV"
+      }
+    ],
+    "query": "Sony PlayStation 2",
+    "status": 200,
+    "title": "Sony PlayStation 2"
+  },
+  {
+    "id": "ps3",
+    "matches": [
+      {
+        "id": 5327253,
+        "name": "Sony PlayStation 3"
+      },
+      {
+        "id": 5327251,
+        "name": "Sony PlayStation"
+      },
+      {
+        "id": 5327252,
+        "name": "Sony PlayStation 2"
+      },
+      {
+        "id": 5327254,
+        "name": "Sony PlayStation 4"
+      },
+      {
+        "id": 5327255,
+        "name": "Sony PlayStation 5"
+      },
+      {
+        "id": 5327257,
+        "name": "Sony PSP (PlayStation Portable)"
+      },
+      {
+        "id": 5327258,
+        "name": "Sony PSVita (PlayStation Vita)"
+      },
+      {
+        "id": 5285113,
+        "name": "Sony PlayTV"
+      }
+    ],
+    "query": "Sony PlayStation 3",
+    "status": 200,
+    "title": "Sony PlayStation 3"
+  },
+  {
+    "id": "ps4",
+    "matches": [
+      {
+        "id": 5327254,
+        "name": "Sony PlayStation 4"
+      },
+      {
+        "id": 5327251,
+        "name": "Sony PlayStation"
+      },
+      {
+        "id": 5327252,
+        "name": "Sony PlayStation 2"
+      },
+      {
+        "id": 5327253,
+        "name": "Sony PlayStation 3"
+      },
+      {
+        "id": 5327255,
+        "name": "Sony PlayStation 5"
+      },
+      {
+        "id": 5327257,
+        "name": "Sony PSP (PlayStation Portable)"
+      },
+      {
+        "id": 5327258,
+        "name": "Sony PSVita (PlayStation Vita)"
+      },
+      {
+        "id": 5285113,
+        "name": "Sony PlayTV"
+      }
+    ],
+    "query": "Sony PlayStation 4",
+    "status": 200,
+    "title": "Sony PlayStation 4"
+  },
+  {
+    "id": "psp",
+    "matches": [
+      {
+        "id": 5327257,
+        "name": "Sony PSP (PlayStation Portable)"
+      },
+      {
+        "id": 5285113,
+        "name": "Sony PlayTV"
+      },
+      {
+        "id": 5327251,
+        "name": "Sony PlayStation"
+      },
+      {
+        "id": 5327252,
+        "name": "Sony PlayStation 2"
+      },
+      {
+        "id": 5327253,
+        "name": "Sony PlayStation 3"
+      },
+      {
+        "id": 5327254,
+        "name": "Sony PlayStation 4"
+      },
+      {
+        "id": 5327255,
+        "name": "Sony PlayStation 5"
+      },
+      {
+        "id": 5327258,
+        "name": "Sony PSVita (PlayStation Vita)"
+      }
+    ],
+    "query": "Sony PSP",
+    "status": 200,
+    "title": "Sony PlayStation Portable"
+  },
+  {
+    "id": "psvita",
+    "matches": [
+      {
+        "id": 5327258,
+        "name": "Sony PSVita (PlayStation Vita)"
+      },
+      {
+        "id": 5285113,
+        "name": "Sony PlayTV"
+      },
+      {
+        "id": 5327251,
+        "name": "Sony PlayStation"
+      },
+      {
+        "id": 5327252,
+        "name": "Sony PlayStation 2"
+      },
+      {
+        "id": 5327253,
+        "name": "Sony PlayStation 3"
+      },
+      {
+        "id": 5327254,
+        "name": "Sony PlayStation 4"
+      },
+      {
+        "id": 5327255,
+        "name": "Sony PlayStation 5"
+      },
+      {
+        "id": 5327257,
+        "name": "Sony PSP (PlayStation Portable)"
+      }
+    ],
+    "query": "Sony PSVita",
+    "status": 200,
+    "title": "Sony PlayStation Vita"
+  },
+  {
+    "id": "psx",
+    "matches": [
+      {
+        "id": 5327251,
+        "name": "Sony PlayStation"
+      },
+      {
+        "id": 5327252,
+        "name": "Sony PlayStation 2"
+      },
+      {
+        "id": 5327253,
+        "name": "Sony PlayStation 3"
+      },
+      {
+        "id": 5327254,
+        "name": "Sony PlayStation 4"
+      },
+      {
+        "id": 5327255,
+        "name": "Sony PlayStation 5"
+      },
+      {
+        "id": 5327257,
+        "name": "Sony PSP (PlayStation Portable)"
+      },
+      {
+        "id": 5327258,
+        "name": "Sony PSVita (PlayStation Vita)"
+      },
+      {
+        "id": 5285113,
+        "name": "Sony PlayTV"
+      }
+    ],
+    "query": "Sony PlayStation",
+    "status": 200,
+    "title": "Sony PlayStation"
+  },
+  {
+    "id": "pv1000",
+    "matches": [
+      {
+        "id": 5459756,
+        "name": "Casio PV-1000"
+      },
+      {
+        "id": 7235,
+        "name": "Casino Inc"
+      },
+      {
+        "id": 16517,
+        "name": "Casino Noir"
+      },
+      {
+        "id": 24195,
+        "name": "Casino Slot Machines"
+      },
+      {
+        "id": 25281,
+        "name": "Casino Poker"
+      },
+      {
+        "id": 25665,
+        "name": "Casino Blackjack"
+      },
+      {
+        "id": 29256,
+        "name": "Casino Mega Collection"
+      },
+      {
+        "id": 36701,
+        "name": "Casino FunPak"
+      },
+      {
+        "id": 37782,
+        "name": "Casino Kid 2"
+      },
+      {
+        "id": 38469,
+        "name": "Casino Kid"
+      }
+    ],
+    "query": "Casio PV-1000",
+    "status": 200,
+    "title": "Casio PV-1000"
+  },
+  {
+    "id": "quake",
+    "matches": [
+      {
+        "id": 2514,
+        "name": "Quake"
+      },
+      {
+        "id": 2255,
+        "name": "Quake III Arena"
+      },
+      {
+        "id": 2275,
+        "name": "Quake 4"
+      },
+      {
+        "id": 2534,
+        "name": "Quake II"
+      },
+      {
+        "id": 2551,
+        "name": "Quake II: The Reckoning"
+      },
+      {
+        "id": 2584,
+        "name": "Quake II: Ground Zero"
+      },
+      {
+        "id": 2616,
+        "name": "Quake III: Team Arena"
+      },
+      {
+        "id": 3936,
+        "name": "Quake Live"
+      },
+      {
+        "id": 17485,
+        "name": "Quake Champions"
+      },
+      {
+        "id": 23067,
+        "name": "Quake Champions PTS"
+      }
+    ],
+    "query": "Quake",
+    "status": 200,
+    "title": "Quake"
+  },
+  {
+    "id": "samcoupe",
+    "matches": [],
+    "query": "MGT SAM Coupé",
+    "status": 200,
+    "title": "MGT SAM Coupé"
+  },
+  {
+    "id": "satellaview",
+    "matches": [
+      {
+        "id": 5461962,
+        "name": "Nintendo Satellaview"
+      },
+      {
+        "id": 36570,
+        "name": "Nintendo Land"
+      },
+      {
+        "id": 37030,
+        "name": "Nintendo World Cup"
+      },
+      {
+        "id": 37331,
+        "name": "Nintendo World Championships 1990"
+      },
+      {
+        "id": 5252214,
+        "name": "Nintendo Campus Challenge 1991"
+      },
+      {
+        "id": 5252913,
+        "name": "Nintendo Puzzle Collection"
+      },
+      {
+        "id": 5256599,
+        "name": "Nintendo TVii"
+      },
+      {
+        "id": 5256600,
+        "name": "Nintendo eShop"
+      },
+      {
+        "id": 5260299,
+        "name": "Nintendo DS Browser"
+      },
+      {
+        "id": 5264700,
+        "name": "Nintendo Pocket Football Club"
+      }
+    ],
+    "query": "Nintendo Satellaview",
+    "status": 200,
+    "title": "Nintendo Satellaview"
+  },
+  {
+    "id": "saturn",
+    "matches": [
+      {
+        "id": 5414839,
+        "name": "Sega Saturn"
+      },
+      {
+        "id": 8,
+        "name": "Sega Ages 2500 Vol.16: Virtua Fighter 2"
+      },
+      {
+        "id": 1195,
+        "name": "Sega Rally"
+      },
+      {
+        "id": 6360,
+        "name": "Sega Mega Drive & Genesis Classics"
+      },
+      {
+        "id": 12108,
+        "name": "SEGA Rally Revo"
+      },
+      {
+        "id": 21137,
+        "name": "Sega Rally Championship"
+      },
+      {
+        "id": 21782,
+        "name": "Sega Bass Fishing"
+      },
+      {
+        "id": 35225,
+        "name": "Sega Smash Pack"
+      },
+      {
+        "id": 36246,
+        "name": "Sega Rally Championship 2"
+      },
+      {
+        "id": 37514,
+        "name": "Sega Touring Car Championship"
+      }
+    ],
+    "query": "Sega Saturn",
+    "status": 200,
+    "title": "Sega Saturn"
+  },
+  {
+    "id": "saturnjp",
+    "matches": [
+      {
+        "id": 5414839,
+        "name": "Sega Saturn"
+      },
+      {
+        "id": 8,
+        "name": "Sega Ages 2500 Vol.16: Virtua Fighter 2"
+      },
+      {
+        "id": 1195,
+        "name": "Sega Rally"
+      },
+      {
+        "id": 6360,
+        "name": "Sega Mega Drive & Genesis Classics"
+      },
+      {
+        "id": 12108,
+        "name": "SEGA Rally Revo"
+      },
+      {
+        "id": 21137,
+        "name": "Sega Rally Championship"
+      },
+      {
+        "id": 21782,
+        "name": "Sega Bass Fishing"
+      },
+      {
+        "id": 35225,
+        "name": "Sega Smash Pack"
+      },
+      {
+        "id": 36246,
+        "name": "Sega Rally Championship 2"
+      },
+      {
+        "id": 37514,
+        "name": "Sega Touring Car Championship"
+      }
+    ],
+    "query": "Sega Saturn",
+    "status": 200,
+    "title": "Sega Saturn"
+  },
+  {
+    "id": "scummvm",
+    "matches": [
+      {
+        "id": 5248828,
+        "name": "ScummVM"
+      }
+    ],
+    "query": "ScummVM",
+    "status": 200,
+    "title": "ScummVM Game Engine"
+  },
+  {
+    "id": "scv",
+    "matches": [
+      {
+        "id": 5459757,
+        "name": "Epoch Super Cassette Vision"
+      },
+      {
+        "id": 3648,
+        "name": "EPOCH"
+      },
+      {
+        "id": 5464833,
+        "name": "Epoch"
+      },
+      {
+        "id": 5293907,
+        "name": "Epoch Ultra"
+      },
+      {
+        "id": 5343064,
+        "name": "Epoch Of Love"
+      },
+      {
+        "id": 5459725,
+        "name": "Epoch Cassette Vision"
+      },
+      {
+        "id": 5464187,
+        "name": "Epoch of Guardians"
+      },
+      {
+        "id": 5481346,
+        "name": "Epoch Makers"
+      },
+      {
+        "id": 5496625,
+        "name": "Epoch Spire"
+      },
+      {
+        "id": 5504006,
+        "name": "Epoch Cycle"
+      }
+    ],
+    "query": "Epoch Super Cassette Vision",
+    "status": 200,
+    "title": "Epoch Super Cassette Vision"
+  },
+  {
+    "id": "sega32x",
+    "matches": [
+      {
+        "id": 5353218,
+        "name": "Sega Mega Drive"
+      },
+      {
+        "id": 6360,
+        "name": "Sega Mega Drive & Genesis Classics"
+      },
+      {
+        "id": 5325030,
+        "name": "Sega Mega Drive: Nintendo Switch Online"
+      },
+      {
+        "id": 5346682,
+        "name": "Sega Mega Drive Collection"
+      },
+      {
+        "id": 5251752,
+        "name": "SEGA Genesis & Mega Drive Classics Workshop Tool"
+      },
+      {
+        "id": 5415874,
+        "name": "Sega Mega-CD"
+      },
+      {
+        "id": 8,
+        "name": "Sega Ages 2500 Vol.16: Virtua Fighter 2"
+      },
+      {
+        "id": 1195,
+        "name": "Sega Rally"
+      },
+      {
+        "id": 12108,
+        "name": "SEGA Rally Revo"
+      },
+      {
+        "id": 21137,
+        "name": "Sega Rally Championship"
+      }
+    ],
+    "query": "Sega Mega Drive 32X",
+    "status": 200,
+    "title": "Sega Mega Drive 32X"
+  },
+  {
+    "id": "sega32xjp",
+    "matches": [
+      {
+        "id": 5338686,
+        "name": "Sega Super GT"
+      },
+      {
+        "id": 5327250,
+        "name": "Sega Ski Super G"
+      },
+      {
+        "id": 8,
+        "name": "Sega Ages 2500 Vol.16: Virtua Fighter 2"
+      },
+      {
+        "id": 1195,
+        "name": "Sega Rally"
+      },
+      {
+        "id": 6360,
+        "name": "Sega Mega Drive & Genesis Classics"
+      },
+      {
+        "id": 12108,
+        "name": "SEGA Rally Revo"
+      },
+      {
+        "id": 21137,
+        "name": "Sega Rally Championship"
+      },
+      {
+        "id": 21782,
+        "name": "Sega Bass Fishing"
+      },
+      {
+        "id": 35225,
+        "name": "Sega Smash Pack"
+      },
+      {
+        "id": 36246,
+        "name": "Sega Rally Championship 2"
+      }
+    ],
+    "query": "Sega Super 32X",
+    "status": 200,
+    "title": "Sega Super 32X"
+  },
+  {
+    "id": "sega32xna",
+    "matches": [
+      {
+        "id": 5355019,
+        "name": "Sega Genesis"
+      },
+      {
+        "id": 5251752,
+        "name": "SEGA Genesis & Mega Drive Classics Workshop Tool"
+      },
+      {
+        "id": 5264466,
+        "name": "Sega Genesis Collection"
+      },
+      {
+        "id": 5325031,
+        "name": "Sega Genesis: Nintendo Switch Online"
+      },
+      {
+        "id": 6360,
+        "name": "Sega Mega Drive & Genesis Classics"
+      },
+      {
+        "id": 8,
+        "name": "Sega Ages 2500 Vol.16: Virtua Fighter 2"
+      },
+      {
+        "id": 1195,
+        "name": "Sega Rally"
+      },
+      {
+        "id": 12108,
+        "name": "SEGA Rally Revo"
+      },
+      {
+        "id": 21137,
+        "name": "Sega Rally Championship"
+      },
+      {
+        "id": 21782,
+        "name": "Sega Bass Fishing"
+      }
+    ],
+    "query": "Sega Genesis 32X",
+    "status": 200,
+    "title": "Sega Genesis 32X"
+  },
+  {
+    "id": "segacd",
+    "matches": [
+      {
+        "id": 5461937,
+        "name": "Sega CD"
+      },
+      {
+        "id": 5326166,
+        "name": "The Terminator (Sega CD)"
+      },
+      {
+        "id": 5415874,
+        "name": "Sega Mega-CD"
+      },
+      {
+        "id": 8,
+        "name": "Sega Ages 2500 Vol.16: Virtua Fighter 2"
+      },
+      {
+        "id": 1195,
+        "name": "Sega Rally"
+      },
+      {
+        "id": 6360,
+        "name": "Sega Mega Drive & Genesis Classics"
+      },
+      {
+        "id": 12108,
+        "name": "SEGA Rally Revo"
+      },
+      {
+        "id": 21137,
+        "name": "Sega Rally Championship"
+      },
+      {
+        "id": 21782,
+        "name": "Sega Bass Fishing"
+      },
+      {
+        "id": 35225,
+        "name": "Sega Smash Pack"
+      }
+    ],
+    "query": "Sega CD",
+    "status": 200,
+    "title": "Sega CD"
+  },
+  {
+    "id": "sfc",
+    "matches": [
+      {
+        "id": 5454229,
+        "name": "Nintendo Super Famicom"
+      },
+      {
+        "id": 5440569,
+        "name": "Super Famicom: Nintendo Switch Online"
+      },
+      {
+        "id": 5321369,
+        "name": "Super Nintendo Entertainment System (SNES)"
+      },
+      {
+        "id": 5325027,
+        "name": "Super Nintendo Entertainment System: Nintendo Switch Online"
+      },
+      {
+        "id": 5245292,
+        "name": "Super Smash Bros. For Nintendo 3DS"
+      },
+      {
+        "id": 5269931,
+        "name": "Super Mario Maker for Nintendo 3DS"
+      },
+      {
+        "id": 5468728,
+        "name": "Super Spike V'Ball / Nintendo World Cup"
+      },
+      {
+        "id": 5471111,
+        "name": "Super Mario Bros. / Tetris / Nintendo World Cup"
+      },
+      {
+        "id": 5483966,
+        "name": "Super Mario Party Jamboree: Nintendo Switch 2 Edition + Jamboree TV"
+      },
+      {
+        "id": 36570,
+        "name": "Nintendo Land"
+      }
+    ],
+    "query": "Nintendo Super Famicom",
+    "status": 200,
+    "title": "Nintendo SFC (Super Famicom)"
+  },
+  {
+    "id": "sg-1000",
+    "matches": [
+      {
+        "id": 5459754,
+        "name": "Sega SG-1000"
+      },
+      {
+        "id": 8,
+        "name": "Sega Ages 2500 Vol.16: Virtua Fighter 2"
+      },
+      {
+        "id": 1195,
+        "name": "Sega Rally"
+      },
+      {
+        "id": 6360,
+        "name": "Sega Mega Drive & Genesis Classics"
+      },
+      {
+        "id": 12108,
+        "name": "SEGA Rally Revo"
+      },
+      {
+        "id": 21137,
+        "name": "Sega Rally Championship"
+      },
+      {
+        "id": 21782,
+        "name": "Sega Bass Fishing"
+      },
+      {
+        "id": 35225,
+        "name": "Sega Smash Pack"
+      },
+      {
+        "id": 36246,
+        "name": "Sega Rally Championship 2"
+      },
+      {
+        "id": 37514,
+        "name": "Sega Touring Car Championship"
+      }
+    ],
+    "query": "Sega SG-1000",
+    "status": 200,
+    "title": "Sega SG-1000"
+  },
+  {
+    "id": "sgb",
+    "matches": [
+      {
+        "id": 5454229,
+        "name": "Nintendo Super Famicom"
+      },
+      {
+        "id": 5321369,
+        "name": "Super Nintendo Entertainment System (SNES)"
+      },
+      {
+        "id": 5325027,
+        "name": "Super Nintendo Entertainment System: Nintendo Switch Online"
+      },
+      {
+        "id": 5440569,
+        "name": "Super Famicom: Nintendo Switch Online"
+      },
+      {
+        "id": 5245292,
+        "name": "Super Smash Bros. For Nintendo 3DS"
+      },
+      {
+        "id": 5269931,
+        "name": "Super Mario Maker for Nintendo 3DS"
+      },
+      {
+        "id": 5468728,
+        "name": "Super Spike V'Ball / Nintendo World Cup"
+      },
+      {
+        "id": 5471111,
+        "name": "Super Mario Bros. / Tetris / Nintendo World Cup"
+      },
+      {
+        "id": 5483966,
+        "name": "Super Mario Party Jamboree: Nintendo Switch 2 Edition + Jamboree TV"
+      },
+      {
+        "id": 36570,
+        "name": "Nintendo Land"
+      }
+    ],
+    "query": "Nintendo Super Game Boy",
+    "status": 200,
+    "title": "Nintendo Super Game Boy"
+  },
+  {
+    "id": "snes",
+    "matches": [
+      {
+        "id": 5321369,
+        "name": "Super Nintendo Entertainment System (SNES)"
+      },
+      {
+        "id": 5325027,
+        "name": "Super Nintendo Entertainment System: Nintendo Switch Online"
+      },
+      {
+        "id": 5440569,
+        "name": "Super Famicom: Nintendo Switch Online"
+      },
+      {
+        "id": 5454229,
+        "name": "Nintendo Super Famicom"
+      },
+      {
+        "id": 5245292,
+        "name": "Super Smash Bros. For Nintendo 3DS"
+      },
+      {
+        "id": 5269931,
+        "name": "Super Mario Maker for Nintendo 3DS"
+      },
+      {
+        "id": 5468728,
+        "name": "Super Spike V'Ball / Nintendo World Cup"
+      },
+      {
+        "id": 5471111,
+        "name": "Super Mario Bros. / Tetris / Nintendo World Cup"
+      },
+      {
+        "id": 5483966,
+        "name": "Super Mario Party Jamboree: Nintendo Switch 2 Edition + Jamboree TV"
+      },
+      {
+        "id": 16965,
+        "name": "Super"
+      }
+    ],
+    "query": "Super Nintendo Entertainment System",
+    "status": 200,
+    "title": "Nintendo SNES (Super Nintendo)"
+  },
+  {
+    "id": "snesna",
+    "matches": [
+      {
+        "id": 5321369,
+        "name": "Super Nintendo Entertainment System (SNES)"
+      },
+      {
+        "id": 5325027,
+        "name": "Super Nintendo Entertainment System: Nintendo Switch Online"
+      },
+      {
+        "id": 5440569,
+        "name": "Super Famicom: Nintendo Switch Online"
+      },
+      {
+        "id": 5454229,
+        "name": "Nintendo Super Famicom"
+      },
+      {
+        "id": 5245292,
+        "name": "Super Smash Bros. For Nintendo 3DS"
+      },
+      {
+        "id": 5269931,
+        "name": "Super Mario Maker for Nintendo 3DS"
+      },
+      {
+        "id": 5468728,
+        "name": "Super Spike V'Ball / Nintendo World Cup"
+      },
+      {
+        "id": 5471111,
+        "name": "Super Mario Bros. / Tetris / Nintendo World Cup"
+      },
+      {
+        "id": 5483966,
+        "name": "Super Mario Party Jamboree: Nintendo Switch 2 Edition + Jamboree TV"
+      },
+      {
+        "id": 16965,
+        "name": "Super"
+      }
+    ],
+    "query": "Super Nintendo Entertainment System",
+    "status": 200,
+    "title": "Nintendo SNES (Super Nintendo)"
+  },
+  {
+    "id": "solarus",
+    "matches": [
+      {
+        "id": 5437499,
+        "name": "The Legend of Zelda: Mystery of Solarus DX"
+      },
+      {
+        "id": 36547,
+        "name": "SolarStriker"
+      },
+      {
+        "id": 5287052,
+        "name": "Solaris"
+      },
+      {
+        "id": 5302092,
+        "name": "Solaris Rift"
+      },
+      {
+        "id": 5372079,
+        "name": "Solaris"
+      },
+      {
+        "id": 5440954,
+        "name": "Solaris 104"
+      },
+      {
+        "id": 5456841,
+        "name": "Solares"
+      },
+      {
+        "id": 5458519,
+        "name": "Solaris Strike"
+      },
+      {
+        "id": 5494176,
+        "name": "Solaris: Good Harvest"
+      },
+      {
+        "id": 5498341,
+        "name": "Solaris - Arcade Edition"
+      }
+    ],
+    "query": "Solarus",
+    "status": 200,
+    "title": "Solarus Game Engine"
+  },
+  {
+    "id": "spectravideo",
+    "matches": [],
+    "query": "Spectravideo",
+    "status": 200,
+    "title": "Spectravideo"
+  },
+  {
+    "id": "steam",
+    "matches": [
+      {
+        "id": 5279790,
+        "name": "Steam"
+      },
+      {
+        "id": 2332,
+        "name": "Steam Hardware"
+      },
+      {
+        "id": 2863,
+        "name": "Steam Summer Getaway"
+      },
+      {
+        "id": 3135,
+        "name": "Steam Marines"
+      },
+      {
+        "id": 3353,
+        "name": "Steam Bandits: Outpost"
+      },
+      {
+        "id": 4216,
+        "name": "Steam Squad"
+      },
+      {
+        "id": 5945,
+        "name": "Steam and Metal"
+      },
+      {
+        "id": 6275,
+        "name": "Steam Heroes"
+      },
+      {
+        "id": 14246,
+        "name": "STEAM HAMMER"
+      },
+      {
+        "id": 16887,
+        "name": "Steam: Rails to Riches"
+      }
+    ],
+    "query": "Steam",
+    "status": 200,
+    "title": "Valve Steam"
+  },
+  {
+    "id": "stv",
+    "matches": [
+      {
+        "id": 8,
+        "name": "Sega Ages 2500 Vol.16: Virtua Fighter 2"
+      },
+      {
+        "id": 1195,
+        "name": "Sega Rally"
+      },
+      {
+        "id": 6360,
+        "name": "Sega Mega Drive & Genesis Classics"
+      },
+      {
+        "id": 12108,
+        "name": "SEGA Rally Revo"
+      },
+      {
+        "id": 21137,
+        "name": "Sega Rally Championship"
+      },
+      {
+        "id": 21782,
+        "name": "Sega Bass Fishing"
+      },
+      {
+        "id": 35225,
+        "name": "Sega Smash Pack"
+      },
+      {
+        "id": 36246,
+        "name": "Sega Rally Championship 2"
+      },
+      {
+        "id": 37514,
+        "name": "Sega Touring Car Championship"
+      },
+      {
+        "id": 38681,
+        "name": "Sega Arcade Gallery"
+      }
+    ],
+    "query": "Sega Titan Video Game System",
+    "status": 200,
+    "title": "Sega Titan Video Game System"
+  },
+  {
+    "id": "sufami",
+    "matches": [
+      {
+        "id": 34903,
+        "name": "Bandai Golf: Challenge Pebble Beach"
+      },
+      {
+        "id": 5256170,
+        "name": "Bandai Channel"
+      },
+      {
+        "id": 5459715,
+        "name": "Bandai Super Vision 8000"
+      },
+      {
+        "id": 5459779,
+        "name": "Bandai Terebikko"
+      },
+      {
+        "id": 523,
+        "name": "Banzai Hentai!"
+      },
+      {
+        "id": 6285,
+        "name": "BANZAI PECAN: The Last Hope For the Young Century"
+      },
+      {
+        "id": 10614,
+        "name": "Banzai Escape"
+      },
+      {
+        "id": 22779,
+        "name": "BANZAI ROYALE"
+      },
+      {
+        "id": 34224,
+        "name": "Bangai-O Spirits"
+      },
+      {
+        "id": 35231,
+        "name": "Bangai-O"
+      }
+    ],
+    "query": "Bandai SuFami Turbo",
+    "status": 200,
+    "title": "Bandai SuFami Turbo"
+  },
+  {
+    "id": "supergrafx",
+    "matches": [
+      {
+        "id": 5459987,
+        "name": "NEC PC Engine SuperGrafx"
+      },
+      {
+        "id": 5454240,
+        "name": "NEC PC Engine"
+      },
+      {
+        "id": 5454242,
+        "name": "NEC PC Engine Super CD-ROM²"
+      },
+      {
+        "id": 5459782,
+        "name": "NEC CD-ROM²"
+      },
+      {
+        "id": 5459986,
+        "name": "NEC TurboGrafx-16"
+      },
+      {
+        "id": 5260002,
+        "name": "Tetris (NEC Mini5)"
+      }
+    ],
+    "query": "NEC SuperGrafx",
+    "status": 200,
+    "title": "NEC SuperGrafx"
+  },
+  {
+    "id": "supervision",
+    "matches": [
+      {
+        "id": 5498974,
+        "name": "Watara"
+      },
+      {
+        "id": 5434847,
+        "name": "Chou Mashin Eiyuuden Wataru: Mazekko Monster"
+      },
+      {
+        "id": 5434848,
+        "name": "Chou Mashin Eiyuuden Wataru: Mazekko Monster 2"
+      },
+      {
+        "id": 5436592,
+        "name": "Chou Mashin Eiyuuden Wataru: Another Step"
+      },
+      {
+        "id": 5489403,
+        "name": "Majin Eiyuuden Wataru Gaiden"
+      },
+      {
+        "id": 5354496,
+        "name": "Ookami to Koushinryou: Umi wo Wataru Kaze"
+      }
+    ],
+    "query": "Watara Supervision",
+    "status": 200,
+    "title": "Watara Supervision"
+  },
+  {
+    "id": "supracan",
+    "matches": [],
+    "query": "Funtech Super A'Can",
+    "status": 200,
+    "title": "Funtech Super A'Can"
+  },
+  {
+    "id": "switch",
+    "matches": [
+      {
+        "id": 5271314,
+        "name": "Nintendo Switch"
+      },
+      {
+        "id": 5326304,
+        "name": "Nintendo Switch Sports"
+      },
+      {
+        "id": 5476349,
+        "name": "Nintendo Switch 2"
+      },
+      {
+        "id": 5484010,
+        "name": "Nintendo Switch 2 Welcome Tour"
+      },
+      {
+        "id": 5513279,
+        "name": "Nintendo Switch Online: Playtest Program"
+      },
+      {
+        "id": 5268582,
+        "name": "Minecraft: Nintendo Switch Edition"
+      },
+      {
+        "id": 5325028,
+        "name": "Nintendo 64: Nintendo Switch Online"
+      },
+      {
+        "id": 5325029,
+        "name": "Nintendo Entertainment System: Nintendo Switch Online"
+      },
+      {
+        "id": 5445918,
+        "name": "Nintendo 64: Nintendo Switch Online 18+"
+      },
+      {
+        "id": 5455526,
+        "name": "Nintendo 64: Nintendo Switch Online - Mature"
+      }
+    ],
+    "query": "Nintendo Switch",
+    "status": 200,
+    "title": "Nintendo Switch"
+  },
+  {
+    "id": "symbian",
+    "matches": [
+      {
+        "id": 5321563,
+        "name": "The Symbiant"
+      },
+      {
+        "id": 5407531,
+        "name": "The Symbiant Re:Union"
+      },
+      {
+        "id": 5479521,
+        "name": "The Symbiant II"
+      }
+    ],
+    "query": "Symbian",
+    "status": 200,
+    "title": "Symbian"
+  },
+  {
+    "id": "tanodragon",
+    "matches": [
+      {
+        "id": 29368,
+        "name": "Tano's Fate"
+      }
+    ],
+    "query": "Tano Dragon",
+    "status": 200,
+    "title": "Tano Dragon"
+  },
+  {
+    "id": "tg16",
+    "matches": [
+      {
+        "id": 5459986,
+        "name": "NEC TurboGrafx-16"
+      },
+      {
+        "id": 5454240,
+        "name": "NEC PC Engine"
+      },
+      {
+        "id": 5454242,
+        "name": "NEC PC Engine Super CD-ROM²"
+      },
+      {
+        "id": 5459782,
+        "name": "NEC CD-ROM²"
+      },
+      {
+        "id": 5459987,
+        "name": "NEC PC Engine SuperGrafx"
+      },
+      {
+        "id": 5260002,
+        "name": "Tetris (NEC Mini5)"
+      }
+    ],
+    "query": "NEC TurboGrafx-16",
+    "status": 200,
+    "title": "NEC TurboGrafx-16"
+  },
+  {
+    "id": "tg-cd",
+    "matches": [
+      {
+        "id": 5459986,
+        "name": "NEC TurboGrafx-16"
+      },
+      {
+        "id": 5454240,
+        "name": "NEC PC Engine"
+      },
+      {
+        "id": 5454242,
+        "name": "NEC PC Engine Super CD-ROM²"
+      },
+      {
+        "id": 5459782,
+        "name": "NEC CD-ROM²"
+      },
+      {
+        "id": 5459987,
+        "name": "NEC PC Engine SuperGrafx"
+      },
+      {
+        "id": 5260002,
+        "name": "Tetris (NEC Mini5)"
+      }
+    ],
+    "query": "NEC TurboGrafx-CD",
+    "status": 200,
+    "title": "NEC TurboGrafx-CD"
+  },
+  {
+    "id": "ti99",
+    "matches": [
+      {
+        "id": 2619,
+        "name": "Texas Cheat'Em"
+      },
+      {
+        "id": 15903,
+        "name": "Texas Tango"
+      },
+      {
+        "id": 37925,
+        "name": "Texas Hold 'Em Poker"
+      },
+      {
+        "id": 5260648,
+        "name": "Texas Chainsaw"
+      },
+      {
+        "id": 5331648,
+        "name": "Texas Hold 'Em Poker DS"
+      },
+      {
+        "id": 5331649,
+        "name": "Texas Hold 'Em Poker Pack"
+      },
+      {
+        "id": 5471823,
+        "name": "Texas Hold'em Poker: Pokerist"
+      },
+      {
+        "id": 5499717,
+        "name": "Texas Twist Poker 3: Bandit's Run"
+      },
+      {
+        "id": 5540636,
+        "name": "Texas Oil Baron"
+      },
+      {
+        "id": 5541971,
+        "name": "TEXAS DOMINOES"
+      }
+    ],
+    "query": "Texas Instruments TI-99",
+    "status": 200,
+    "title": "Texas Instruments TI-99"
+  },
+  {
+    "id": "tic80",
+    "matches": [
+      {
+        "id": 5352181,
+        "name": "TIC-80"
+      },
+      {
+        "id": 8540,
+        "name": "Tic-Toc-Tower"
+      },
+      {
+        "id": 21636,
+        "name": "Tic Tac Toe Lounge"
+      },
+      {
+        "id": 5272491,
+        "name": "TIC-TAC: Twelve o'clock"
+      },
+      {
+        "id": 5281239,
+        "name": "Tic Tac Together"
+      },
+      {
+        "id": 5287040,
+        "name": "Tic-Tac-Crow"
+      },
+      {
+        "id": 5443976,
+        "name": "Tic-Tac-Tanks"
+      },
+      {
+        "id": 5466740,
+        "name": "Tic Tac Toe World"
+      },
+      {
+        "id": 5472712,
+        "name": "Tic Tactic"
+      },
+      {
+        "id": 5497749,
+        "name": "Tic Cat Dog"
+      }
+    ],
+    "query": "TIC-80",
+    "status": 200,
+    "title": "TIC-80 Fantasy Computer"
+  },
+  {
+    "id": "to8",
+    "matches": [],
+    "query": "Thomson TO8",
+    "status": 200,
+    "title": "Thomson TO8"
+  },
+  {
+    "id": "triforce",
+    "matches": [
+      {
+        "id": 29854,
+        "name": "Namco x Capcom"
+      },
+      {
+        "id": 34348,
+        "name": "Namco Museum"
+      },
+      {
+        "id": 36799,
+        "name": "Namco Museum 64"
+      },
+      {
+        "id": 37887,
+        "name": "Namco Museum 50th Anniversary"
+      },
+      {
+        "id": 5262520,
+        "name": "NAMCO MUSEUM ARCHIVES Vol 1"
+      },
+      {
+        "id": 5262521,
+        "name": "NAMCO MUSEUM ARCHIVES Vol 2"
+      },
+      {
+        "id": 5264261,
+        "name": "Namco Museum Battle Collection"
+      },
+      {
+        "id": 5264396,
+        "name": "Namco Museum Vol.1"
+      },
+      {
+        "id": 5264436,
+        "name": "Namco Museum Vol.2"
+      },
+      {
+        "id": 5264437,
+        "name": "Namco Museum Vol.3"
+      }
+    ],
+    "query": "Namco-Sega-Nintendo Triforce",
+    "status": 200,
+    "title": "Namco-Sega-Nintendo Triforce"
+  },
+  {
+    "id": "trs-80",
+    "matches": [
+      {
+        "id": 5516170,
+        "name": "Tandy TRS-80"
+      },
+      {
+        "id": 5516171,
+        "name": "Tandy TRS-80 Color Computer"
+      },
+      {
+        "id": 5259992,
+        "name": "Тетрис (Tetris): The Soviet Challenge (Tandy)"
+      },
+      {
+        "id": 26289,
+        "name": "Tardy"
+      },
+      {
+        "id": 5245587,
+        "name": "Tanky Tanks"
+      },
+      {
+        "id": 5255026,
+        "name": "Tanky Tanks VR"
+      },
+      {
+        "id": 5261164,
+        "name": "Tanky Panky"
+      },
+      {
+        "id": 5274186,
+        "name": "Tanxy"
+      },
+      {
+        "id": 5276577,
+        "name": "Tanky Tanks"
+      },
+      {
+        "id": 5321271,
+        "name": "TENDY: Robot Gardener"
+      }
+    ],
+    "query": "Tandy TRS-80",
+    "status": 200,
+    "title": "Tandy TRS-80"
+  },
+  {
+    "id": "type-x",
+    "matches": [
+      {
+        "id": 5250389,
+        "name": "Taito Legends"
+      },
+      {
+        "id": 5250390,
+        "name": "Taito Legends 2"
+      },
+      {
+        "id": 5264484,
+        "name": "Taito Legends Power up"
+      },
+      {
+        "id": 5437219,
+        "name": "Taito Power Goal"
+      },
+      {
+        "id": 5445830,
+        "name": "Taito LD Game Collection"
+      },
+      {
+        "id": 5468477,
+        "name": "Taito Grand Prix: Eikou e no License"
+      },
+      {
+        "id": 13876,
+        "name": "Taiko Risshiden"
+      },
+      {
+        "id": 5256057,
+        "name": "Taiko no Tatsujin: Atsumete☆Tomodachi Daisakusen!"
+      },
+      {
+        "id": 5256064,
+        "name": "Taiko no Tatsujin: Wii U Version!"
+      },
+      {
+        "id": 5256065,
+        "name": "Taiko no Tatsujin: Tokumori!"
+      }
+    ],
+    "query": "Taito Type X",
+    "status": 200,
+    "title": "Taito Type X"
+  },
+  {
+    "id": "uzebox",
+    "matches": [],
+    "query": "Uzebox",
+    "status": 200,
+    "title": "Uzebox Open Source Console"
+  },
+  {
+    "id": "vectrex",
+    "matches": [
+      {
+        "id": 5459723,
+        "name": "GCE Vectrex"
+      }
+    ],
+    "query": "GCE Vectrex",
+    "status": 200,
+    "title": "GCE Vectrex"
+  },
+  {
+    "id": "vic20",
+    "matches": [
+      {
+        "id": 5511444,
+        "name": "Commodore VIC-20"
+      },
+      {
+        "id": 5460042,
+        "name": "Commodore 64 Games System (C64GS)"
+      },
+      {
+        "id": 5460043,
+        "name": "Commodore CDTV"
+      },
+      {
+        "id": 5500690,
+        "name": "Commodore 64 (C64)"
+      },
+      {
+        "id": 5511429,
+        "name": "Commodore 16"
+      },
+      {
+        "id": 5511430,
+        "name": "Commodore PET"
+      },
+      {
+        "id": 5255411,
+        "name": "Memeow & Comodore: Reloaded"
+      },
+      {
+        "id": 5260635,
+        "name": "Cosmodome"
+      }
+    ],
+    "query": "Commodore VIC-20",
+    "status": 200,
+    "title": "Commodore VIC-20"
+  },
+  {
+    "id": "videopac",
+    "matches": [
+      {
+        "id": 5459748,
+        "name": "Philips Videopac+ G7400"
+      },
+      {
+        "id": 5460044,
+        "name": "Philips CD-i"
+      },
+      {
+        "id": 18588,
+        "name": "Howard Phillips Lovecar"
+      },
+      {
+        "id": 29938,
+        "name": "Hegemony: Philip of Macedon"
+      }
+    ],
+    "query": "Philips Videopac G7000",
+    "status": 200,
+    "title": "Philips Videopac G7000"
+  },
+  {
+    "id": "vircon32",
+    "matches": [],
+    "query": "Vircon32",
+    "status": 200,
+    "title": "Vircon32 Virtual Console"
+  },
+  {
+    "id": "virtualboy",
+    "matches": [
+      {
+        "id": 5498433,
+        "name": "Nintendo Virtual Boy"
+      },
+      {
+        "id": 36570,
+        "name": "Nintendo Land"
+      },
+      {
+        "id": 37030,
+        "name": "Nintendo World Cup"
+      },
+      {
+        "id": 37331,
+        "name": "Nintendo World Championships 1990"
+      },
+      {
+        "id": 5252214,
+        "name": "Nintendo Campus Challenge 1991"
+      },
+      {
+        "id": 5252913,
+        "name": "Nintendo Puzzle Collection"
+      },
+      {
+        "id": 5256599,
+        "name": "Nintendo TVii"
+      },
+      {
+        "id": 5256600,
+        "name": "Nintendo eShop"
+      },
+      {
+        "id": 5260299,
+        "name": "Nintendo DS Browser"
+      },
+      {
+        "id": 5264700,
+        "name": "Nintendo Pocket Football Club"
+      }
+    ],
+    "query": "Nintendo Virtual Boy",
+    "status": 200,
+    "title": "Nintendo Virtual Boy"
+  },
+  {
+    "id": "vpinball",
+    "matches": [
+      {
+        "id": 5453589,
+        "name": "Visual Pinball"
+      },
+      {
+        "id": 20020,
+        "name": "Visual Out"
+      },
+      {
+        "id": 37070,
+        "name": "Visual Boy Advance (Emulator)"
+      },
+      {
+        "id": 5251724,
+        "name": "Visual Novel Engine"
+      },
+      {
+        "id": 5251946,
+        "name": "Visual Novel Maker"
+      },
+      {
+        "id": 5253491,
+        "name": "Visual Novel Maker"
+      },
+      {
+        "id": 5265410,
+        "name": "Visual Studio Code"
+      },
+      {
+        "id": 5294394,
+        "name": "Visual Novel Sisters"
+      },
+      {
+        "id": 5435131,
+        "name": "Visual novel for the kids: Lumi And Baby - Hamster And Baby Dragon"
+      },
+      {
+        "id": 5484877,
+        "name": "Visual Novel Workshop"
+      }
+    ],
+    "query": "Visual Pinball",
+    "status": 200,
+    "title": "Visual Pinball"
+  },
+  {
+    "id": "vsmile",
+    "matches": [
+      {
+        "id": 5459804,
+        "name": "VTech V.Flash"
+      },
+      {
+        "id": 5459717,
+        "name": "VTech CreatiVision"
+      },
+      {
+        "id": 5459780,
+        "name": "VTech Socrates"
+      }
+    ],
+    "query": "VTech V.Smile",
+    "status": 200,
+    "title": "VTech V.Smile"
+  },
+  {
+    "id": "wasm4",
+    "matches": [],
+    "query": "WASM-4",
+    "status": 200,
+    "title": "WASM-4 Fantasy Console"
+  },
+  {
+    "id": "wii",
+    "matches": [
+      {
+        "id": 5299128,
+        "name": "Nintendo Wii"
+      },
+      {
+        "id": 5283561,
+        "name": "Nintendo Wii U"
+      },
+      {
+        "id": 36570,
+        "name": "Nintendo Land"
+      },
+      {
+        "id": 37030,
+        "name": "Nintendo World Cup"
+      },
+      {
+        "id": 37331,
+        "name": "Nintendo World Championships 1990"
+      },
+      {
+        "id": 5252214,
+        "name": "Nintendo Campus Challenge 1991"
+      },
+      {
+        "id": 5252913,
+        "name": "Nintendo Puzzle Collection"
+      },
+      {
+        "id": 5256599,
+        "name": "Nintendo TVii"
+      },
+      {
+        "id": 5256600,
+        "name": "Nintendo eShop"
+      },
+      {
+        "id": 5260299,
+        "name": "Nintendo DS Browser"
+      }
+    ],
+    "query": "Nintendo Wii",
+    "status": 200,
+    "title": "Nintendo Wii"
+  },
+  {
+    "id": "wiiu",
+    "matches": [
+      {
+        "id": 5283561,
+        "name": "Nintendo Wii U"
+      },
+      {
+        "id": 5299128,
+        "name": "Nintendo Wii"
+      },
+      {
+        "id": 36570,
+        "name": "Nintendo Land"
+      },
+      {
+        "id": 37030,
+        "name": "Nintendo World Cup"
+      },
+      {
+        "id": 37331,
+        "name": "Nintendo World Championships 1990"
+      },
+      {
+        "id": 5252214,
+        "name": "Nintendo Campus Challenge 1991"
+      },
+      {
+        "id": 5252913,
+        "name": "Nintendo Puzzle Collection"
+      },
+      {
+        "id": 5256599,
+        "name": "Nintendo TVii"
+      },
+      {
+        "id": 5256600,
+        "name": "Nintendo eShop"
+      },
+      {
+        "id": 5260299,
+        "name": "Nintendo DS Browser"
+      }
+    ],
+    "query": "Nintendo Wii U",
+    "status": 200,
+    "title": "Nintendo Wii U"
+  },
+  {
+    "id": "windows",
+    "matches": [
+      {
+        "id": 5269176,
+        "name": "Microsoft Windows (Operating System)"
+      },
+      {
+        "id": 5269177,
+        "name": "Microsoft Windows 2.0 (Operating System)"
+      },
+      {
+        "id": 5269178,
+        "name": "Microsoft Windows 3.1 (Operating System)"
+      },
+      {
+        "id": 5269179,
+        "name": "Microsoft Windows 95 (Operating System)"
+      },
+      {
+        "id": 5269180,
+        "name": "Microsoft Windows 98 (Operating System)"
+      },
+      {
+        "id": 5269181,
+        "name": "Microsoft Windows NT Workstation 4.0 (Operating System)"
+      },
+      {
+        "id": 5269182,
+        "name": "Microsoft Windows ME (Operating System)"
+      },
+      {
+        "id": 5269183,
+        "name": "Microsoft Windows 2000 (Operating System)"
+      },
+      {
+        "id": 5269184,
+        "name": "Microsoft Windows XP (Operating System)"
+      },
+      {
+        "id": 5269185,
+        "name": "Microsoft Windows Vista (Operating System)"
+      }
+    ],
+    "query": "Microsoft Windows",
+    "status": 200,
+    "title": "Microsoft Windows"
+  },
+  {
+    "id": "windows3x",
+    "matches": [
+      {
+        "id": 5269178,
+        "name": "Microsoft Windows 3.1 (Operating System)"
+      },
+      {
+        "id": 5288698,
+        "name": "Microsoft Windows 3.0 (Operating System)"
+      },
+      {
+        "id": 5371260,
+        "name": "Microsoft Windows NT Workstation 3.5x (Operating System)"
+      },
+      {
+        "id": 5269176,
+        "name": "Microsoft Windows (Operating System)"
+      },
+      {
+        "id": 5269177,
+        "name": "Microsoft Windows 2.0 (Operating System)"
+      },
+      {
+        "id": 5269179,
+        "name": "Microsoft Windows 95 (Operating System)"
+      },
+      {
+        "id": 5269180,
+        "name": "Microsoft Windows 98 (Operating System)"
+      },
+      {
+        "id": 5269181,
+        "name": "Microsoft Windows NT Workstation 4.0 (Operating System)"
+      },
+      {
+        "id": 5269182,
+        "name": "Microsoft Windows ME (Operating System)"
+      },
+      {
+        "id": 5269183,
+        "name": "Microsoft Windows 2000 (Operating System)"
+      }
+    ],
+    "query": "Microsoft Windows 3.x",
+    "status": 200,
+    "title": "Microsoft Windows 3.x"
+  },
+  {
+    "id": "windows9x",
+    "matches": [
+      {
+        "id": 5269176,
+        "name": "Microsoft Windows (Operating System)"
+      },
+      {
+        "id": 5269177,
+        "name": "Microsoft Windows 2.0 (Operating System)"
+      },
+      {
+        "id": 5269178,
+        "name": "Microsoft Windows 3.1 (Operating System)"
+      },
+      {
+        "id": 5269179,
+        "name": "Microsoft Windows 95 (Operating System)"
+      },
+      {
+        "id": 5269180,
+        "name": "Microsoft Windows 98 (Operating System)"
+      },
+      {
+        "id": 5269181,
+        "name": "Microsoft Windows NT Workstation 4.0 (Operating System)"
+      },
+      {
+        "id": 5269182,
+        "name": "Microsoft Windows ME (Operating System)"
+      },
+      {
+        "id": 5269183,
+        "name": "Microsoft Windows 2000 (Operating System)"
+      },
+      {
+        "id": 5269184,
+        "name": "Microsoft Windows XP (Operating System)"
+      },
+      {
+        "id": 5269185,
+        "name": "Microsoft Windows Vista (Operating System)"
+      }
+    ],
+    "query": "Microsoft Windows 9x",
+    "status": 200,
+    "title": "Microsoft Windows 9x"
+  },
+  {
+    "id": "wonderswan",
+    "matches": [
+      {
+        "id": 34903,
+        "name": "Bandai Golf: Challenge Pebble Beach"
+      },
+      {
+        "id": 5256170,
+        "name": "Bandai Channel"
+      },
+      {
+        "id": 5459715,
+        "name": "Bandai Super Vision 8000"
+      },
+      {
+        "id": 5459779,
+        "name": "Bandai Terebikko"
+      },
+      {
+        "id": 523,
+        "name": "Banzai Hentai!"
+      },
+      {
+        "id": 6285,
+        "name": "BANZAI PECAN: The Last Hope For the Young Century"
+      },
+      {
+        "id": 10614,
+        "name": "Banzai Escape"
+      },
+      {
+        "id": 22779,
+        "name": "BANZAI ROYALE"
+      },
+      {
+        "id": 34224,
+        "name": "Bangai-O Spirits"
+      },
+      {
+        "id": 35231,
+        "name": "Bangai-O"
+      }
+    ],
+    "query": "Bandai WonderSwan",
+    "status": 200,
+    "title": "Bandai WonderSwan"
+  },
+  {
+    "id": "wonderswancolor",
+    "matches": [
+      {
+        "id": 34903,
+        "name": "Bandai Golf: Challenge Pebble Beach"
+      },
+      {
+        "id": 5256170,
+        "name": "Bandai Channel"
+      },
+      {
+        "id": 5459715,
+        "name": "Bandai Super Vision 8000"
+      },
+      {
+        "id": 5459779,
+        "name": "Bandai Terebikko"
+      },
+      {
+        "id": 523,
+        "name": "Banzai Hentai!"
+      },
+      {
+        "id": 6285,
+        "name": "BANZAI PECAN: The Last Hope For the Young Century"
+      },
+      {
+        "id": 10614,
+        "name": "Banzai Escape"
+      },
+      {
+        "id": 22779,
+        "name": "BANZAI ROYALE"
+      },
+      {
+        "id": 34224,
+        "name": "Bangai-O Spirits"
+      },
+      {
+        "id": 35231,
+        "name": "Bangai-O"
+      }
+    ],
+    "query": "Bandai WonderSwan Color",
+    "status": 200,
+    "title": "Bandai WonderSwan Color"
+  },
+  {
+    "id": "x1",
+    "matches": [
+      {
+        "id": 29395,
+        "name": "Sharp"
+      },
+      {
+        "id": 5314874,
+        "name": "Sharp Wands"
+      },
+      {
+        "id": 5321155,
+        "name": "Sharp Trouble"
+      },
+      {
+        "id": 5347787,
+        "name": "Sharp Eyed"
+      },
+      {
+        "id": 5483040,
+        "name": "SHARP FISTS"
+      },
+      {
+        "id": 5511446,
+        "name": "Sharp X68000"
+      },
+      {
+        "id": 5523010,
+        "name": "Sharp Chess"
+      },
+      {
+        "id": 5536191,
+        "name": "Sharp-Eyed Umpire Simulator"
+      },
+      {
+        "id": 5561596,
+        "name": "Sharp Flint"
+      },
+      {
+        "id": 5594,
+        "name": "Chime Sharp"
+      }
+    ],
+    "query": "Sharp X1",
+    "status": 200,
+    "title": "Sharp X1"
+  },
+  {
+    "id": "x68000",
+    "matches": [
+      {
+        "id": 5511446,
+        "name": "Sharp X68000"
+      },
+      {
+        "id": 29395,
+        "name": "Sharp"
+      },
+      {
+        "id": 5314874,
+        "name": "Sharp Wands"
+      },
+      {
+        "id": 5321155,
+        "name": "Sharp Trouble"
+      },
+      {
+        "id": 5347787,
+        "name": "Sharp Eyed"
+      },
+      {
+        "id": 5483040,
+        "name": "SHARP FISTS"
+      },
+      {
+        "id": 5523010,
+        "name": "Sharp Chess"
+      },
+      {
+        "id": 5536191,
+        "name": "Sharp-Eyed Umpire Simulator"
+      },
+      {
+        "id": 5561596,
+        "name": "Sharp Flint"
+      },
+      {
+        "id": 5594,
+        "name": "Chime Sharp"
+      }
+    ],
+    "query": "Sharp X68000",
+    "status": 200,
+    "title": "Sharp X68000"
+  },
+  {
+    "id": "xbox",
+    "matches": [
+      {
+        "id": 5255377,
+        "name": "Microsoft Xbox"
+      },
+      {
+        "id": 5338852,
+        "name": "Microsoft Xbox 360"
+      },
+      {
+        "id": 5459764,
+        "name": "Microsoft Xbox One"
+      },
+      {
+        "id": 5459777,
+        "name": "Microsoft Xbox Series X / Series S"
+      },
+      {
+        "id": 1801,
+        "name": "Microsoft Flight"
+      },
+      {
+        "id": 5112,
+        "name": "Microsoft Flight Simulator X: Steam Edition"
+      },
+      {
+        "id": 21225,
+        "name": "Microsoft Allegiance"
+      },
+      {
+        "id": 32416,
+        "name": "Microsoft Maquette"
+      },
+      {
+        "id": 35015,
+        "name": "Microsoft: The 6 in 1 Puzzle Collection Entertainment Pack"
+      },
+      {
+        "id": 36075,
+        "name": "Microsoft: The Best of Entertainment Pack"
+      }
+    ],
+    "query": "Microsoft Xbox",
+    "status": 200,
+    "title": "Microsoft Xbox"
+  },
+  {
+    "id": "xbox360",
+    "matches": [
+      {
+        "id": 5338852,
+        "name": "Microsoft Xbox 360"
+      },
+      {
+        "id": 5255377,
+        "name": "Microsoft Xbox"
+      },
+      {
+        "id": 5459764,
+        "name": "Microsoft Xbox One"
+      },
+      {
+        "id": 5459777,
+        "name": "Microsoft Xbox Series X / Series S"
+      },
+      {
+        "id": 1801,
+        "name": "Microsoft Flight"
+      },
+      {
+        "id": 5112,
+        "name": "Microsoft Flight Simulator X: Steam Edition"
+      },
+      {
+        "id": 21225,
+        "name": "Microsoft Allegiance"
+      },
+      {
+        "id": 32416,
+        "name": "Microsoft Maquette"
+      },
+      {
+        "id": 35015,
+        "name": "Microsoft: The 6 in 1 Puzzle Collection Entertainment Pack"
+      },
+      {
+        "id": 36075,
+        "name": "Microsoft: The Best of Entertainment Pack"
+      }
+    ],
+    "query": "Microsoft Xbox 360",
+    "status": 200,
+    "title": "Microsoft Xbox 360"
+  },
+  {
+    "id": "xboxone",
+    "matches": [
+      {
+        "id": 5459764,
+        "name": "Microsoft Xbox One"
+      },
+      {
+        "id": 5255377,
+        "name": "Microsoft Xbox"
+      },
+      {
+        "id": 5338852,
+        "name": "Microsoft Xbox 360"
+      },
+      {
+        "id": 5459777,
+        "name": "Microsoft Xbox Series X / Series S"
+      },
+      {
+        "id": 1801,
+        "name": "Microsoft Flight"
+      },
+      {
+        "id": 5112,
+        "name": "Microsoft Flight Simulator X: Steam Edition"
+      },
+      {
+        "id": 21225,
+        "name": "Microsoft Allegiance"
+      },
+      {
+        "id": 32416,
+        "name": "Microsoft Maquette"
+      },
+      {
+        "id": 35015,
+        "name": "Microsoft: The 6 in 1 Puzzle Collection Entertainment Pack"
+      },
+      {
+        "id": 36075,
+        "name": "Microsoft: The Best of Entertainment Pack"
+      }
+    ],
+    "query": "Microsoft Xbox One",
+    "status": 200,
+    "title": "Microsoft Xbox One"
+  },
+  {
+    "id": "zmachine",
+    "matches": [],
+    "query": "Infocom Z-machine",
+    "status": 200,
+    "title": "Infocom Z-machine"
+  },
+  {
+    "id": "zx81",
+    "matches": [
+      {
+        "id": 5511447,
+        "name": "Sinclair ZX Spectrum"
+      }
+    ],
+    "query": "Sinclair ZX81",
+    "status": 200,
+    "title": "Sinclair ZX81"
+  },
+  {
+    "id": "zxnext",
+    "matches": [
+      {
+        "id": 5511447,
+        "name": "Sinclair ZX Spectrum"
+      }
+    ],
+    "query": "Sinclair ZX Spectrum Next",
+    "status": 200,
+    "title": "Sinclair ZX Spectrum Next"
+  },
+  {
+    "id": "zxspectrum",
+    "matches": [
+      {
+        "id": 5511447,
+        "name": "Sinclair ZX Spectrum"
+      }
+    ],
+    "query": "Sinclair ZX Spectrum",
+    "status": 200,
+    "title": "Sinclair ZX Spectrum"
+  }
+]

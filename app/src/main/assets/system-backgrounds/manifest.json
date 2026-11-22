@@ -1,0 +1,1757 @@
+{
+  "3do": {
+    "provider": "Iconic",
+    "source": "https://github.com/Siddy212/iconic-es-de/tree/0a549ffbe5a392bd818ee4c11a7175b2372591e4",
+    "url": "https://raw.githubusercontent.com/Siddy212/iconic-es-de/0a549ffbe5a392bd818ee4c11a7175b2372591e4/_inc/systems/default-backgrounds/3do.webp",
+    "author": "Siddy212 and credited contributors",
+    "heroId": null,
+    "gameId": null,
+    "layout": "16:9 cover, safe name placement, system photograph"
+  },
+  "adam": {
+    "provider": "Iconic",
+    "source": "https://github.com/Siddy212/iconic-es-de/tree/0a549ffbe5a392bd818ee4c11a7175b2372591e4",
+    "url": "https://raw.githubusercontent.com/Siddy212/iconic-es-de/0a549ffbe5a392bd818ee4c11a7175b2372591e4/_inc/systems/default-backgrounds/adam.webp",
+    "author": "Siddy212 and credited contributors",
+    "heroId": null,
+    "gameId": null,
+    "layout": "16:9 cover, safe name placement, system photograph"
+  },
+  "ags": {
+    "provider": "Iconic",
+    "source": "https://github.com/Siddy212/iconic-es-de/tree/0a549ffbe5a392bd818ee4c11a7175b2372591e4",
+    "url": "https://raw.githubusercontent.com/Siddy212/iconic-es-de/0a549ffbe5a392bd818ee4c11a7175b2372591e4/_inc/systems/default-backgrounds/ags.webp",
+    "author": "Siddy212 and credited contributors",
+    "heroId": null,
+    "gameId": null,
+    "layout": "16:9 cover, safe name placement, system photograph"
+  },
+  "amiga": {
+    "provider": "SteamGridDB",
+    "source": "https://www.steamgriddb.com/hero/136122",
+    "url": "https://cdn2.steamgriddb.com/hero/9b7164029997534088f224ec2f714f11.png",
+    "author": "small bud",
+    "heroId": 136122,
+    "gameId": 5249407,
+    "layout": "whole hero banner; Orbit adds a blurred fill and the system name"
+  },
+  "amiga1200": {
+    "provider": "Iconic",
+    "source": "https://github.com/Siddy212/iconic-es-de/tree/0a549ffbe5a392bd818ee4c11a7175b2372591e4",
+    "url": "https://raw.githubusercontent.com/Siddy212/iconic-es-de/0a549ffbe5a392bd818ee4c11a7175b2372591e4/_inc/systems/default-backgrounds/amiga1200.webp",
+    "author": "Siddy212 and credited contributors",
+    "heroId": null,
+    "gameId": null,
+    "layout": "16:9 cover, safe name placement, system photograph"
+  },
+  "amiga600": {
+    "provider": "Iconic",
+    "source": "https://github.com/Siddy212/iconic-es-de/tree/0a549ffbe5a392bd818ee4c11a7175b2372591e4",
+    "url": "https://raw.githubusercontent.com/Siddy212/iconic-es-de/0a549ffbe5a392bd818ee4c11a7175b2372591e4/_inc/systems/default-backgrounds/amiga600.webp",
+    "author": "Siddy212 and credited contributors",
+    "heroId": null,
+    "gameId": null,
+    "layout": "16:9 cover, safe name placement, system photograph"
+  },
+  "amigacd32": {
+    "provider": "Iconic",
+    "source": "https://github.com/Siddy212/iconic-es-de/tree/0a549ffbe5a392bd818ee4c11a7175b2372591e4",
+    "url": "https://raw.githubusercontent.com/Siddy212/iconic-es-de/0a549ffbe5a392bd818ee4c11a7175b2372591e4/_inc/systems/default-backgrounds/amigacd32.webp",
+    "author": "Siddy212 and credited contributors",
+    "heroId": null,
+    "gameId": null,
+    "layout": "16:9 cover, safe name placement, system photograph"
+  },
+  "amstradcpc": {
+    "provider": "Iconic",
+    "source": "https://github.com/Siddy212/iconic-es-de/tree/0a549ffbe5a392bd818ee4c11a7175b2372591e4",
+    "url": "https://raw.githubusercontent.com/Siddy212/iconic-es-de/0a549ffbe5a392bd818ee4c11a7175b2372591e4/_inc/systems/default-backgrounds/amstradcpc.webp",
+    "author": "Siddy212 and credited contributors",
+    "heroId": null,
+    "gameId": null,
+    "layout": "16:9 cover, safe name placement, system photograph"
+  },
+  "android": {
+    "provider": "SteamGridDB",
+    "source": "https://www.steamgriddb.com/hero/128941",
+    "url": "https://cdn2.steamgriddb.com/hero/31c0c3fb86ccf62dc36356a42754c2a3.png",
+    "author": "NZVengeance",
+    "heroId": 128941,
+    "gameId": 5268710,
+    "layout": "whole hero banner; Orbit adds a blurred fill and the system name"
+  },
+  "androidapps": {
+    "provider": "SteamGridDB",
+    "source": "https://www.steamgriddb.com/hero/128941",
+    "url": "https://cdn2.steamgriddb.com/hero/31c0c3fb86ccf62dc36356a42754c2a3.png",
+    "author": "NZVengeance",
+    "heroId": 128941,
+    "gameId": 5268710,
+    "layout": "whole hero banner; Orbit adds a blurred fill and the system name"
+  },
+  "androidgames": {
+    "provider": "SteamGridDB",
+    "source": "https://www.steamgriddb.com/hero/128941",
+    "url": "https://cdn2.steamgriddb.com/hero/31c0c3fb86ccf62dc36356a42754c2a3.png",
+    "author": "NZVengeance",
+    "heroId": 128941,
+    "gameId": 5268710,
+    "layout": "whole hero banner; Orbit adds a blurred fill and the system name"
+  },
+  "apple2": {
+    "provider": "Iconic",
+    "source": "https://github.com/Siddy212/iconic-es-de/tree/0a549ffbe5a392bd818ee4c11a7175b2372591e4",
+    "url": "https://raw.githubusercontent.com/Siddy212/iconic-es-de/0a549ffbe5a392bd818ee4c11a7175b2372591e4/_inc/systems/default-backgrounds/apple2.webp",
+    "author": "Siddy212 and credited contributors",
+    "heroId": null,
+    "gameId": null,
+    "layout": "16:9 cover, safe name placement, system photograph"
+  },
+  "apple2gs": {
+    "provider": "Iconic",
+    "source": "https://github.com/Siddy212/iconic-es-de/tree/0a549ffbe5a392bd818ee4c11a7175b2372591e4",
+    "url": "https://raw.githubusercontent.com/Siddy212/iconic-es-de/0a549ffbe5a392bd818ee4c11a7175b2372591e4/_inc/systems/default-backgrounds/apple2gs.webp",
+    "author": "Siddy212 and credited contributors",
+    "heroId": null,
+    "gameId": null,
+    "layout": "16:9 cover, safe name placement, system photograph"
+  },
+  "arcade": {
+    "provider": "SteamGridDB",
+    "source": "https://www.steamgriddb.com/hero/166527",
+    "url": "https://cdn2.steamgriddb.com/hero/f96f8b0001f3194ad229ac3d8d29f81e.png",
+    "author": "n40k1",
+    "heroId": 166527,
+    "gameId": 5260946,
+    "layout": "whole hero banner; Orbit adds a blurred fill and the system name"
+  },
+  "arcadia": {
+    "provider": "Iconic",
+    "source": "https://github.com/Siddy212/iconic-es-de/tree/0a549ffbe5a392bd818ee4c11a7175b2372591e4",
+    "url": "https://raw.githubusercontent.com/Siddy212/iconic-es-de/0a549ffbe5a392bd818ee4c11a7175b2372591e4/_inc/systems/default-backgrounds/arcadia.webp",
+    "author": "Siddy212 and credited contributors",
+    "heroId": null,
+    "gameId": null,
+    "layout": "16:9 cover, safe name placement, system photograph"
+  },
+  "archimedes": {
+    "provider": "Iconic",
+    "source": "https://github.com/Siddy212/iconic-es-de/tree/0a549ffbe5a392bd818ee4c11a7175b2372591e4",
+    "url": "https://raw.githubusercontent.com/Siddy212/iconic-es-de/0a549ffbe5a392bd818ee4c11a7175b2372591e4/_inc/systems/default-backgrounds/archimedes.webp",
+    "author": "Siddy212 and credited contributors",
+    "heroId": null,
+    "gameId": null,
+    "layout": "16:9 cover, safe name placement, system photograph"
+  },
+  "arduboy": {
+    "provider": "Iconic",
+    "source": "https://github.com/Siddy212/iconic-es-de/tree/0a549ffbe5a392bd818ee4c11a7175b2372591e4",
+    "url": "https://raw.githubusercontent.com/Siddy212/iconic-es-de/0a549ffbe5a392bd818ee4c11a7175b2372591e4/_inc/systems/default-backgrounds/arduboy.webp",
+    "author": "Siddy212 and credited contributors",
+    "heroId": null,
+    "gameId": null,
+    "layout": "16:9 cover, safe name placement, system photograph"
+  },
+  "astrocde": {
+    "provider": "Iconic",
+    "source": "https://github.com/Siddy212/iconic-es-de/tree/0a549ffbe5a392bd818ee4c11a7175b2372591e4",
+    "url": "https://raw.githubusercontent.com/Siddy212/iconic-es-de/0a549ffbe5a392bd818ee4c11a7175b2372591e4/_inc/systems/default-backgrounds/astrocade.webp",
+    "author": "Siddy212 and credited contributors",
+    "heroId": null,
+    "gameId": null,
+    "layout": "16:9 cover, safe name placement, system photograph"
+  },
+  "atari2600": {
+    "provider": "SteamGridDB",
+    "source": "https://www.steamgriddb.com/hero/188663",
+    "url": "https://cdn2.steamgriddb.com/hero/6d0ab4c31871c6752836217adc251732.png",
+    "author": "Lonker",
+    "heroId": 188663,
+    "gameId": 5459692,
+    "layout": "whole hero banner; Orbit adds a blurred fill and the system name"
+  },
+  "atari5200": {
+    "provider": "Iconic",
+    "source": "https://github.com/Siddy212/iconic-es-de/tree/0a549ffbe5a392bd818ee4c11a7175b2372591e4",
+    "url": "https://raw.githubusercontent.com/Siddy212/iconic-es-de/0a549ffbe5a392bd818ee4c11a7175b2372591e4/_inc/systems/default-backgrounds/atari5200.webp",
+    "author": "Siddy212 and credited contributors",
+    "heroId": null,
+    "gameId": null,
+    "layout": "16:9 cover, safe name placement, system photograph"
+  },
+  "atari7800": {
+    "provider": "Iconic",
+    "source": "https://github.com/Siddy212/iconic-es-de/tree/0a549ffbe5a392bd818ee4c11a7175b2372591e4",
+    "url": "https://raw.githubusercontent.com/Siddy212/iconic-es-de/0a549ffbe5a392bd818ee4c11a7175b2372591e4/_inc/systems/default-backgrounds/atari7800.webp",
+    "author": "Siddy212 and credited contributors",
+    "heroId": null,
+    "gameId": null,
+    "layout": "16:9 cover, safe name placement, system photograph"
+  },
+  "atari800": {
+    "provider": "Iconic",
+    "source": "https://github.com/Siddy212/iconic-es-de/tree/0a549ffbe5a392bd818ee4c11a7175b2372591e4",
+    "url": "https://raw.githubusercontent.com/Siddy212/iconic-es-de/0a549ffbe5a392bd818ee4c11a7175b2372591e4/_inc/systems/default-backgrounds/atari800.webp",
+    "author": "Siddy212 and credited contributors",
+    "heroId": null,
+    "gameId": null,
+    "layout": "16:9 cover, safe name placement, system photograph"
+  },
+  "atarijaguar": {
+    "provider": "SteamGridDB",
+    "source": "https://www.steamgriddb.com/hero/185636",
+    "url": "https://cdn2.steamgriddb.com/hero/16f59931ec417478b845929c92fd02a1.png",
+    "author": "Mr_Jalapenos",
+    "heroId": 185636,
+    "gameId": 5501337,
+    "layout": "whole hero banner; Orbit adds a blurred fill and the system name"
+  },
+  "atarijaguarcd": {
+    "provider": "Iconic",
+    "source": "https://github.com/Siddy212/iconic-es-de/tree/0a549ffbe5a392bd818ee4c11a7175b2372591e4",
+    "url": "https://raw.githubusercontent.com/Siddy212/iconic-es-de/0a549ffbe5a392bd818ee4c11a7175b2372591e4/_inc/systems/default-backgrounds/atarijaguarcd.webp",
+    "author": "Siddy212 and credited contributors",
+    "heroId": null,
+    "gameId": null,
+    "layout": "16:9 cover, safe name placement, system photograph"
+  },
+  "atarilynx": {
+    "provider": "Iconic",
+    "source": "https://github.com/Siddy212/iconic-es-de/tree/0a549ffbe5a392bd818ee4c11a7175b2372591e4",
+    "url": "https://raw.githubusercontent.com/Siddy212/iconic-es-de/0a549ffbe5a392bd818ee4c11a7175b2372591e4/_inc/systems/default-backgrounds/atarilynx.webp",
+    "author": "Siddy212 and credited contributors",
+    "heroId": null,
+    "gameId": null,
+    "layout": "16:9 cover, safe name placement, system photograph"
+  },
+  "atarist": {
+    "provider": "Iconic",
+    "source": "https://github.com/Siddy212/iconic-es-de/tree/0a549ffbe5a392bd818ee4c11a7175b2372591e4",
+    "url": "https://raw.githubusercontent.com/Siddy212/iconic-es-de/0a549ffbe5a392bd818ee4c11a7175b2372591e4/_inc/systems/default-backgrounds/atarist.webp",
+    "author": "Siddy212 and credited contributors",
+    "heroId": null,
+    "gameId": null,
+    "layout": "16:9 cover, safe name placement, system photograph"
+  },
+  "atarixe": {
+    "provider": "Iconic",
+    "source": "https://github.com/Siddy212/iconic-es-de/tree/0a549ffbe5a392bd818ee4c11a7175b2372591e4",
+    "url": "https://raw.githubusercontent.com/Siddy212/iconic-es-de/0a549ffbe5a392bd818ee4c11a7175b2372591e4/_inc/systems/default-backgrounds/atarixe.webp",
+    "author": "Siddy212 and credited contributors",
+    "heroId": null,
+    "gameId": null,
+    "layout": "16:9 cover, safe name placement, system photograph"
+  },
+  "atomiswave": {
+    "provider": "Iconic",
+    "source": "https://github.com/Siddy212/iconic-es-de/tree/0a549ffbe5a392bd818ee4c11a7175b2372591e4",
+    "url": "https://raw.githubusercontent.com/Siddy212/iconic-es-de/0a549ffbe5a392bd818ee4c11a7175b2372591e4/_inc/systems/default-backgrounds/atomiswave.webp",
+    "author": "Siddy212 and credited contributors",
+    "heroId": null,
+    "gameId": null,
+    "layout": "16:9 cover, safe name placement, system photograph"
+  },
+  "bbcmicro": {
+    "provider": "Iconic",
+    "source": "https://github.com/Siddy212/iconic-es-de/tree/0a549ffbe5a392bd818ee4c11a7175b2372591e4",
+    "url": "https://raw.githubusercontent.com/Siddy212/iconic-es-de/0a549ffbe5a392bd818ee4c11a7175b2372591e4/_inc/systems/default-backgrounds/bbcmicro.webp",
+    "author": "Siddy212 and credited contributors",
+    "heroId": null,
+    "gameId": null,
+    "layout": "16:9 cover, safe name placement, system photograph"
+  },
+  "c64": {
+    "provider": "Iconic",
+    "source": "https://github.com/Siddy212/iconic-es-de/tree/0a549ffbe5a392bd818ee4c11a7175b2372591e4",
+    "url": "https://raw.githubusercontent.com/Siddy212/iconic-es-de/0a549ffbe5a392bd818ee4c11a7175b2372591e4/_inc/systems/default-backgrounds/c64.webp",
+    "author": "Siddy212 and credited contributors",
+    "heroId": null,
+    "gameId": null,
+    "layout": "16:9 cover, safe name placement, system photograph"
+  },
+  "cdimono1": {
+    "provider": "Iconic",
+    "source": "https://github.com/Siddy212/iconic-es-de/tree/0a549ffbe5a392bd818ee4c11a7175b2372591e4",
+    "url": "https://raw.githubusercontent.com/Siddy212/iconic-es-de/0a549ffbe5a392bd818ee4c11a7175b2372591e4/_inc/systems/default-backgrounds/cdimono1.webp",
+    "author": "Siddy212 and credited contributors",
+    "heroId": null,
+    "gameId": null,
+    "layout": "16:9 cover, safe name placement, system photograph"
+  },
+  "cdtv": {
+    "provider": "Iconic",
+    "source": "https://github.com/Siddy212/iconic-es-de/tree/0a549ffbe5a392bd818ee4c11a7175b2372591e4",
+    "url": "https://raw.githubusercontent.com/Siddy212/iconic-es-de/0a549ffbe5a392bd818ee4c11a7175b2372591e4/_inc/systems/default-backgrounds/cdtv.webp",
+    "author": "Siddy212 and credited contributors",
+    "heroId": null,
+    "gameId": null,
+    "layout": "16:9 cover, safe name placement, system photograph"
+  },
+  "chailove": {
+    "provider": "Iconic",
+    "source": "https://github.com/Siddy212/iconic-es-de/tree/0a549ffbe5a392bd818ee4c11a7175b2372591e4",
+    "url": "https://raw.githubusercontent.com/Siddy212/iconic-es-de/0a549ffbe5a392bd818ee4c11a7175b2372591e4/_inc/systems/default-backgrounds/chailove.webp",
+    "author": "Siddy212 and credited contributors",
+    "heroId": null,
+    "gameId": null,
+    "layout": "16:9 cover, safe name placement, system photograph"
+  },
+  "channelf": {
+    "provider": "Iconic",
+    "source": "https://github.com/Siddy212/iconic-es-de/tree/0a549ffbe5a392bd818ee4c11a7175b2372591e4",
+    "url": "https://raw.githubusercontent.com/Siddy212/iconic-es-de/0a549ffbe5a392bd818ee4c11a7175b2372591e4/_inc/systems/default-backgrounds/channelf.webp",
+    "author": "Siddy212 and credited contributors",
+    "heroId": null,
+    "gameId": null,
+    "layout": "16:9 cover, safe name placement, system photograph"
+  },
+  "coco": {
+    "provider": "Iconic",
+    "source": "https://github.com/Siddy212/iconic-es-de/tree/0a549ffbe5a392bd818ee4c11a7175b2372591e4",
+    "url": "https://raw.githubusercontent.com/Siddy212/iconic-es-de/0a549ffbe5a392bd818ee4c11a7175b2372591e4/_inc/systems/default-backgrounds/coco.webp",
+    "author": "Siddy212 and credited contributors",
+    "heroId": null,
+    "gameId": null,
+    "layout": "16:9 cover, safe name placement, system photograph"
+  },
+  "colecovision": {
+    "provider": "SteamGridDB",
+    "source": "https://www.steamgriddb.com/hero/163941",
+    "url": "https://cdn2.steamgriddb.com/hero/3dcbf5f5499122a553da8868dd0d035d.png",
+    "author": "Jodesfore",
+    "heroId": 163941,
+    "gameId": 5459722,
+    "layout": "whole hero banner; Orbit adds a blurred fill and the system name"
+  },
+  "consolearcade": {
+    "provider": "Iconic",
+    "source": "https://github.com/Siddy212/iconic-es-de/tree/0a549ffbe5a392bd818ee4c11a7175b2372591e4",
+    "url": "https://raw.githubusercontent.com/Siddy212/iconic-es-de/0a549ffbe5a392bd818ee4c11a7175b2372591e4/_inc/systems/default-backgrounds/consolearcade.webp",
+    "author": "Siddy212 and credited contributors",
+    "heroId": null,
+    "gameId": null,
+    "layout": "16:9 cover, safe name placement, system photograph"
+  },
+  "cps": {
+    "provider": "Iconic",
+    "source": "https://github.com/Siddy212/iconic-es-de/tree/0a549ffbe5a392bd818ee4c11a7175b2372591e4",
+    "url": "https://raw.githubusercontent.com/Siddy212/iconic-es-de/0a549ffbe5a392bd818ee4c11a7175b2372591e4/_inc/systems/default-backgrounds/cps.webp",
+    "author": "Siddy212 and credited contributors",
+    "heroId": null,
+    "gameId": null,
+    "layout": "16:9 cover, safe name placement, system photograph"
+  },
+  "cps1": {
+    "provider": "Iconic",
+    "source": "https://github.com/Siddy212/iconic-es-de/tree/0a549ffbe5a392bd818ee4c11a7175b2372591e4",
+    "url": "https://raw.githubusercontent.com/Siddy212/iconic-es-de/0a549ffbe5a392bd818ee4c11a7175b2372591e4/_inc/systems/default-backgrounds/cps1.webp",
+    "author": "Siddy212 and credited contributors",
+    "heroId": null,
+    "gameId": null,
+    "layout": "16:9 cover, safe name placement, system photograph"
+  },
+  "cps2": {
+    "provider": "Iconic",
+    "source": "https://github.com/Siddy212/iconic-es-de/tree/0a549ffbe5a392bd818ee4c11a7175b2372591e4",
+    "url": "https://raw.githubusercontent.com/Siddy212/iconic-es-de/0a549ffbe5a392bd818ee4c11a7175b2372591e4/_inc/systems/default-backgrounds/cps2.webp",
+    "author": "Siddy212 and credited contributors",
+    "heroId": null,
+    "gameId": null,
+    "layout": "16:9 cover, safe name placement, system photograph"
+  },
+  "cps3": {
+    "provider": "Iconic",
+    "source": "https://github.com/Siddy212/iconic-es-de/tree/0a549ffbe5a392bd818ee4c11a7175b2372591e4",
+    "url": "https://raw.githubusercontent.com/Siddy212/iconic-es-de/0a549ffbe5a392bd818ee4c11a7175b2372591e4/_inc/systems/default-backgrounds/cps3.webp",
+    "author": "Siddy212 and credited contributors",
+    "heroId": null,
+    "gameId": null,
+    "layout": "16:9 cover, safe name placement, system photograph"
+  },
+  "crvision": {
+    "provider": "Iconic",
+    "source": "https://github.com/Siddy212/iconic-es-de/tree/0a549ffbe5a392bd818ee4c11a7175b2372591e4",
+    "url": "https://raw.githubusercontent.com/Siddy212/iconic-es-de/0a549ffbe5a392bd818ee4c11a7175b2372591e4/_inc/systems/default-backgrounds/crvision.webp",
+    "author": "Siddy212 and credited contributors",
+    "heroId": null,
+    "gameId": null,
+    "layout": "16:9 cover, safe name placement, system photograph"
+  },
+  "daphne": {
+    "provider": "Iconic",
+    "source": "https://github.com/Siddy212/iconic-es-de/tree/0a549ffbe5a392bd818ee4c11a7175b2372591e4",
+    "url": "https://raw.githubusercontent.com/Siddy212/iconic-es-de/0a549ffbe5a392bd818ee4c11a7175b2372591e4/_inc/systems/default-backgrounds/daphne.webp",
+    "author": "Siddy212 and credited contributors",
+    "heroId": null,
+    "gameId": null,
+    "layout": "16:9 cover, safe name placement, system photograph"
+  },
+  "desktop": {
+    "provider": "Iconic",
+    "source": "https://github.com/Siddy212/iconic-es-de/tree/0a549ffbe5a392bd818ee4c11a7175b2372591e4",
+    "url": "https://raw.githubusercontent.com/Siddy212/iconic-es-de/0a549ffbe5a392bd818ee4c11a7175b2372591e4/_inc/systems/default-backgrounds/desktop.webp",
+    "author": "Siddy212 and credited contributors",
+    "heroId": null,
+    "gameId": null,
+    "layout": "16:9 cover, safe name placement, system photograph"
+  },
+  "doom": {
+    "provider": "SteamGridDB",
+    "source": "https://www.steamgriddb.com/hero/34514",
+    "url": "https://cdn2.steamgriddb.com/hero/442465f5282183631234848d916ce365.png",
+    "author": "ZLBBR",
+    "heroId": 34514,
+    "gameId": 2460,
+    "layout": "whole hero banner; Orbit adds a blurred fill and the system name"
+  },
+  "dos": {
+    "provider": "SteamGridDB",
+    "source": "https://www.steamgriddb.com/hero/65956",
+    "url": "https://cdn2.steamgriddb.com/hero/b4b13e07bde5916889077e29b090bb5a.png",
+    "author": "rafaelsguimaraes",
+    "heroId": 65956,
+    "gameId": 5268705,
+    "layout": "whole hero banner; Orbit adds a blurred fill and the system name"
+  },
+  "dragon32": {
+    "provider": "Iconic",
+    "source": "https://github.com/Siddy212/iconic-es-de/tree/0a549ffbe5a392bd818ee4c11a7175b2372591e4",
+    "url": "https://raw.githubusercontent.com/Siddy212/iconic-es-de/0a549ffbe5a392bd818ee4c11a7175b2372591e4/_inc/systems/default-backgrounds/dragon32.webp",
+    "author": "Siddy212 and credited contributors",
+    "heroId": null,
+    "gameId": null,
+    "layout": "16:9 cover, safe name placement, system photograph"
+  },
+  "dreamcast": {
+    "provider": "SteamGridDB",
+    "source": "https://www.steamgriddb.com/hero/181033",
+    "url": "https://cdn2.steamgriddb.com/hero/b28ae5009185ebd4a6fa4759eb7ab291.jpg",
+    "author": "Gustavosx0801",
+    "heroId": 181033,
+    "gameId": 5327256,
+    "layout": "whole hero banner; Orbit adds a blurred fill and the system name"
+  },
+  "easyrpg": {
+    "provider": "SteamGridDB",
+    "source": "https://www.steamgriddb.com/hero/85993",
+    "url": "https://cdn2.steamgriddb.com/hero/1755212c7d5e2aad8020e0e94c75f22e.png",
+    "author": "ShadowFox202",
+    "heroId": 85993,
+    "gameId": 5373712,
+    "layout": "whole hero banner; Orbit adds a blurred fill and the system name"
+  },
+  "electron": {
+    "provider": "Iconic",
+    "source": "https://github.com/Siddy212/iconic-es-de/tree/0a549ffbe5a392bd818ee4c11a7175b2372591e4",
+    "url": "https://raw.githubusercontent.com/Siddy212/iconic-es-de/0a549ffbe5a392bd818ee4c11a7175b2372591e4/_inc/systems/default-backgrounds/electron.webp",
+    "author": "Siddy212 and credited contributors",
+    "heroId": null,
+    "gameId": null,
+    "layout": "16:9 cover, safe name placement, system photograph"
+  },
+  "emulators": {
+    "provider": "Iconic",
+    "source": "https://github.com/Siddy212/iconic-es-de/tree/0a549ffbe5a392bd818ee4c11a7175b2372591e4",
+    "url": "https://raw.githubusercontent.com/Siddy212/iconic-es-de/0a549ffbe5a392bd818ee4c11a7175b2372591e4/_inc/systems/default-backgrounds/emulators.webp",
+    "author": "Siddy212 and credited contributors",
+    "heroId": null,
+    "gameId": null,
+    "layout": "16:9 cover, safe name placement, system photograph"
+  },
+  "epic": {
+    "provider": "SteamGridDB",
+    "source": "https://www.steamgriddb.com/hero/86142",
+    "url": "https://cdn2.steamgriddb.com/hero/fdb6fe43e940c04f73db4051be0c42f2.png",
+    "author": "Holake",
+    "heroId": 86142,
+    "gameId": 5255885,
+    "layout": "whole hero banner; Orbit adds a blurred fill and the system name"
+  },
+  "famicom": {
+    "provider": "SteamGridDB",
+    "source": "https://www.steamgriddb.com/hero/154125",
+    "url": "https://cdn2.steamgriddb.com/hero/d114cef9dd2ec5de7a01467e17c7cf68.png",
+    "author": "Nieveria",
+    "heroId": 154125,
+    "gameId": 5454226,
+    "layout": "whole hero banner; Orbit adds a blurred fill and the system name"
+  },
+  "fba": {
+    "provider": "Iconic",
+    "source": "https://github.com/Siddy212/iconic-es-de/tree/0a549ffbe5a392bd818ee4c11a7175b2372591e4",
+    "url": "https://raw.githubusercontent.com/Siddy212/iconic-es-de/0a549ffbe5a392bd818ee4c11a7175b2372591e4/_inc/systems/default-backgrounds/fba.webp",
+    "author": "Siddy212 and credited contributors",
+    "heroId": null,
+    "gameId": null,
+    "layout": "16:9 cover, safe name placement, system photograph"
+  },
+  "fbneo": {
+    "provider": "SteamGridDB",
+    "source": "https://www.steamgriddb.com/hero/179760",
+    "url": "https://cdn2.steamgriddb.com/hero/dff7fdc87e40d45caa7d00c09dcf1652.png",
+    "author": "rizo360x",
+    "heroId": 179760,
+    "gameId": 5351300,
+    "layout": "whole hero banner; Orbit adds a blurred fill and the system name"
+  },
+  "fds": {
+    "provider": "Iconic",
+    "source": "https://github.com/Siddy212/iconic-es-de/tree/0a549ffbe5a392bd818ee4c11a7175b2372591e4",
+    "url": "https://raw.githubusercontent.com/Siddy212/iconic-es-de/0a549ffbe5a392bd818ee4c11a7175b2372591e4/_inc/systems/default-backgrounds/fds.webp",
+    "author": "Siddy212 and credited contributors",
+    "heroId": null,
+    "gameId": null,
+    "layout": "16:9 cover, safe name placement, system photograph"
+  },
+  "flash": {
+    "provider": "SteamGridDB",
+    "source": "https://www.steamgriddb.com/hero/62348",
+    "url": "https://cdn2.steamgriddb.com/hero/c29f8020d4f15475b0a5aa00e742ce04.jpg",
+    "author": "blingakinga",
+    "heroId": 62348,
+    "gameId": 5290525,
+    "layout": "whole hero banner; Orbit adds a blurred fill and the system name"
+  },
+  "fm7": {
+    "provider": "Iconic",
+    "source": "https://github.com/Siddy212/iconic-es-de/tree/0a549ffbe5a392bd818ee4c11a7175b2372591e4",
+    "url": "https://raw.githubusercontent.com/Siddy212/iconic-es-de/0a549ffbe5a392bd818ee4c11a7175b2372591e4/_inc/systems/default-backgrounds/fm7.webp",
+    "author": "Siddy212 and credited contributors",
+    "heroId": null,
+    "gameId": null,
+    "layout": "16:9 cover, safe name placement, system photograph"
+  },
+  "fmtowns": {
+    "provider": "Iconic",
+    "source": "https://github.com/Siddy212/iconic-es-de/tree/0a549ffbe5a392bd818ee4c11a7175b2372591e4",
+    "url": "https://raw.githubusercontent.com/Siddy212/iconic-es-de/0a549ffbe5a392bd818ee4c11a7175b2372591e4/_inc/systems/default-backgrounds/fmtowns.webp",
+    "author": "Siddy212 and credited contributors",
+    "heroId": null,
+    "gameId": null,
+    "layout": "16:9 cover, safe name placement, system photograph"
+  },
+  "fpinball": {
+    "provider": "Iconic",
+    "source": "https://github.com/Siddy212/iconic-es-de/tree/0a549ffbe5a392bd818ee4c11a7175b2372591e4",
+    "url": "https://raw.githubusercontent.com/Siddy212/iconic-es-de/0a549ffbe5a392bd818ee4c11a7175b2372591e4/_inc/systems/default-backgrounds/fpinball.webp",
+    "author": "Siddy212 and credited contributors",
+    "heroId": null,
+    "gameId": null,
+    "layout": "16:9 cover, safe name placement, system photograph"
+  },
+  "gamate": {
+    "provider": "Iconic",
+    "source": "https://github.com/Siddy212/iconic-es-de/tree/0a549ffbe5a392bd818ee4c11a7175b2372591e4",
+    "url": "https://raw.githubusercontent.com/Siddy212/iconic-es-de/0a549ffbe5a392bd818ee4c11a7175b2372591e4/_inc/systems/default-backgrounds/gamate.webp",
+    "author": "Siddy212 and credited contributors",
+    "heroId": null,
+    "gameId": null,
+    "layout": "16:9 cover, safe name placement, system photograph"
+  },
+  "gameandwatch": {
+    "provider": "Iconic",
+    "source": "https://github.com/Siddy212/iconic-es-de/tree/0a549ffbe5a392bd818ee4c11a7175b2372591e4",
+    "url": "https://raw.githubusercontent.com/Siddy212/iconic-es-de/0a549ffbe5a392bd818ee4c11a7175b2372591e4/_inc/systems/default-backgrounds/gameandwatch.webp",
+    "author": "Siddy212 and credited contributors",
+    "heroId": null,
+    "gameId": null,
+    "layout": "16:9 cover, safe name placement, system photograph"
+  },
+  "gamecom": {
+    "provider": "Iconic",
+    "source": "https://github.com/Siddy212/iconic-es-de/tree/0a549ffbe5a392bd818ee4c11a7175b2372591e4",
+    "url": "https://raw.githubusercontent.com/Siddy212/iconic-es-de/0a549ffbe5a392bd818ee4c11a7175b2372591e4/_inc/systems/default-backgrounds/gamecom.webp",
+    "author": "Siddy212 and credited contributors",
+    "heroId": null,
+    "gameId": null,
+    "layout": "16:9 cover, safe name placement, system photograph"
+  },
+  "gamegear": {
+    "provider": "SteamGridDB",
+    "source": "https://www.steamgriddb.com/hero/181036",
+    "url": "https://cdn2.steamgriddb.com/hero/f03c6249d4646a4997e8603e5a4cda74.jpg",
+    "author": "Gustavosx0801",
+    "heroId": 181036,
+    "gameId": 5432252,
+    "layout": "whole hero banner; Orbit adds a blurred fill and the system name"
+  },
+  "gb": {
+    "provider": "SteamGridDB",
+    "source": "https://www.steamgriddb.com/hero/181034",
+    "url": "https://cdn2.steamgriddb.com/hero/2b2ce4b6502f88a70260b485972b1dec.jpg",
+    "author": "Gustavosx0801",
+    "heroId": 181034,
+    "gameId": 5330114,
+    "layout": "whole hero banner; Orbit adds a blurred fill and the system name"
+  },
+  "gba": {
+    "provider": "SteamGridDB",
+    "source": "https://www.steamgriddb.com/hero/179869",
+    "url": "https://cdn2.steamgriddb.com/hero/38dd9f9cece2d65004648b725ac334e5.png",
+    "author": "rizo360x",
+    "heroId": 179869,
+    "gameId": 5321240,
+    "layout": "whole hero banner; Orbit adds a blurred fill and the system name"
+  },
+  "gbc": {
+    "provider": "SteamGridDB",
+    "source": "https://www.steamgriddb.com/hero/179867",
+    "url": "https://cdn2.steamgriddb.com/hero/8efa8a29576d663504065ee3bc569a49.png",
+    "author": "rizo360x",
+    "heroId": 179867,
+    "gameId": 5331036,
+    "layout": "whole hero banner; Orbit adds a blurred fill and the system name"
+  },
+  "gc": {
+    "provider": "SteamGridDB",
+    "source": "https://www.steamgriddb.com/hero/52130",
+    "url": "https://cdn2.steamgriddb.com/hero/92a972196ae14b06997dc73a44c6cddd.png",
+    "author": "carlsgrids",
+    "heroId": 52130,
+    "gameId": 5327259,
+    "layout": "whole hero banner; Orbit adds a blurred fill and the system name"
+  },
+  "genesis": {
+    "provider": "SteamGridDB",
+    "source": "https://www.steamgriddb.com/hero/187602",
+    "url": "https://cdn2.steamgriddb.com/hero/b9fb7d3b48312b2b2a25d56dc3817bee.png",
+    "author": "andy148",
+    "heroId": 187602,
+    "gameId": 5355019,
+    "layout": "whole hero banner; Orbit adds a blurred fill and the system name"
+  },
+  "gmaster": {
+    "provider": "Iconic",
+    "source": "https://github.com/Siddy212/iconic-es-de/tree/0a549ffbe5a392bd818ee4c11a7175b2372591e4",
+    "url": "https://raw.githubusercontent.com/Siddy212/iconic-es-de/0a549ffbe5a392bd818ee4c11a7175b2372591e4/_inc/systems/default-backgrounds/gmaster.webp",
+    "author": "Siddy212 and credited contributors",
+    "heroId": null,
+    "gameId": null,
+    "layout": "16:9 cover, safe name placement, system photograph"
+  },
+  "gx4000": {
+    "provider": "Iconic",
+    "source": "https://github.com/Siddy212/iconic-es-de/tree/0a549ffbe5a392bd818ee4c11a7175b2372591e4",
+    "url": "https://raw.githubusercontent.com/Siddy212/iconic-es-de/0a549ffbe5a392bd818ee4c11a7175b2372591e4/_inc/systems/default-backgrounds/gx4000.webp",
+    "author": "Siddy212 and credited contributors",
+    "heroId": null,
+    "gameId": null,
+    "layout": "16:9 cover, safe name placement, system photograph"
+  },
+  "intellivision": {
+    "provider": "Iconic",
+    "source": "https://github.com/Siddy212/iconic-es-de/tree/0a549ffbe5a392bd818ee4c11a7175b2372591e4",
+    "url": "https://raw.githubusercontent.com/Siddy212/iconic-es-de/0a549ffbe5a392bd818ee4c11a7175b2372591e4/_inc/systems/default-backgrounds/intellivision.webp",
+    "author": "Siddy212 and credited contributors",
+    "heroId": null,
+    "gameId": null,
+    "layout": "16:9 cover, safe name placement, system photograph"
+  },
+  "j2me": {
+    "provider": "Iconic",
+    "source": "https://github.com/Siddy212/iconic-es-de/tree/0a549ffbe5a392bd818ee4c11a7175b2372591e4",
+    "url": "https://raw.githubusercontent.com/Siddy212/iconic-es-de/0a549ffbe5a392bd818ee4c11a7175b2372591e4/_inc/systems/default-backgrounds/j2me.webp",
+    "author": "Siddy212 and credited contributors",
+    "heroId": null,
+    "gameId": null,
+    "layout": "16:9 cover, safe name placement, system photograph"
+  },
+  "kodi": {
+    "provider": "SteamGridDB",
+    "source": "https://www.steamgriddb.com/hero/56104",
+    "url": "https://cdn2.steamgriddb.com/hero/df45c7b2043d342daa51d19c5ff25e6c.png",
+    "author": "effcol",
+    "heroId": 56104,
+    "gameId": 5247915,
+    "layout": "whole hero banner; Orbit adds a blurred fill and the system name"
+  },
+  "laserdisc": {
+    "provider": "Iconic",
+    "source": "https://github.com/Siddy212/iconic-es-de/tree/0a549ffbe5a392bd818ee4c11a7175b2372591e4",
+    "url": "https://raw.githubusercontent.com/Siddy212/iconic-es-de/0a549ffbe5a392bd818ee4c11a7175b2372591e4/_inc/systems/default-backgrounds/laserdisc.webp",
+    "author": "Siddy212 and credited contributors",
+    "heroId": null,
+    "gameId": null,
+    "layout": "16:9 cover, safe name placement, system photograph"
+  },
+  "lcdgames": {
+    "provider": "Iconic",
+    "source": "https://github.com/Siddy212/iconic-es-de/tree/0a549ffbe5a392bd818ee4c11a7175b2372591e4",
+    "url": "https://raw.githubusercontent.com/Siddy212/iconic-es-de/0a549ffbe5a392bd818ee4c11a7175b2372591e4/_inc/systems/default-backgrounds/lcdgames.webp",
+    "author": "Siddy212 and credited contributors",
+    "heroId": null,
+    "gameId": null,
+    "layout": "16:9 cover, safe name placement, system photograph"
+  },
+  "lowresnx": {
+    "provider": "Iconic",
+    "source": "https://github.com/Siddy212/iconic-es-de/tree/0a549ffbe5a392bd818ee4c11a7175b2372591e4",
+    "url": "https://raw.githubusercontent.com/Siddy212/iconic-es-de/0a549ffbe5a392bd818ee4c11a7175b2372591e4/_inc/systems/default-backgrounds/lowresnx.webp",
+    "author": "Siddy212 and credited contributors",
+    "heroId": null,
+    "gameId": null,
+    "layout": "16:9 cover, safe name placement, system photograph"
+  },
+  "lutris": {
+    "provider": "SteamGridDB",
+    "source": "https://www.steamgriddb.com/hero/65050",
+    "url": "https://cdn2.steamgriddb.com/hero/45d5e11069c87edb7e7bdd4b5b885d46.png",
+    "author": "Drive",
+    "heroId": 65050,
+    "gameId": 5267809,
+    "layout": "whole hero banner; Orbit adds a blurred fill and the system name"
+  },
+  "lutro": {
+    "provider": "Iconic",
+    "source": "https://github.com/Siddy212/iconic-es-de/tree/0a549ffbe5a392bd818ee4c11a7175b2372591e4",
+    "url": "https://raw.githubusercontent.com/Siddy212/iconic-es-de/0a549ffbe5a392bd818ee4c11a7175b2372591e4/_inc/systems/default-backgrounds/lutro.webp",
+    "author": "Siddy212 and credited contributors",
+    "heroId": null,
+    "gameId": null,
+    "layout": "16:9 cover, safe name placement, system photograph"
+  },
+  "macintosh": {
+    "provider": "Iconic",
+    "source": "https://github.com/Siddy212/iconic-es-de/tree/0a549ffbe5a392bd818ee4c11a7175b2372591e4",
+    "url": "https://raw.githubusercontent.com/Siddy212/iconic-es-de/0a549ffbe5a392bd818ee4c11a7175b2372591e4/_inc/systems/default-backgrounds/macintosh.webp",
+    "author": "Siddy212 and credited contributors",
+    "heroId": null,
+    "gameId": null,
+    "layout": "16:9 cover, safe name placement, system photograph"
+  },
+  "mame": {
+    "provider": "SteamGridDB",
+    "source": "https://www.steamgriddb.com/hero/44596",
+    "url": "https://cdn2.steamgriddb.com/hero/9d73c511c577700b0c7a8bc05e3a2b08.jpg",
+    "author": "DonT.",
+    "heroId": 44596,
+    "gameId": 5250066,
+    "layout": "whole hero banner; Orbit adds a blurred fill and the system name"
+  },
+  "mame-advmame": {
+    "provider": "Iconic",
+    "source": "https://github.com/Siddy212/iconic-es-de/tree/0a549ffbe5a392bd818ee4c11a7175b2372591e4",
+    "url": "https://raw.githubusercontent.com/Siddy212/iconic-es-de/0a549ffbe5a392bd818ee4c11a7175b2372591e4/_inc/systems/default-backgrounds/mame-advmame.webp",
+    "author": "Siddy212 and credited contributors",
+    "heroId": null,
+    "gameId": null,
+    "layout": "16:9 cover, safe name placement, system photograph"
+  },
+  "mark3": {
+    "provider": "Iconic",
+    "source": "https://github.com/Siddy212/iconic-es-de/tree/0a549ffbe5a392bd818ee4c11a7175b2372591e4",
+    "url": "https://raw.githubusercontent.com/Siddy212/iconic-es-de/0a549ffbe5a392bd818ee4c11a7175b2372591e4/_inc/systems/default-backgrounds/mark3.webp",
+    "author": "Siddy212 and credited contributors",
+    "heroId": null,
+    "gameId": null,
+    "layout": "16:9 cover, safe name placement, system photograph"
+  },
+  "mastersystem": {
+    "provider": "SteamGridDB",
+    "source": "https://www.steamgriddb.com/hero/181040",
+    "url": "https://cdn2.steamgriddb.com/hero/e0893126764f9ed1522cb37d9c26fd1a.jpg",
+    "author": "Gustavosx0801",
+    "heroId": 181040,
+    "gameId": 5450226,
+    "layout": "whole hero banner; Orbit adds a blurred fill and the system name"
+  },
+  "megacd": {
+    "provider": "SteamGridDB",
+    "source": "https://www.steamgriddb.com/hero/127318",
+    "url": "https://cdn2.steamgriddb.com/hero/9495d5e349b0f01e992f75507328a7ed.png",
+    "author": "rafaelsguimaraes",
+    "heroId": 127318,
+    "gameId": 5415874,
+    "layout": "whole hero banner; Orbit adds a blurred fill and the system name"
+  },
+  "megacdjp": {
+    "provider": "SteamGridDB",
+    "source": "https://www.steamgriddb.com/hero/127318",
+    "url": "https://cdn2.steamgriddb.com/hero/9495d5e349b0f01e992f75507328a7ed.png",
+    "author": "rafaelsguimaraes",
+    "heroId": 127318,
+    "gameId": 5415874,
+    "layout": "whole hero banner; Orbit adds a blurred fill and the system name"
+  },
+  "megadrive": {
+    "provider": "SteamGridDB",
+    "source": "https://www.steamgriddb.com/hero/181041",
+    "url": "https://cdn2.steamgriddb.com/hero/a77368c342912f6aee3a79f15144dc52.jpg",
+    "author": "Gustavosx0801",
+    "heroId": 181041,
+    "gameId": 5353218,
+    "layout": "whole hero banner; Orbit adds a blurred fill and the system name"
+  },
+  "megadrivejp": {
+    "provider": "SteamGridDB",
+    "source": "https://www.steamgriddb.com/hero/181041",
+    "url": "https://cdn2.steamgriddb.com/hero/a77368c342912f6aee3a79f15144dc52.jpg",
+    "author": "Gustavosx0801",
+    "heroId": 181041,
+    "gameId": 5353218,
+    "layout": "whole hero banner; Orbit adds a blurred fill and the system name"
+  },
+  "megaduck": {
+    "provider": "Iconic",
+    "source": "https://github.com/Siddy212/iconic-es-de/tree/0a549ffbe5a392bd818ee4c11a7175b2372591e4",
+    "url": "https://raw.githubusercontent.com/Siddy212/iconic-es-de/0a549ffbe5a392bd818ee4c11a7175b2372591e4/_inc/systems/default-backgrounds/megaduck.webp",
+    "author": "Siddy212 and credited contributors",
+    "heroId": null,
+    "gameId": null,
+    "layout": "16:9 cover, safe name placement, system photograph"
+  },
+  "mess": {
+    "provider": "Iconic",
+    "source": "https://github.com/Siddy212/iconic-es-de/tree/0a549ffbe5a392bd818ee4c11a7175b2372591e4",
+    "url": "https://raw.githubusercontent.com/Siddy212/iconic-es-de/0a549ffbe5a392bd818ee4c11a7175b2372591e4/_inc/systems/default-backgrounds/mess.webp",
+    "author": "Siddy212 and credited contributors",
+    "heroId": null,
+    "gameId": null,
+    "layout": "16:9 cover, safe name placement, system photograph"
+  },
+  "model2": {
+    "provider": "Iconic",
+    "source": "https://github.com/Siddy212/iconic-es-de/tree/0a549ffbe5a392bd818ee4c11a7175b2372591e4",
+    "url": "https://raw.githubusercontent.com/Siddy212/iconic-es-de/0a549ffbe5a392bd818ee4c11a7175b2372591e4/_inc/systems/default-backgrounds/model2.webp",
+    "author": "Siddy212 and credited contributors",
+    "heroId": null,
+    "gameId": null,
+    "layout": "16:9 cover, safe name placement, system photograph"
+  },
+  "model3": {
+    "provider": "Iconic",
+    "source": "https://github.com/Siddy212/iconic-es-de/tree/0a549ffbe5a392bd818ee4c11a7175b2372591e4",
+    "url": "https://raw.githubusercontent.com/Siddy212/iconic-es-de/0a549ffbe5a392bd818ee4c11a7175b2372591e4/_inc/systems/default-backgrounds/model3.webp",
+    "author": "Siddy212 and credited contributors",
+    "heroId": null,
+    "gameId": null,
+    "layout": "16:9 cover, safe name placement, system photograph"
+  },
+  "moto": {
+    "provider": "Iconic",
+    "source": "https://github.com/Siddy212/iconic-es-de/tree/0a549ffbe5a392bd818ee4c11a7175b2372591e4",
+    "url": "https://raw.githubusercontent.com/Siddy212/iconic-es-de/0a549ffbe5a392bd818ee4c11a7175b2372591e4/_inc/systems/default-backgrounds/moto.webp",
+    "author": "Siddy212 and credited contributors",
+    "heroId": null,
+    "gameId": null,
+    "layout": "16:9 cover, safe name placement, system photograph"
+  },
+  "msx": {
+    "provider": "Iconic",
+    "source": "https://github.com/Siddy212/iconic-es-de/tree/0a549ffbe5a392bd818ee4c11a7175b2372591e4",
+    "url": "https://raw.githubusercontent.com/Siddy212/iconic-es-de/0a549ffbe5a392bd818ee4c11a7175b2372591e4/_inc/systems/default-backgrounds/msx.webp",
+    "author": "Siddy212 and credited contributors",
+    "heroId": null,
+    "gameId": null,
+    "layout": "16:9 cover, safe name placement, system photograph"
+  },
+  "msx1": {
+    "provider": "Iconic",
+    "source": "https://github.com/Siddy212/iconic-es-de/tree/0a549ffbe5a392bd818ee4c11a7175b2372591e4",
+    "url": "https://raw.githubusercontent.com/Siddy212/iconic-es-de/0a549ffbe5a392bd818ee4c11a7175b2372591e4/_inc/systems/default-backgrounds/msx1.webp",
+    "author": "Siddy212 and credited contributors",
+    "heroId": null,
+    "gameId": null,
+    "layout": "16:9 cover, safe name placement, system photograph"
+  },
+  "msx2": {
+    "provider": "Iconic",
+    "source": "https://github.com/Siddy212/iconic-es-de/tree/0a549ffbe5a392bd818ee4c11a7175b2372591e4",
+    "url": "https://raw.githubusercontent.com/Siddy212/iconic-es-de/0a549ffbe5a392bd818ee4c11a7175b2372591e4/_inc/systems/default-backgrounds/msx2.webp",
+    "author": "Siddy212 and credited contributors",
+    "heroId": null,
+    "gameId": null,
+    "layout": "16:9 cover, safe name placement, system photograph"
+  },
+  "msxturbor": {
+    "provider": "Iconic",
+    "source": "https://github.com/Siddy212/iconic-es-de/tree/0a549ffbe5a392bd818ee4c11a7175b2372591e4",
+    "url": "https://raw.githubusercontent.com/Siddy212/iconic-es-de/0a549ffbe5a392bd818ee4c11a7175b2372591e4/_inc/systems/default-backgrounds/msxturbor.webp",
+    "author": "Siddy212 and credited contributors",
+    "heroId": null,
+    "gameId": null,
+    "layout": "16:9 cover, safe name placement, system photograph"
+  },
+  "mugen": {
+    "provider": "SteamGridDB",
+    "source": "https://www.steamgriddb.com/hero/58583",
+    "url": "https://cdn2.steamgriddb.com/hero/2dd602fa396b8dad29e1b6c28b14e8a9.png",
+    "author": "1111gabriel1111",
+    "heroId": 58583,
+    "gameId": 5249163,
+    "layout": "whole hero banner; Orbit adds a blurred fill and the system name"
+  },
+  "multivision": {
+    "provider": "Iconic",
+    "source": "https://github.com/Siddy212/iconic-es-de/tree/0a549ffbe5a392bd818ee4c11a7175b2372591e4",
+    "url": "https://raw.githubusercontent.com/Siddy212/iconic-es-de/0a549ffbe5a392bd818ee4c11a7175b2372591e4/_inc/systems/default-backgrounds/multivision.webp",
+    "author": "Siddy212 and credited contributors",
+    "heroId": null,
+    "gameId": null,
+    "layout": "16:9 cover, safe name placement, system photograph"
+  },
+  "n3ds": {
+    "provider": "SteamGridDB",
+    "source": "https://www.steamgriddb.com/hero/179863",
+    "url": "https://cdn2.steamgriddb.com/hero/a5143d1b54251201dbb1f0df8149d4dd.png",
+    "author": "rizo360x",
+    "heroId": 179863,
+    "gameId": 5283557,
+    "layout": "whole hero banner; Orbit adds a blurred fill and the system name"
+  },
+  "n64": {
+    "provider": "SteamGridDB",
+    "source": "https://www.steamgriddb.com/hero/179871",
+    "url": "https://cdn2.steamgriddb.com/hero/877996cf018bb84247377fc00ac9ec5d.png",
+    "author": "rizo360x",
+    "heroId": 179871,
+    "gameId": 5321187,
+    "layout": "whole hero banner; Orbit adds a blurred fill and the system name"
+  },
+  "n64dd": {
+    "provider": "Iconic",
+    "source": "https://github.com/Siddy212/iconic-es-de/tree/0a549ffbe5a392bd818ee4c11a7175b2372591e4",
+    "url": "https://raw.githubusercontent.com/Siddy212/iconic-es-de/0a549ffbe5a392bd818ee4c11a7175b2372591e4/_inc/systems/default-backgrounds/n64dd.webp",
+    "author": "Siddy212 and credited contributors",
+    "heroId": null,
+    "gameId": null,
+    "layout": "16:9 cover, safe name placement, system photograph"
+  },
+  "naomi": {
+    "provider": "SteamGridDB",
+    "source": "https://www.steamgriddb.com/hero/188235",
+    "url": "https://cdn2.steamgriddb.com/hero/ed52aa99de4bfe552fb16ea513cc7902.png",
+    "author": "Lonker",
+    "heroId": 188235,
+    "gameId": 5534397,
+    "layout": "whole hero banner; Orbit adds a blurred fill and the system name"
+  },
+  "naomi2": {
+    "provider": "Iconic",
+    "source": "https://github.com/Siddy212/iconic-es-de/tree/0a549ffbe5a392bd818ee4c11a7175b2372591e4",
+    "url": "https://raw.githubusercontent.com/Siddy212/iconic-es-de/0a549ffbe5a392bd818ee4c11a7175b2372591e4/_inc/systems/default-backgrounds/naomi2.webp",
+    "author": "Siddy212 and credited contributors",
+    "heroId": null,
+    "gameId": null,
+    "layout": "16:9 cover, safe name placement, system photograph"
+  },
+  "naomigd": {
+    "provider": "Iconic",
+    "source": "https://github.com/Siddy212/iconic-es-de/tree/0a549ffbe5a392bd818ee4c11a7175b2372591e4",
+    "url": "https://raw.githubusercontent.com/Siddy212/iconic-es-de/0a549ffbe5a392bd818ee4c11a7175b2372591e4/_inc/systems/default-backgrounds/naomigd.webp",
+    "author": "Siddy212 and credited contributors",
+    "heroId": null,
+    "gameId": null,
+    "layout": "16:9 cover, safe name placement, system photograph"
+  },
+  "nds": {
+    "provider": "SteamGridDB",
+    "source": "https://www.steamgriddb.com/hero/188349",
+    "url": "https://cdn2.steamgriddb.com/hero/317c666db32da1ce4adda52e78a00452.jpg",
+    "author": "Gustavosx0801",
+    "heroId": 188349,
+    "gameId": 5327260,
+    "layout": "whole hero banner; Orbit adds a blurred fill and the system name"
+  },
+  "neogeo": {
+    "provider": "SteamGridDB",
+    "source": "https://www.steamgriddb.com/hero/182944",
+    "url": "https://cdn2.steamgriddb.com/hero/75ac1e8ac2de975e8127c5bc617f4b0e.png",
+    "author": "Naga_Ten",
+    "heroId": 182944,
+    "gameId": 5459988,
+    "layout": "whole hero banner; Orbit adds a blurred fill and the system name"
+  },
+  "neogeocd": {
+    "provider": "Iconic",
+    "source": "https://github.com/Siddy212/iconic-es-de/tree/0a549ffbe5a392bd818ee4c11a7175b2372591e4",
+    "url": "https://raw.githubusercontent.com/Siddy212/iconic-es-de/0a549ffbe5a392bd818ee4c11a7175b2372591e4/_inc/systems/default-backgrounds/neogeocd.webp",
+    "author": "Siddy212 and credited contributors",
+    "heroId": null,
+    "gameId": null,
+    "layout": "16:9 cover, safe name placement, system photograph"
+  },
+  "neogeocdjp": {
+    "provider": "Iconic",
+    "source": "https://github.com/Siddy212/iconic-es-de/tree/0a549ffbe5a392bd818ee4c11a7175b2372591e4",
+    "url": "https://raw.githubusercontent.com/Siddy212/iconic-es-de/0a549ffbe5a392bd818ee4c11a7175b2372591e4/_inc/systems/default-backgrounds/neogeocdjp.webp",
+    "author": "Siddy212 and credited contributors",
+    "heroId": null,
+    "gameId": null,
+    "layout": "16:9 cover, safe name placement, system photograph"
+  },
+  "nes": {
+    "provider": "SteamGridDB",
+    "source": "https://www.steamgriddb.com/hero/181038",
+    "url": "https://cdn2.steamgriddb.com/hero/5f2b5b848d3c3115964ecc83f719c628.jpg",
+    "author": "Gustavosx0801",
+    "heroId": 181038,
+    "gameId": 5321195,
+    "layout": "whole hero banner; Orbit adds a blurred fill and the system name"
+  },
+  "ngage": {
+    "provider": "Iconic",
+    "source": "https://github.com/Siddy212/iconic-es-de/tree/0a549ffbe5a392bd818ee4c11a7175b2372591e4",
+    "url": "https://raw.githubusercontent.com/Siddy212/iconic-es-de/0a549ffbe5a392bd818ee4c11a7175b2372591e4/_inc/systems/default-backgrounds/ngage.webp",
+    "author": "Siddy212 and credited contributors",
+    "heroId": null,
+    "gameId": null,
+    "layout": "16:9 cover, safe name placement, system photograph"
+  },
+  "ngp": {
+    "provider": "Iconic",
+    "source": "https://github.com/Siddy212/iconic-es-de/tree/0a549ffbe5a392bd818ee4c11a7175b2372591e4",
+    "url": "https://raw.githubusercontent.com/Siddy212/iconic-es-de/0a549ffbe5a392bd818ee4c11a7175b2372591e4/_inc/systems/default-backgrounds/ngp.webp",
+    "author": "Siddy212 and credited contributors",
+    "heroId": null,
+    "gameId": null,
+    "layout": "16:9 cover, safe name placement, system photograph"
+  },
+  "ngpc": {
+    "provider": "SteamGridDB",
+    "source": "https://www.steamgriddb.com/hero/182950",
+    "url": "https://cdn2.steamgriddb.com/hero/a053df82b1cfdab34424358aba57dd7d.png",
+    "author": "Naga_Ten",
+    "heroId": 182950,
+    "gameId": 5432303,
+    "layout": "whole hero banner; Orbit adds a blurred fill and the system name"
+  },
+  "odyssey2": {
+    "provider": "Iconic",
+    "source": "https://github.com/Siddy212/iconic-es-de/tree/0a549ffbe5a392bd818ee4c11a7175b2372591e4",
+    "url": "https://raw.githubusercontent.com/Siddy212/iconic-es-de/0a549ffbe5a392bd818ee4c11a7175b2372591e4/_inc/systems/default-backgrounds/odyssey2.webp",
+    "author": "Siddy212 and credited contributors",
+    "heroId": null,
+    "gameId": null,
+    "layout": "16:9 cover, safe name placement, system photograph"
+  },
+  "openbor": {
+    "provider": "SteamGridDB",
+    "source": "https://www.steamgriddb.com/hero/122161",
+    "url": "https://cdn2.steamgriddb.com/hero/d634b94d834165d435956692c518095b.png",
+    "author": "SecularSteve",
+    "heroId": 122161,
+    "gameId": 5468828,
+    "layout": "whole hero banner; Orbit adds a blurred fill and the system name"
+  },
+  "oric": {
+    "provider": "Iconic",
+    "source": "https://github.com/Siddy212/iconic-es-de/tree/0a549ffbe5a392bd818ee4c11a7175b2372591e4",
+    "url": "https://raw.githubusercontent.com/Siddy212/iconic-es-de/0a549ffbe5a392bd818ee4c11a7175b2372591e4/_inc/systems/default-backgrounds/oric.webp",
+    "author": "Siddy212 and credited contributors",
+    "heroId": null,
+    "gameId": null,
+    "layout": "16:9 cover, safe name placement, system photograph"
+  },
+  "palm": {
+    "provider": "Iconic",
+    "source": "https://github.com/Siddy212/iconic-es-de/tree/0a549ffbe5a392bd818ee4c11a7175b2372591e4",
+    "url": "https://raw.githubusercontent.com/Siddy212/iconic-es-de/0a549ffbe5a392bd818ee4c11a7175b2372591e4/_inc/systems/default-backgrounds/palm.webp",
+    "author": "Siddy212 and credited contributors",
+    "heroId": null,
+    "gameId": null,
+    "layout": "16:9 cover, safe name placement, system photograph"
+  },
+  "pc": {
+    "provider": "Iconic",
+    "source": "https://github.com/Siddy212/iconic-es-de/tree/0a549ffbe5a392bd818ee4c11a7175b2372591e4",
+    "url": "https://raw.githubusercontent.com/Siddy212/iconic-es-de/0a549ffbe5a392bd818ee4c11a7175b2372591e4/_inc/systems/default-backgrounds/pc.webp",
+    "author": "Siddy212 and credited contributors",
+    "heroId": null,
+    "gameId": null,
+    "layout": "16:9 cover, safe name placement, system photograph"
+  },
+  "pc88": {
+    "provider": "Iconic",
+    "source": "https://github.com/Siddy212/iconic-es-de/tree/0a549ffbe5a392bd818ee4c11a7175b2372591e4",
+    "url": "https://raw.githubusercontent.com/Siddy212/iconic-es-de/0a549ffbe5a392bd818ee4c11a7175b2372591e4/_inc/systems/default-backgrounds/pc88.webp",
+    "author": "Siddy212 and credited contributors",
+    "heroId": null,
+    "gameId": null,
+    "layout": "16:9 cover, safe name placement, system photograph"
+  },
+  "pc98": {
+    "provider": "Iconic",
+    "source": "https://github.com/Siddy212/iconic-es-de/tree/0a549ffbe5a392bd818ee4c11a7175b2372591e4",
+    "url": "https://raw.githubusercontent.com/Siddy212/iconic-es-de/0a549ffbe5a392bd818ee4c11a7175b2372591e4/_inc/systems/default-backgrounds/pc98.webp",
+    "author": "Siddy212 and credited contributors",
+    "heroId": null,
+    "gameId": null,
+    "layout": "16:9 cover, safe name placement, system photograph"
+  },
+  "pcarcade": {
+    "provider": "Iconic",
+    "source": "https://github.com/Siddy212/iconic-es-de/tree/0a549ffbe5a392bd818ee4c11a7175b2372591e4",
+    "url": "https://raw.githubusercontent.com/Siddy212/iconic-es-de/0a549ffbe5a392bd818ee4c11a7175b2372591e4/_inc/systems/default-backgrounds/pcarcade.webp",
+    "author": "Siddy212 and credited contributors",
+    "heroId": null,
+    "gameId": null,
+    "layout": "16:9 cover, safe name placement, system photograph"
+  },
+  "pcengine": {
+    "provider": "SteamGridDB",
+    "source": "https://www.steamgriddb.com/hero/187606",
+    "url": "https://cdn2.steamgriddb.com/hero/e6f3e35c380b2f09e7ab7abfa60129e7.png",
+    "author": "andy148",
+    "heroId": 187606,
+    "gameId": 5454240,
+    "layout": "whole hero banner; Orbit adds a blurred fill and the system name"
+  },
+  "pcenginecd": {
+    "provider": "Iconic",
+    "source": "https://github.com/Siddy212/iconic-es-de/tree/0a549ffbe5a392bd818ee4c11a7175b2372591e4",
+    "url": "https://raw.githubusercontent.com/Siddy212/iconic-es-de/0a549ffbe5a392bd818ee4c11a7175b2372591e4/_inc/systems/default-backgrounds/pcenginecd.webp",
+    "author": "Siddy212 and credited contributors",
+    "heroId": null,
+    "gameId": null,
+    "layout": "16:9 cover, safe name placement, system photograph"
+  },
+  "pcfx": {
+    "provider": "Iconic",
+    "source": "https://github.com/Siddy212/iconic-es-de/tree/0a549ffbe5a392bd818ee4c11a7175b2372591e4",
+    "url": "https://raw.githubusercontent.com/Siddy212/iconic-es-de/0a549ffbe5a392bd818ee4c11a7175b2372591e4/_inc/systems/default-backgrounds/pcfx.webp",
+    "author": "Siddy212 and credited contributors",
+    "heroId": null,
+    "gameId": null,
+    "layout": "16:9 cover, safe name placement, system photograph"
+  },
+  "pico8": {
+    "provider": "SteamGridDB",
+    "source": "https://www.steamgriddb.com/hero/116972",
+    "url": "https://cdn2.steamgriddb.com/hero/684164ae0f266650f44b5b6fe5fad9a7.png",
+    "author": "Jade of Winds",
+    "heroId": 116972,
+    "gameId": 36618,
+    "layout": "whole hero banner; Orbit adds a blurred fill and the system name"
+  },
+  "plus4": {
+    "provider": "Iconic",
+    "source": "https://github.com/Siddy212/iconic-es-de/tree/0a549ffbe5a392bd818ee4c11a7175b2372591e4",
+    "url": "https://raw.githubusercontent.com/Siddy212/iconic-es-de/0a549ffbe5a392bd818ee4c11a7175b2372591e4/_inc/systems/default-backgrounds/plus4.webp",
+    "author": "Siddy212 and credited contributors",
+    "heroId": null,
+    "gameId": null,
+    "layout": "16:9 cover, safe name placement, system photograph"
+  },
+  "pokemini": {
+    "provider": "SteamGridDB",
+    "source": "https://www.steamgriddb.com/hero/160524",
+    "url": "https://cdn2.steamgriddb.com/hero/74f8f0a9e5af1246ce4250629d343d75.png",
+    "author": "Cereza",
+    "heroId": 160524,
+    "gameId": 5498434,
+    "layout": "whole hero banner; Orbit adds a blurred fill and the system name"
+  },
+  "ports": {
+    "provider": "Iconic",
+    "source": "https://github.com/Siddy212/iconic-es-de/tree/0a549ffbe5a392bd818ee4c11a7175b2372591e4",
+    "url": "https://raw.githubusercontent.com/Siddy212/iconic-es-de/0a549ffbe5a392bd818ee4c11a7175b2372591e4/_inc/systems/default-backgrounds/ports.webp",
+    "author": "Siddy212 and credited contributors",
+    "heroId": null,
+    "gameId": null,
+    "layout": "16:9 cover, safe name placement, system photograph"
+  },
+  "ps2": {
+    "provider": "SteamGridDB",
+    "source": "https://www.steamgriddb.com/hero/182797",
+    "url": "https://cdn2.steamgriddb.com/hero/ed27e7e665b0167526e38e299632f973.jpg",
+    "author": "Aznah",
+    "heroId": 182797,
+    "gameId": 5327252,
+    "layout": "whole hero banner; Orbit adds a blurred fill and the system name"
+  },
+  "ps3": {
+    "provider": "SteamGridDB",
+    "source": "https://www.steamgriddb.com/hero/109621",
+    "url": "https://cdn2.steamgriddb.com/hero/19d9168743ccec1ffbf9944900310ef5.png",
+    "author": "Viator_",
+    "heroId": 109621,
+    "gameId": 5327253,
+    "layout": "whole hero banner; Orbit adds a blurred fill and the system name"
+  },
+  "ps4": {
+    "provider": "SteamGridDB",
+    "source": "https://www.steamgriddb.com/hero/85789",
+    "url": "https://cdn2.steamgriddb.com/hero/937fdc78f2c734bafd94b69378613641.jpg",
+    "author": "yst",
+    "heroId": 85789,
+    "gameId": 5327254,
+    "layout": "whole hero banner; Orbit adds a blurred fill and the system name"
+  },
+  "psp": {
+    "provider": "SteamGridDB",
+    "source": "https://www.steamgriddb.com/hero/179879",
+    "url": "https://cdn2.steamgriddb.com/hero/ce31e6b42acd8e439334c87d1046b8e7.png",
+    "author": "rizo360x",
+    "heroId": 179879,
+    "gameId": 5327257,
+    "layout": "whole hero banner; Orbit adds a blurred fill and the system name"
+  },
+  "psvita": {
+    "provider": "SteamGridDB",
+    "source": "https://www.steamgriddb.com/hero/148296",
+    "url": "https://cdn2.steamgriddb.com/hero/299af93fcc860730d2c414d576879e91.jpg",
+    "author": "KetIonsONCho",
+    "heroId": 148296,
+    "gameId": 5327258,
+    "layout": "whole hero banner; Orbit adds a blurred fill and the system name"
+  },
+  "psx": {
+    "provider": "SteamGridDB",
+    "source": "https://www.steamgriddb.com/hero/182798",
+    "url": "https://cdn2.steamgriddb.com/hero/027117b35fed7ee5d4047145cb0107db.jpg",
+    "author": "Aznah",
+    "heroId": 182798,
+    "gameId": 5327251,
+    "layout": "whole hero banner; Orbit adds a blurred fill and the system name"
+  },
+  "pv1000": {
+    "provider": "SteamGridDB",
+    "source": "https://www.steamgriddb.com/hero/179079",
+    "url": "https://cdn2.steamgriddb.com/hero/604529af2c8ae4cb056892a0f4d6bf5e.jpg",
+    "author": "rizplays",
+    "heroId": 179079,
+    "gameId": 5459756,
+    "layout": "whole hero banner; Orbit adds a blurred fill and the system name"
+  },
+  "quake": {
+    "provider": "SteamGridDB",
+    "source": "https://www.steamgriddb.com/hero/105230",
+    "url": "https://cdn2.steamgriddb.com/hero/094b7cd1111ed23f5b64a54744cb25b7.png",
+    "author": "ctwoafiveb",
+    "heroId": 105230,
+    "gameId": 2514,
+    "layout": "whole hero banner; Orbit adds a blurred fill and the system name"
+  },
+  "samcoupe": {
+    "provider": "Iconic",
+    "source": "https://github.com/Siddy212/iconic-es-de/tree/0a549ffbe5a392bd818ee4c11a7175b2372591e4",
+    "url": "https://raw.githubusercontent.com/Siddy212/iconic-es-de/0a549ffbe5a392bd818ee4c11a7175b2372591e4/_inc/systems/default-backgrounds/samcoupe.webp",
+    "author": "Siddy212 and credited contributors",
+    "heroId": null,
+    "gameId": null,
+    "layout": "16:9 cover, safe name placement, system photograph"
+  },
+  "satellaview": {
+    "provider": "Iconic",
+    "source": "https://github.com/Siddy212/iconic-es-de/tree/0a549ffbe5a392bd818ee4c11a7175b2372591e4",
+    "url": "https://raw.githubusercontent.com/Siddy212/iconic-es-de/0a549ffbe5a392bd818ee4c11a7175b2372591e4/_inc/systems/default-backgrounds/satellaview.webp",
+    "author": "Siddy212 and credited contributors",
+    "heroId": null,
+    "gameId": null,
+    "layout": "16:9 cover, safe name placement, system photograph"
+  },
+  "saturn": {
+    "provider": "SteamGridDB",
+    "source": "https://www.steamgriddb.com/hero/179761",
+    "url": "https://cdn2.steamgriddb.com/hero/9d696ca9be4d6b685e6ed37f844d17be.png",
+    "author": "rizo360x",
+    "heroId": 179761,
+    "gameId": 5414839,
+    "layout": "whole hero banner; Orbit adds a blurred fill and the system name"
+  },
+  "saturnjp": {
+    "provider": "SteamGridDB",
+    "source": "https://www.steamgriddb.com/hero/169755",
+    "url": "https://cdn2.steamgriddb.com/hero/c4b7b2fb45c84a6fc8144ed3150da50f.png",
+    "author": "Munhol",
+    "heroId": 169755,
+    "gameId": 5414839,
+    "layout": "whole hero banner; Orbit adds a blurred fill and the system name"
+  },
+  "scummvm": {
+    "provider": "SteamGridDB",
+    "source": "https://www.steamgriddb.com/hero/21582",
+    "url": "https://cdn2.steamgriddb.com/hero/571dea3eb9d4d24c6194ef17c91cda79.jpg",
+    "author": "hexaae",
+    "heroId": 21582,
+    "gameId": 5248828,
+    "layout": "whole hero banner; Orbit adds a blurred fill and the system name"
+  },
+  "scv": {
+    "provider": "Iconic",
+    "source": "https://github.com/Siddy212/iconic-es-de/tree/0a549ffbe5a392bd818ee4c11a7175b2372591e4",
+    "url": "https://raw.githubusercontent.com/Siddy212/iconic-es-de/0a549ffbe5a392bd818ee4c11a7175b2372591e4/_inc/systems/default-backgrounds/scv.webp",
+    "author": "Siddy212 and credited contributors",
+    "heroId": null,
+    "gameId": null,
+    "layout": "16:9 cover, safe name placement, system photograph"
+  },
+  "sega32x": {
+    "provider": "SteamGridDB",
+    "source": "https://www.steamgriddb.com/hero/188664",
+    "url": "https://cdn2.steamgriddb.com/hero/16be36a076477439efd88de4fdc8de86.png",
+    "author": "Lonker",
+    "heroId": 188664,
+    "gameId": 5495151,
+    "layout": "whole hero banner; Orbit adds a blurred fill and the system name"
+  },
+  "sega32xjp": {
+    "provider": "SteamGridDB",
+    "source": "https://www.steamgriddb.com/hero/188664",
+    "url": "https://cdn2.steamgriddb.com/hero/16be36a076477439efd88de4fdc8de86.png",
+    "author": "Lonker",
+    "heroId": 188664,
+    "gameId": 5495151,
+    "layout": "whole hero banner; Orbit adds a blurred fill and the system name"
+  },
+  "sega32xna": {
+    "provider": "SteamGridDB",
+    "source": "https://www.steamgriddb.com/hero/188664",
+    "url": "https://cdn2.steamgriddb.com/hero/16be36a076477439efd88de4fdc8de86.png",
+    "author": "Lonker",
+    "heroId": 188664,
+    "gameId": 5495151,
+    "layout": "whole hero banner; Orbit adds a blurred fill and the system name"
+  },
+  "segacd": {
+    "provider": "SteamGridDB",
+    "source": "https://www.steamgriddb.com/hero/181039",
+    "url": "https://cdn2.steamgriddb.com/hero/b570913ca34c8d65f8365533cbf35eee.jpg",
+    "author": "Gustavosx0801",
+    "heroId": 181039,
+    "gameId": 5461937,
+    "layout": "whole hero banner; Orbit adds a blurred fill and the system name"
+  },
+  "sfc": {
+    "provider": "SteamGridDB",
+    "source": "https://www.steamgriddb.com/hero/154126",
+    "url": "https://cdn2.steamgriddb.com/hero/4c3736090e37b68f9357fccb3ee2b976.png",
+    "author": "Nieveria",
+    "heroId": 154126,
+    "gameId": 5454229,
+    "layout": "whole hero banner; Orbit adds a blurred fill and the system name"
+  },
+  "sg-1000": {
+    "provider": "SteamGridDB",
+    "source": "https://www.steamgriddb.com/hero/127316",
+    "url": "https://cdn2.steamgriddb.com/hero/adb49c9092b9c92b362879f8dee9d155.png",
+    "author": "rafaelsguimaraes",
+    "heroId": 127316,
+    "gameId": 5459754,
+    "layout": "whole hero banner; Orbit adds a blurred fill and the system name"
+  },
+  "sgb": {
+    "provider": "SteamGridDB",
+    "source": "https://www.steamgriddb.com/hero/58097",
+    "url": "https://cdn2.steamgriddb.com/hero/075f98f1eae35054044fa3ece852436f.png",
+    "author": "KieueCaprie",
+    "heroId": 58097,
+    "gameId": 5345807,
+    "layout": "whole hero banner; Orbit adds a blurred fill and the system name"
+  },
+  "snes": {
+    "provider": "SteamGridDB",
+    "source": "https://www.steamgriddb.com/hero/179763",
+    "url": "https://cdn2.steamgriddb.com/hero/8f3fb4144d9cc268218d228ac551f149.png",
+    "author": "rizo360x",
+    "heroId": 179763,
+    "gameId": 5321369,
+    "layout": "whole hero banner; Orbit adds a blurred fill and the system name"
+  },
+  "snesna": {
+    "provider": "SteamGridDB",
+    "source": "https://www.steamgriddb.com/hero/179763",
+    "url": "https://cdn2.steamgriddb.com/hero/8f3fb4144d9cc268218d228ac551f149.png",
+    "author": "rizo360x",
+    "heroId": 179763,
+    "gameId": 5321369,
+    "layout": "whole hero banner; Orbit adds a blurred fill and the system name"
+  },
+  "solarus": {
+    "provider": "Iconic",
+    "source": "https://github.com/Siddy212/iconic-es-de/tree/0a549ffbe5a392bd818ee4c11a7175b2372591e4",
+    "url": "https://raw.githubusercontent.com/Siddy212/iconic-es-de/0a549ffbe5a392bd818ee4c11a7175b2372591e4/_inc/systems/default-backgrounds/solarus.webp",
+    "author": "Siddy212 and credited contributors",
+    "heroId": null,
+    "gameId": null,
+    "layout": "16:9 cover, safe name placement, system photograph"
+  },
+  "spectravideo": {
+    "provider": "Iconic",
+    "source": "https://github.com/Siddy212/iconic-es-de/tree/0a549ffbe5a392bd818ee4c11a7175b2372591e4",
+    "url": "https://raw.githubusercontent.com/Siddy212/iconic-es-de/0a549ffbe5a392bd818ee4c11a7175b2372591e4/_inc/systems/default-backgrounds/spectravideo.webp",
+    "author": "Siddy212 and credited contributors",
+    "heroId": null,
+    "gameId": null,
+    "layout": "16:9 cover, safe name placement, system photograph"
+  },
+  "steam": {
+    "provider": "SteamGridDB",
+    "source": "https://www.steamgriddb.com/hero/41901",
+    "url": "https://cdn2.steamgriddb.com/hero/da0c03acd1f39210011e050871fa3570.jpg",
+    "author": "Malixx",
+    "heroId": 41901,
+    "gameId": 5279790,
+    "layout": "whole hero banner; Orbit adds a blurred fill and the system name"
+  },
+  "stv": {
+    "provider": "Iconic",
+    "source": "https://github.com/Siddy212/iconic-es-de/tree/0a549ffbe5a392bd818ee4c11a7175b2372591e4",
+    "url": "https://raw.githubusercontent.com/Siddy212/iconic-es-de/0a549ffbe5a392bd818ee4c11a7175b2372591e4/_inc/systems/default-backgrounds/stv.webp",
+    "author": "Siddy212 and credited contributors",
+    "heroId": null,
+    "gameId": null,
+    "layout": "16:9 cover, safe name placement, system photograph"
+  },
+  "sufami": {
+    "provider": "Iconic",
+    "source": "https://github.com/Siddy212/iconic-es-de/tree/0a549ffbe5a392bd818ee4c11a7175b2372591e4",
+    "url": "https://raw.githubusercontent.com/Siddy212/iconic-es-de/0a549ffbe5a392bd818ee4c11a7175b2372591e4/_inc/systems/default-backgrounds/sufami.webp",
+    "author": "Siddy212 and credited contributors",
+    "heroId": null,
+    "gameId": null,
+    "layout": "16:9 cover, safe name placement, system photograph"
+  },
+  "supergrafx": {
+    "provider": "Iconic",
+    "source": "https://github.com/Siddy212/iconic-es-de/tree/0a549ffbe5a392bd818ee4c11a7175b2372591e4",
+    "url": "https://raw.githubusercontent.com/Siddy212/iconic-es-de/0a549ffbe5a392bd818ee4c11a7175b2372591e4/_inc/systems/default-backgrounds/supergrafx.webp",
+    "author": "Siddy212 and credited contributors",
+    "heroId": null,
+    "gameId": null,
+    "layout": "16:9 cover, safe name placement, system photograph"
+  },
+  "supervision": {
+    "provider": "Iconic",
+    "source": "https://github.com/Siddy212/iconic-es-de/tree/0a549ffbe5a392bd818ee4c11a7175b2372591e4",
+    "url": "https://raw.githubusercontent.com/Siddy212/iconic-es-de/0a549ffbe5a392bd818ee4c11a7175b2372591e4/_inc/systems/default-backgrounds/supervision.webp",
+    "author": "Siddy212 and credited contributors",
+    "heroId": null,
+    "gameId": null,
+    "layout": "16:9 cover, safe name placement, system photograph"
+  },
+  "supracan": {
+    "provider": "Iconic",
+    "source": "https://github.com/Siddy212/iconic-es-de/tree/0a549ffbe5a392bd818ee4c11a7175b2372591e4",
+    "url": "https://raw.githubusercontent.com/Siddy212/iconic-es-de/0a549ffbe5a392bd818ee4c11a7175b2372591e4/_inc/systems/default-backgrounds/supracan.webp",
+    "author": "Siddy212 and credited contributors",
+    "heroId": null,
+    "gameId": null,
+    "layout": "16:9 cover, safe name placement, system photograph"
+  },
+  "switch": {
+    "provider": "SteamGridDB",
+    "source": "https://www.steamgriddb.com/hero/113942",
+    "url": "https://cdn2.steamgriddb.com/hero/595d1ae51843af30c3d851462d952963.png",
+    "author": "f37",
+    "heroId": 113942,
+    "gameId": 5271314,
+    "layout": "whole hero banner; Orbit adds a blurred fill and the system name"
+  },
+  "symbian": {
+    "provider": "Iconic",
+    "source": "https://github.com/Siddy212/iconic-es-de/tree/0a549ffbe5a392bd818ee4c11a7175b2372591e4",
+    "url": "https://raw.githubusercontent.com/Siddy212/iconic-es-de/0a549ffbe5a392bd818ee4c11a7175b2372591e4/_inc/systems/default-backgrounds/symbian.webp",
+    "author": "Siddy212 and credited contributors",
+    "heroId": null,
+    "gameId": null,
+    "layout": "16:9 cover, safe name placement, system photograph"
+  },
+  "tanodragon": {
+    "provider": "Iconic",
+    "source": "https://github.com/Siddy212/iconic-es-de/tree/0a549ffbe5a392bd818ee4c11a7175b2372591e4",
+    "url": "https://raw.githubusercontent.com/Siddy212/iconic-es-de/0a549ffbe5a392bd818ee4c11a7175b2372591e4/_inc/systems/default-backgrounds/tanodragon.webp",
+    "author": "Siddy212 and credited contributors",
+    "heroId": null,
+    "gameId": null,
+    "layout": "16:9 cover, safe name placement, system photograph"
+  },
+  "tg16": {
+    "provider": "SteamGridDB",
+    "source": "https://www.steamgriddb.com/hero/187613",
+    "url": "https://cdn2.steamgriddb.com/hero/eb74df0f2bf722d2c7f36656bc1c1ed4.png",
+    "author": "andy148",
+    "heroId": 187613,
+    "gameId": 5459986,
+    "layout": "whole hero banner; Orbit adds a blurred fill and the system name"
+  },
+  "tg-cd": {
+    "provider": "Iconic",
+    "source": "https://github.com/Siddy212/iconic-es-de/tree/0a549ffbe5a392bd818ee4c11a7175b2372591e4",
+    "url": "https://raw.githubusercontent.com/Siddy212/iconic-es-de/0a549ffbe5a392bd818ee4c11a7175b2372591e4/_inc/systems/default-backgrounds/tg-cd.webp",
+    "author": "Siddy212 and credited contributors",
+    "heroId": null,
+    "gameId": null,
+    "layout": "16:9 cover, safe name placement, system photograph"
+  },
+  "ti99": {
+    "provider": "Iconic",
+    "source": "https://github.com/Siddy212/iconic-es-de/tree/0a549ffbe5a392bd818ee4c11a7175b2372591e4",
+    "url": "https://raw.githubusercontent.com/Siddy212/iconic-es-de/0a549ffbe5a392bd818ee4c11a7175b2372591e4/_inc/systems/default-backgrounds/ti99.webp",
+    "author": "Siddy212 and credited contributors",
+    "heroId": null,
+    "gameId": null,
+    "layout": "16:9 cover, safe name placement, system photograph"
+  },
+  "tic80": {
+    "provider": "SteamGridDB",
+    "source": "https://www.steamgriddb.com/hero/60393",
+    "url": "https://cdn2.steamgriddb.com/hero/830f2d594bf6236c4b2b7f47a32aa678.png",
+    "author": "Bur",
+    "heroId": 60393,
+    "gameId": 5352181,
+    "layout": "whole hero banner; Orbit adds a blurred fill and the system name"
+  },
+  "to8": {
+    "provider": "Iconic",
+    "source": "https://github.com/Siddy212/iconic-es-de/tree/0a549ffbe5a392bd818ee4c11a7175b2372591e4",
+    "url": "https://raw.githubusercontent.com/Siddy212/iconic-es-de/0a549ffbe5a392bd818ee4c11a7175b2372591e4/_inc/systems/default-backgrounds/to8.webp",
+    "author": "Siddy212 and credited contributors",
+    "heroId": null,
+    "gameId": null,
+    "layout": "16:9 cover, safe name placement, system photograph"
+  },
+  "triforce": {
+    "provider": "Iconic",
+    "source": "https://github.com/Siddy212/iconic-es-de/tree/0a549ffbe5a392bd818ee4c11a7175b2372591e4",
+    "url": "https://raw.githubusercontent.com/Siddy212/iconic-es-de/0a549ffbe5a392bd818ee4c11a7175b2372591e4/_inc/systems/default-backgrounds/triforce.webp",
+    "author": "Siddy212 and credited contributors",
+    "heroId": null,
+    "gameId": null,
+    "layout": "16:9 cover, safe name placement, system photograph"
+  },
+  "trs-80": {
+    "provider": "Iconic",
+    "source": "https://github.com/Siddy212/iconic-es-de/tree/0a549ffbe5a392bd818ee4c11a7175b2372591e4",
+    "url": "https://raw.githubusercontent.com/Siddy212/iconic-es-de/0a549ffbe5a392bd818ee4c11a7175b2372591e4/_inc/systems/default-backgrounds/trs-80.webp",
+    "author": "Siddy212 and credited contributors",
+    "heroId": null,
+    "gameId": null,
+    "layout": "16:9 cover, safe name placement, system photograph"
+  },
+  "type-x": {
+    "provider": "Iconic",
+    "source": "https://github.com/Siddy212/iconic-es-de/tree/0a549ffbe5a392bd818ee4c11a7175b2372591e4",
+    "url": "https://raw.githubusercontent.com/Siddy212/iconic-es-de/0a549ffbe5a392bd818ee4c11a7175b2372591e4/_inc/systems/default-backgrounds/type-x.webp",
+    "author": "Siddy212 and credited contributors",
+    "heroId": null,
+    "gameId": null,
+    "layout": "16:9 cover, safe name placement, system photograph"
+  },
+  "uzebox": {
+    "provider": "Iconic",
+    "source": "https://github.com/Siddy212/iconic-es-de/tree/0a549ffbe5a392bd818ee4c11a7175b2372591e4",
+    "url": "https://raw.githubusercontent.com/Siddy212/iconic-es-de/0a549ffbe5a392bd818ee4c11a7175b2372591e4/_inc/systems/default-backgrounds/uzebox.webp",
+    "author": "Siddy212 and credited contributors",
+    "heroId": null,
+    "gameId": null,
+    "layout": "16:9 cover, safe name placement, system photograph"
+  },
+  "vectrex": {
+    "provider": "Iconic",
+    "source": "https://github.com/Siddy212/iconic-es-de/tree/0a549ffbe5a392bd818ee4c11a7175b2372591e4",
+    "url": "https://raw.githubusercontent.com/Siddy212/iconic-es-de/0a549ffbe5a392bd818ee4c11a7175b2372591e4/_inc/systems/default-backgrounds/vectrex.webp",
+    "author": "Siddy212 and credited contributors",
+    "heroId": null,
+    "gameId": null,
+    "layout": "16:9 cover, safe name placement, system photograph"
+  },
+  "vic20": {
+    "provider": "Iconic",
+    "source": "https://github.com/Siddy212/iconic-es-de/tree/0a549ffbe5a392bd818ee4c11a7175b2372591e4",
+    "url": "https://raw.githubusercontent.com/Siddy212/iconic-es-de/0a549ffbe5a392bd818ee4c11a7175b2372591e4/_inc/systems/default-backgrounds/vic20.webp",
+    "author": "Siddy212 and credited contributors",
+    "heroId": null,
+    "gameId": null,
+    "layout": "16:9 cover, safe name placement, system photograph"
+  },
+  "videopac": {
+    "provider": "Iconic",
+    "source": "https://github.com/Siddy212/iconic-es-de/tree/0a549ffbe5a392bd818ee4c11a7175b2372591e4",
+    "url": "https://raw.githubusercontent.com/Siddy212/iconic-es-de/0a549ffbe5a392bd818ee4c11a7175b2372591e4/_inc/systems/default-backgrounds/videopac.webp",
+    "author": "Siddy212 and credited contributors",
+    "heroId": null,
+    "gameId": null,
+    "layout": "16:9 cover, safe name placement, system photograph"
+  },
+  "vircon32": {
+    "provider": "Iconic",
+    "source": "https://github.com/Siddy212/iconic-es-de/tree/0a549ffbe5a392bd818ee4c11a7175b2372591e4",
+    "url": "https://raw.githubusercontent.com/Siddy212/iconic-es-de/0a549ffbe5a392bd818ee4c11a7175b2372591e4/_inc/systems/default-backgrounds/vircon32.webp",
+    "author": "Siddy212 and credited contributors",
+    "heroId": null,
+    "gameId": null,
+    "layout": "16:9 cover, safe name placement, system photograph"
+  },
+  "virtualboy": {
+    "provider": "SteamGridDB",
+    "source": "https://www.steamgriddb.com/hero/180464",
+    "url": "https://cdn2.steamgriddb.com/hero/a85ccf092c236fc5c40302c65c8daf3e.png",
+    "author": "Alarmedmoon",
+    "heroId": 180464,
+    "gameId": 5498433,
+    "layout": "whole hero banner; Orbit adds a blurred fill and the system name"
+  },
+  "vpinball": {
+    "provider": "SteamGridDB",
+    "source": "https://www.steamgriddb.com/hero/140100",
+    "url": "https://cdn2.steamgriddb.com/hero/355afb2122a16926ef2def075a54acc6.png",
+    "author": "Vic Firth",
+    "heroId": 140100,
+    "gameId": 5453589,
+    "layout": "whole hero banner; Orbit adds a blurred fill and the system name"
+  },
+  "vsmile": {
+    "provider": "Iconic",
+    "source": "https://github.com/Siddy212/iconic-es-de/tree/0a549ffbe5a392bd818ee4c11a7175b2372591e4",
+    "url": "https://raw.githubusercontent.com/Siddy212/iconic-es-de/0a549ffbe5a392bd818ee4c11a7175b2372591e4/_inc/systems/default-backgrounds/vsmile.webp",
+    "author": "Siddy212 and credited contributors",
+    "heroId": null,
+    "gameId": null,
+    "layout": "16:9 cover, safe name placement, system photograph"
+  },
+  "wasm4": {
+    "provider": "Iconic",
+    "source": "https://github.com/Siddy212/iconic-es-de/tree/0a549ffbe5a392bd818ee4c11a7175b2372591e4",
+    "url": "https://raw.githubusercontent.com/Siddy212/iconic-es-de/0a549ffbe5a392bd818ee4c11a7175b2372591e4/_inc/systems/default-backgrounds/wasm4.webp",
+    "author": "Siddy212 and credited contributors",
+    "heroId": null,
+    "gameId": null,
+    "layout": "16:9 cover, safe name placement, system photograph"
+  },
+  "wii": {
+    "provider": "SteamGridDB",
+    "source": "https://www.steamgriddb.com/hero/179872",
+    "url": "https://cdn2.steamgriddb.com/hero/8f3769aab2b06abff5e2560c2d5ee12d.png",
+    "author": "rizo360x",
+    "heroId": 179872,
+    "gameId": 5299128,
+    "layout": "whole hero banner; Orbit adds a blurred fill and the system name"
+  },
+  "wiiu": {
+    "provider": "SteamGridDB",
+    "source": "https://www.steamgriddb.com/hero/182808",
+    "url": "https://cdn2.steamgriddb.com/hero/6527792ffe69fa06c09644123834426b.jpg",
+    "author": "Aznah",
+    "heroId": 182808,
+    "gameId": 5283561,
+    "layout": "whole hero banner; Orbit adds a blurred fill and the system name"
+  },
+  "windows": {
+    "provider": "Iconic",
+    "source": "https://github.com/Siddy212/iconic-es-de/tree/0a549ffbe5a392bd818ee4c11a7175b2372591e4",
+    "url": "https://raw.githubusercontent.com/Siddy212/iconic-es-de/0a549ffbe5a392bd818ee4c11a7175b2372591e4/_inc/systems/default-backgrounds/windows.webp",
+    "author": "Siddy212 and credited contributors",
+    "heroId": null,
+    "gameId": null,
+    "layout": "16:9 cover, safe name placement, system photograph"
+  },
+  "windows3x": {
+    "provider": "Iconic",
+    "source": "https://github.com/Siddy212/iconic-es-de/tree/0a549ffbe5a392bd818ee4c11a7175b2372591e4",
+    "url": "https://raw.githubusercontent.com/Siddy212/iconic-es-de/0a549ffbe5a392bd818ee4c11a7175b2372591e4/_inc/systems/default-backgrounds/windows3x.webp",
+    "author": "Siddy212 and credited contributors",
+    "heroId": null,
+    "gameId": null,
+    "layout": "16:9 cover, safe name placement, system photograph"
+  },
+  "windows9x": {
+    "provider": "SteamGridDB",
+    "source": "https://www.steamgriddb.com/hero/31527",
+    "url": "https://cdn2.steamgriddb.com/hero/51ec0e93aa36ff91430519184ad6f244.png",
+    "author": "polocatfan",
+    "heroId": 31527,
+    "gameId": 5269180,
+    "layout": "whole hero banner; Orbit adds a blurred fill and the system name"
+  },
+  "wonderswan": {
+    "provider": "SteamGridDB",
+    "source": "https://www.steamgriddb.com/hero/188654",
+    "url": "https://cdn2.steamgriddb.com/hero/bf042b643df17082c610e4f311962155.png",
+    "author": "Lonker",
+    "heroId": 188654,
+    "gameId": 5452543,
+    "layout": "whole hero banner; Orbit adds a blurred fill and the system name"
+  },
+  "wonderswancolor": {
+    "provider": "Iconic",
+    "source": "https://github.com/Siddy212/iconic-es-de/tree/0a549ffbe5a392bd818ee4c11a7175b2372591e4",
+    "url": "https://raw.githubusercontent.com/Siddy212/iconic-es-de/0a549ffbe5a392bd818ee4c11a7175b2372591e4/_inc/systems/default-backgrounds/wonderswancolor.webp",
+    "author": "Siddy212 and credited contributors",
+    "heroId": null,
+    "gameId": null,
+    "layout": "16:9 cover, safe name placement, system photograph"
+  },
+  "x1": {
+    "provider": "Iconic",
+    "source": "https://github.com/Siddy212/iconic-es-de/tree/0a549ffbe5a392bd818ee4c11a7175b2372591e4",
+    "url": "https://raw.githubusercontent.com/Siddy212/iconic-es-de/0a549ffbe5a392bd818ee4c11a7175b2372591e4/_inc/systems/default-backgrounds/x1.webp",
+    "author": "Siddy212 and credited contributors",
+    "heroId": null,
+    "gameId": null,
+    "layout": "16:9 cover, safe name placement, system photograph"
+  },
+  "x68000": {
+    "provider": "Iconic",
+    "source": "https://github.com/Siddy212/iconic-es-de/tree/0a549ffbe5a392bd818ee4c11a7175b2372591e4",
+    "url": "https://raw.githubusercontent.com/Siddy212/iconic-es-de/0a549ffbe5a392bd818ee4c11a7175b2372591e4/_inc/systems/default-backgrounds/x68000.webp",
+    "author": "Siddy212 and credited contributors",
+    "heroId": null,
+    "gameId": null,
+    "layout": "16:9 cover, safe name placement, system photograph"
+  },
+  "xbox": {
+    "provider": "SteamGridDB",
+    "source": "https://www.steamgriddb.com/hero/154171",
+    "url": "https://cdn2.steamgriddb.com/hero/7b243f914aa03972ab7f3edc4c50d563.png",
+    "author": "Kynd",
+    "heroId": 154171,
+    "gameId": 5255377,
+    "layout": "whole hero banner; Orbit adds a blurred fill and the system name"
+  },
+  "xbox360": {
+    "provider": "SteamGridDB",
+    "source": "https://www.steamgriddb.com/hero/182824",
+    "url": "https://cdn2.steamgriddb.com/hero/5650e3d1f3a77a25eb89cc8525ca3964.jpg",
+    "author": "Aznah",
+    "heroId": 182824,
+    "gameId": 5338852,
+    "layout": "whole hero banner; Orbit adds a blurred fill and the system name"
+  },
+  "xboxone": {
+    "provider": "SteamGridDB",
+    "source": "https://www.steamgriddb.com/hero/83993",
+    "url": "https://cdn2.steamgriddb.com/hero/59732044c84003ac3d134d88c1980b32.jpg",
+    "author": "Hellanser",
+    "heroId": 83993,
+    "gameId": 5459764,
+    "layout": "whole hero banner; Orbit adds a blurred fill and the system name"
+  },
+  "zmachine": {
+    "provider": "Iconic",
+    "source": "https://github.com/Siddy212/iconic-es-de/tree/0a549ffbe5a392bd818ee4c11a7175b2372591e4",
+    "url": "https://raw.githubusercontent.com/Siddy212/iconic-es-de/0a549ffbe5a392bd818ee4c11a7175b2372591e4/_inc/systems/default-backgrounds/zmachine.webp",
+    "author": "Siddy212 and credited contributors",
+    "heroId": null,
+    "gameId": null,
+    "layout": "16:9 cover, safe name placement, system photograph"
+  },
+  "zx81": {
+    "provider": "Iconic",
+    "source": "https://github.com/Siddy212/iconic-es-de/tree/0a549ffbe5a392bd818ee4c11a7175b2372591e4",
+    "url": "https://raw.githubusercontent.com/Siddy212/iconic-es-de/0a549ffbe5a392bd818ee4c11a7175b2372591e4/_inc/systems/default-backgrounds/zx81.webp",
+    "author": "Siddy212 and credited contributors",
+    "heroId": null,
+    "gameId": null,
+    "layout": "16:9 cover, safe name placement, system photograph"
+  },
+  "zxnext": {
+    "provider": "Iconic",
+    "source": "https://github.com/Siddy212/iconic-es-de/tree/0a549ffbe5a392bd818ee4c11a7175b2372591e4",
+    "url": "https://raw.githubusercontent.com/Siddy212/iconic-es-de/0a549ffbe5a392bd818ee4c11a7175b2372591e4/_inc/systems/default-backgrounds/zxnext.webp",
+    "author": "Siddy212 and credited contributors",
+    "heroId": null,
+    "gameId": null,
+    "layout": "16:9 cover, safe name placement, system photograph"
+  },
+  "zxspectrum": {
+    "provider": "Iconic",
+    "source": "https://github.com/Siddy212/iconic-es-de/tree/0a549ffbe5a392bd818ee4c11a7175b2372591e4",
+    "url": "https://raw.githubusercontent.com/Siddy212/iconic-es-de/0a549ffbe5a392bd818ee4c11a7175b2372591e4/_inc/systems/default-backgrounds/zxspectrum.webp",
+    "author": "Siddy212 and credited contributors",
+    "heroId": null,
+    "gameId": null,
+    "layout": "16:9 cover, safe name placement, system photograph"
+  }
+}

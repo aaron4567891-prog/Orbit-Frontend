@@ -19,7 +19,6 @@ internal class SystemsMusic(private val context: Context) {
         // AudioService sends this when media volume changes through the buttons or panel.
         const val VOLUME_CHANGED = "android.media.VOLUME_CHANGED_ACTION"
         const val VOLUME_STREAM_TYPE = "android.media.EXTRA_VOLUME_STREAM_TYPE"
-        const val MAX_TRACK_GAIN = 0.614f
     }
 
     private val audio = context.getSystemService(AudioManager::class.java)
@@ -31,7 +30,23 @@ internal class SystemsMusic(private val context: Context) {
     private var paused = false
     private var visible = false
     private val handler = Handler(Looper.getMainLooper())
-    private val releaseIfHidden = Runnable { if (!visible && power.isInteractive) stop() }
+    private val retryFocus = Runnable { updatePlayback() }
+    private val releaseFocusIfHidden = Runnable {
+        if (!visible && power.isInteractive) releaseFocus()
+    }
+    private val refreshVolume = Runnable {
+        if (canPlay()) player?.let(::applyMediaVolume)
+    }
+    private var focusAttempts = 0
+    private var recoveries = 0
+    /** After the audio service restarts, the player and Thor's volume route are gone: build them again. */
+    private val recover = Runnable {
+        if (canPlay()) {
+            Log.i("OrbitSystemsMusic", "Restoring the Systems track after a playback error")
+            updatePlayback()
+            refreshVolumeAfterReturn()
+        }
+    }
     private var browsing = false
     private var listening = false
     private var hasFocus = false
@@ -48,7 +63,10 @@ internal class SystemsMusic(private val context: Context) {
                 when (change) {
                     AudioManager.AUDIOFOCUS_GAIN -> {
                         focusPaused = false
-                        if (canPlay() && prepared) player?.start()
+                        if (canPlay() && prepared) player?.let {
+                            applyMediaVolume(it)
+                            it.start()
+                        }
                     }
                     AudioManager.AUDIOFOCUS_LOSS_TRANSIENT -> {
                         focusPaused = true
@@ -66,7 +84,14 @@ internal class SystemsMusic(private val context: Context) {
     private val receiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
             when (intent.action) {
-                Intent.ACTION_SCREEN_OFF, Intent.ACTION_SCREEN_ON -> updatePlayback()
+                Intent.ACTION_SCREEN_OFF -> {
+                    handler.removeCallbacks(releaseFocusIfHidden)
+                    updatePlayback()
+                }
+                Intent.ACTION_SCREEN_ON -> {
+                    updatePlayback()
+                    refreshVolumeAfterReturn()
+                }
                 VOLUME_CHANGED -> {
                     if (intent.getIntExtra(VOLUME_STREAM_TYPE, -1) == AudioManager.STREAM_MUSIC) {
                         player?.let(::applyMediaVolume)
@@ -77,45 +102,72 @@ internal class SystemsMusic(private val context: Context) {
     }
 
     fun setBrowsing(active: Boolean, visible: Boolean) {
+        val returning = active && !browsing
         this.visible = visible
-        handler.removeCallbacks(releaseIfHidden)
-        if (!visible && player != null) handler.postDelayed(releaseIfHidden, 750L)
+        handler.removeCallbacks(releaseFocusIfHidden)
+        // onStop can arrive just before SCREEN_OFF. Let the power transition
+        // settle so closing the lid doesn't abandon the retained audio session.
+        if (!visible) handler.postDelayed(releaseFocusIfHidden, 300L)
+        if (browsing != active) focusAttempts = 0
         browsing = active
-        if (listening != visible) {
-            listening = visible
-            if (visible) {
-                val filter = IntentFilter(Intent.ACTION_SCREEN_OFF).apply {
-                    addAction(Intent.ACTION_SCREEN_ON)
-                    addAction(VOLUME_CHANGED)
-                }
-                if (Build.VERSION.SDK_INT >= 33) {
-                    context.registerReceiver(receiver, filter, Context.RECEIVER_NOT_EXPORTED)
-                } else {
-                    context.registerReceiver(receiver, filter)
-                }
-
-            } else {
-                context.unregisterReceiver(receiver)
+        if (!listening && visible) {
+            val filter = IntentFilter(Intent.ACTION_SCREEN_OFF).apply {
+                addAction(Intent.ACTION_SCREEN_ON)
+                addAction(VOLUME_CHANGED)
             }
+            if (Build.VERSION.SDK_INT >= 33) {
+                context.registerReceiver(receiver, filter, Context.RECEIVER_NOT_EXPORTED)
+            } else {
+                context.registerReceiver(receiver, filter)
+            }
+            listening = true
         }
         updatePlayback()
+        if (returning) refreshVolumeAfterReturn()
+    }
+
+    private fun refreshVolumeAfterReturn() {
+        handler.removeCallbacks(refreshVolume)
+        // AYN can restore display-specific routing after the first resume event.
+        handler.postDelayed(refreshVolume, 250L)
+        handler.postDelayed(refreshVolume, 750L)
     }
 
     private fun canPlay() = browsing && power.isInteractive
 
     private fun updatePlayback() {
         if (!canPlay()) {
-            // Keep the track allocated across Games and sleep. Thor can assign a new
-            // track to the bottom-screen volume when both Orbit windows wake.
+            handler.removeCallbacks(retryFocus)
+            handler.removeCallbacks(refreshVolume)
+            focusAttempts = 0
+            // Retain Thor's prepared track across app switches as well as Games
+            // and sleep, so returning resumes instead of loading the track again.
             if (!paused && prepared) player?.pause()
             paused = true
             if (!isThor && power.isInteractive) stop()
             return
         }
-        if (hasFocus && player != null && !paused) return
+        if (hasFocus && player != null && !paused) {
+            player?.let(::applyMediaVolume)
+            return
+        }
         paused = false
-        if (!hasFocus) hasFocus = audio.requestAudioFocus(focus) == AudioManager.AUDIOFOCUS_REQUEST_GRANTED
-        if (!hasFocus) return
+        if (!hasFocus) {
+            hasFocus = audio.requestAudioFocus(focus) == AudioManager.AUDIOFOCUS_REQUEST_GRANTED
+            if (!hasFocus) {
+                // The Home activity can become visible before Android considers
+                // it eligible for audio focus. Don't wait for the user to navigate.
+                handler.removeCallbacks(retryFocus)
+                if (visible && focusAttempts < 10) {
+                    focusAttempts++
+                    handler.postDelayed(retryFocus, 300L)
+                }
+                return
+            }
+            focusPaused = false
+        }
+        handler.removeCallbacks(retryFocus)
+        focusAttempts = 0
         player?.let {
             if (prepared) {
                 applyMediaVolume(it)
@@ -133,6 +185,7 @@ internal class SystemsMusic(private val context: Context) {
             next.setOnPreparedListener {
                 if (player === next) {
                     prepared = true
+                    recoveries = 0
                     next.isLooping = true
                     if (canPlay() && hasFocus && !focusPaused) {
                         applyMediaVolume(next)
@@ -142,7 +195,16 @@ internal class SystemsMusic(private val context: Context) {
             }
             next.setOnErrorListener { _, what, extra ->
                 Log.w("OrbitSystemsMusic", "Could not play the Systems track ($what, $extra)")
-                if (player === next) stop()
+                if (player === next) {
+                    stop()
+                    // A media server restart ends playback without the app knowing; rebuild the track
+                    // a few times rather than staying silent until Orbit is relaunched.
+                    if (recoveries < 3) {
+                        recoveries++
+                        handler.removeCallbacks(recover)
+                        handler.postDelayed(recover, 1000L * recoveries)
+                    }
+                }
                 true
             }
             next.prepareAsync()
@@ -154,27 +216,28 @@ internal class SystemsMusic(private val context: Context) {
 
     private fun applyMediaVolume(target: MediaPlayer) {
         val stream = AudioManager.STREAM_MUSIC
-        val level = audio.getStreamVolume(stream)
-        val maximum = audio.getStreamMaxVolume(stream).coerceAtLeast(1)
-        val fraction = level.coerceIn(0, maximum).toFloat() / maximum
-        val normalGain = MAX_TRACK_GAIN * (0.85f + 0.15f * fraction)
-        // Give the quietest steps more gain while keeping the original track intact.
-        val gain = when (level) {
-            0 -> 0f
-            in 1..3 -> 1f
-            4 -> 0.9f
-            else -> normalGain
-        }
+        // Boost Thor's quiet media steps without duplicating Android's volume
+        // attenuation. Elsewhere keep a constant track gain.
+        val gain = SystemsMusicVolume.gain(audio.getStreamVolume(stream),
+            audio.getStreamMaxVolume(stream), softwareVolume = isThor,
+            muted = audio.isStreamMute(stream))
         target.setVolume(gain, gain)
     }
 
     fun destroy() {
         setBrowsing(false, false)
-        handler.removeCallbacks(releaseIfHidden)
+        handler.removeCallbacks(releaseFocusIfHidden)
+        if (listening) {
+            context.unregisterReceiver(receiver)
+            listening = false
+        }
         stop()
     }
 
     private fun stop() {
+        handler.removeCallbacks(retryFocus)
+        handler.removeCallbacks(recover)
+        handler.removeCallbacks(refreshVolume)
         player?.release()
         player = null
         prepared = false

@@ -37,10 +37,11 @@ class CompanionBrowseView(private val activity:Activity):LinearLayout(activity) 
         image.visibility=labelVisibility;title.visibility=labelVisibility;detail.visibility=labelVisibility
         contentDescription=system?.title
         if(system!=null) {
-            val hero=OrbitThemeArtwork.systemHeroBackground(activity,theme,system,screen)
+            val previous = (backdrop as? OrbitThemeArtwork.SystemHeroBackground)?.displayedImage
+            val hero=OrbitThemeArtwork.systemHeroBackground(activity,theme,system,screen,previous=previous)
             backdrop=hero;backdropKey=null
             publishBackdrop()
-            OrbitThemeArtwork.requestHero(activity,theme,system,screen,hero::invalidateSelf)
+            OrbitThemeArtwork.requestHero(activity,theme,system,screen,hero::artworkReady)
             return
         }
         title.text=selection.title;title.setTextColor(theme.text)

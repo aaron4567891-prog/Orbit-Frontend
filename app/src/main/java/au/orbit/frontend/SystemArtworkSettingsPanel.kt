@@ -37,7 +37,7 @@ class SystemArtworkSettingsPanel(
                 }
             }
         }
-        fun control(key:String,row:View,choose:()->Unit) {
+        fun control(key:String,row:View,inline:Boolean=false,choose:()->Unit) {
             row.isFocusable=true;row.isFocusableInTouchMode=true;row.isClickable=true
             SelectionStyle.apply(row)
             row.setOnFocusChangeListener { _,focus -> if(focus) {
@@ -46,16 +46,21 @@ class SystemArtworkSettingsPanel(
             } }
             row.setOnClickListener { row.requestFocus();selectedKey=key;choose() }
             controls.add(key to row)
-            content.addView(row,LinearLayout.LayoutParams(-1,-2).apply { bottomMargin=dp(8) })
+            if(!inline)content.addView(row,LinearLayout.LayoutParams(-1,-2).apply { bottomMargin=dp(8) })
         }
         fun action(key:String,title:String,choose:()->Unit):Button {
             val row=Button(activity).apply { text=title;isAllCaps=false;textSize=15f;setTextColor(Color.WHITE);gravity=Gravity.CENTER_VERTICAL;setPadding(dp(16),dp(10),dp(16),dp(10)) }
-            control(key,row,choose)
+            control(key,row,choose=choose)
             return row
         }
         fun imageCard(role:String,title:String) {
             val hero=role=="hero"
             val logo=role=="logo"
+            val removed=when(role) {
+                "hero" -> theme.heroRemoved(system.id,screen)
+                "logo" -> theme.logoRemoved(system.id)
+                else -> !theme.showSystemArtwork(system.id,screen)
+            }
             val custom=when(role) {
                 "hero" -> theme.systemHeroes[system.id]?.containsKey(screen)==true
                 "logo" -> system.id in theme.systemLogos
@@ -69,10 +74,12 @@ class SystemArtworkSettingsPanel(
             card.addView(box,LinearLayout.LayoutParams(dp(150),dp(90)).apply { rightMargin=dp(16) })
             val text=LinearLayout(activity).apply { orientation=LinearLayout.VERTICAL }
             text.addView(label(title,17f))
-            text.addView(label(if(custom)"Custom" else if(hero)"Global" else if(logo)"System name" else "Default",13f,theme.muted))
+            text.addView(label(if(removed)"Removed" else if(custom)"Custom" else if(hero && theme.image("hero",screen)!=null)"Global" else if(hero || logo)"Bundled default" else "Default",13f,theme.muted))
             card.addView(text,LinearLayout.LayoutParams(0,-2,1f))
             card.contentDescription = title
+            content.addView(card,LinearLayout.LayoutParams(-1,-2).apply { bottomMargin=dp(8) })
             fun refreshPreview() {
+                if(removed) { image.setImageBitmap(null);empty.text="Removed";empty.visibility=View.VISIBLE;return }
                 val bitmap=if(logo)OrbitThemeArtwork.systemLogo(theme,system)
                     else if(hero)OrbitThemeArtwork.image(activity,theme,"hero",system,screen)
                     else OrbitThemeArtwork.systemImage(activity,theme,system,screen) ?: OrbitConsoleImages.cached(system)
@@ -86,11 +93,29 @@ class SystemArtworkSettingsPanel(
                 OrbitThemeArtwork.requestSystemImage(activity,theme,system,screen,::refreshPreview)
                 OrbitConsoleImages.request(activity,system,::refreshPreview)
             }
-            control("$role/image",card) { refreshAfter { changed ->
-                if(logo)ThemeMediaSettings.chooseSystemLogo(activity,system,changed)
-                else ThemeMediaSettings.chooseSystemImage(activity,system,screen,hero,changed)
+            control("$role/image",card,inline=true) { refreshAfter { changed ->
+                // Choosing a new image is how a removed one comes back; a removed system image is switched on again.
+                val shown = if(role=="system" && removed) { { ThemeMediaSettings.setSystemImageVisible(activity,system,screen,true,changed) } } else changed
+                if(logo)ThemeMediaSettings.chooseSystemLogo(activity,system,shown)
+                else ThemeMediaSettings.chooseSystemImage(activity,system,screen,hero,shown)
             } }
-            if(custom)action("$role/reset",if(logo)"Remove system logo" else if(hero)"Use global hero image" else "Use default system image") {
+            // Remove sits beside its image (left and right move between them); a removed image has none.
+            if(!removed) {
+                val remove=Button(activity).apply {
+                    setText("Remove");isAllCaps=false;textSize=14f;setTextColor(Color.WHITE)
+                    contentDescription="Remove ${title.lowercase()}"
+                    setPadding(dp(14),dp(8),dp(14),dp(8))
+                }
+                card.addView(remove,LinearLayout.LayoutParams(-2,-2).apply { leftMargin=dp(12) })
+                control("$role/remove",remove,inline=true) {
+                    selectedKey="$role/image"
+                    refreshAfter { changed ->
+                        if(role=="system")ThemeMediaSettings.setSystemImageVisible(activity,system,screen,false,changed)
+                        else ThemeMediaSettings.setSystemArtworkRemoved(activity,system,if(logo)"logo" else "hero/$screen",true,changed)
+                    }
+                }
+            }
+            if(custom)action("$role/reset",if(logo)"Use default system logo" else if(hero)"Use default hero image" else "Use default system image") {
                 selectedKey="$role/image"
                 refreshAfter { changed ->
                     if(logo)ThemeMediaSettings.setSystemLogo(activity,theme,system,null,changed)
@@ -121,14 +146,23 @@ class SystemArtworkSettingsPanel(
                 ThemeMediaSettings.resetSystemImageVisibility(activity,system,screen,::visibilitySaved)
             }
         }
+        fun partner(key:String)=when {
+            key.endsWith("/image") -> key.removeSuffix("/image")+"/remove"
+            key.endsWith("/remove") -> key.removeSuffix("/remove")+"/image"
+            else -> null
+        }
         menu.page("Artwork images · ${system.title}", viewport, back = back, handle = { key, event ->
             val index=controls.indexOfFirst { it.second.hasFocus() }.takeIf { it>=0 }
                 ?: controls.indexOfFirst { it.first==selectedKey }.coerceAtLeast(0)
             when(key) {
                 KeyEvent.KEYCODE_DPAD_UP,KeyEvent.KEYCODE_DPAD_DOWN -> {
                     if(event.action==KeyEvent.ACTION_DOWN) {
-                        val next=(index+if(key==KeyEvent.KEYCODE_DPAD_DOWN)1 else -1).coerceIn(controls.indices)
-                        val row=controls[next].second;row.requestFocus()
+                        // Rows move vertically; a Remove button counts as part of its image row.
+                        val rows=controls.filterNot { it.first.endsWith("/remove") }
+                        val current=controls[index].first.let { if(it.endsWith("/remove"))partner(it) else it }
+                        val at=rows.indexOfFirst { it.first==current }.coerceAtLeast(0)
+                        val next=(at+if(key==KeyEvent.KEYCODE_DPAD_DOWN)1 else -1).coerceIn(rows.indices)
+                        val row=rows[next].second;row.requestFocus()
                         row.requestRectangleOnScreen(Rect(0,0,row.width,row.height),true)
                     }
                     true
@@ -137,7 +171,13 @@ class SystemArtworkSettingsPanel(
                     if(event.action==KeyEvent.ACTION_UP && !event.isCanceled)controls[index].second.performClick()
                     true
                 }
-                KeyEvent.KEYCODE_DPAD_LEFT,KeyEvent.KEYCODE_DPAD_RIGHT -> true
+                KeyEvent.KEYCODE_DPAD_LEFT,KeyEvent.KEYCODE_DPAD_RIGHT -> {
+                    val current=controls[index].first
+                    val wanted=if(key==KeyEvent.KEYCODE_DPAD_RIGHT && current.endsWith("/image"))partner(current)
+                        else if(key==KeyEvent.KEYCODE_DPAD_LEFT && current.endsWith("/remove"))partner(current) else null
+                    if(event.action==KeyEvent.ACTION_DOWN)wanted?.let { target -> controls.firstOrNull { it.first==target }?.second?.requestFocus() }
+                    true
+                }
                 else -> false
             }
         })

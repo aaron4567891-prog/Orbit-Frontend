@@ -216,4 +216,20 @@ class OrbitThemesTest {
         val color=JSONObject(source).apply { getJSONObject("colors").put("accent","oops") }
         assertThrows(IllegalArgumentException::class.java) { OrbitThemes.parse(color.toString()) }
     }
+
+    @Test fun removedSystemArtworkHidesHeroesAndLogosAndSurvivesSaving() {
+        val original=OrbitThemes.parse(File(folder,"midnight.json").readText())
+            .withSystemHero("psx",setOf("top"),"artwork/custom.png")
+        val removed=original.withSystemArtworkRemoved("psx","hero/top",true).withSystemArtworkRemoved("psx","logo",true)
+        assertNull(removed.heroImage("top","psx"))
+        assertTrue(removed.heroRemoved("psx","top") && !removed.heroRemoved("psx","bottom"))
+        assertTrue(removed.logoRemoved("psx"))
+        val restored=OrbitThemes.parse(removed.json())
+        assertEquals(removed.removedSystemArtwork,restored.removedSystemArtwork)
+        // Choosing a new image or logo brings that slot back.
+        val chosen=restored.withSystemHero("psx",setOf("top"),"artwork/new.png").withSystemLogo("psx","artwork/logo.png")
+        assertEquals("artwork/new.png",chosen.heroImage("top","psx"))
+        assertFalse(chosen.logoRemoved("psx"))
+        assertThrows(IllegalArgumentException::class.java) { original.withSystemArtworkRemoved("psx","system/top",true) }
+    }
 }

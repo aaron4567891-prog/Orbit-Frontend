@@ -119,6 +119,10 @@ object UserDataStore {
     fun string(context: Context, section: String, key: String): String? {
         return settingsSnapshot(context).optJSONObject(section)?.optString(key)?.takeIf { it.isNotBlank() }
     }
+    fun section(context: Context, section: String): Map<String, String> {
+        val values = settingsSnapshot(context).optJSONObject(section) ?: return emptyMap()
+        return values.keys().asSequence().mapNotNull { key -> values.optString(key).takeIf(String::isNotBlank)?.let { key to it } }.toMap()
+    }
     fun strings(context: Context, section: String, key: String): List<String> {
         return decodePaths(settingsSnapshot(context).optJSONObject(section)?.opt(key))
     }
@@ -243,6 +247,14 @@ object UserDataStore {
             if(folder==null)return null
         }
         return folder
+    }
+
+    /** A sound the user placed at sounds/<system id>.<ogg|mp3|wav|m4a|flac> in their data folder. */
+    @Synchronized fun systemSoundUri(context: Context, systemId: String): Uri? {
+        if (!systemId.matches(Regex("[a-z0-9_-]+"))) return null
+        initialize(context)
+        val folder = root?.directory("sounds", false) ?: return null
+        return listOf("ogg", "mp3", "wav", "m4a", "flac").firstNotNullOfOrNull { folder.fileUri("$systemId.$it") }
     }
 
     internal fun readScrapedRecords(context:Context,group:String):Sequence<ByteArray> = sequence {

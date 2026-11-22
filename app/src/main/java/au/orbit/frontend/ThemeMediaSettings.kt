@@ -79,16 +79,6 @@ object ThemeMediaSettings {
             Toast.makeText(activity,"Artwork applied",Toast.LENGTH_SHORT).show()
         }) { OrbitThemeArtwork.assignDownloaded(activity,theme,role,screens,system,bytes) }
     }
-    fun setSystemArtworkVisible(activity:MainActivity,theme:OrbitThemes.Theme,screen:String,visible:Boolean,changed:()->Unit) {
-        update(activity,theme,changed,visibilityOnly=true) {
-            val latest=OrbitThemes.list().firstOrNull { it.id==theme.id } ?: theme
-            val screens = if (visible) latest.systemArtworkScreens + screen else latest.systemArtworkScreens - screen
-            val updated=latest.copy(systemArtworkScreens=screens)
-            UserDataStore.saveNativeTheme(activity,updated.id,updated.json())
-            OrbitThemes.refresh(activity)
-            updated
-        }
-    }
     fun chooseSystemImage(activity:MainActivity,system:SystemSpec,screen:String,hero:Boolean,changed:()->Unit) {
         val theme=OrbitThemes.current()
         val role=if(hero)"hero" else "system"
@@ -122,6 +112,33 @@ object ThemeMediaSettings {
         update(activity,theme,changed,visibilityOnly=true) {
             val latest=OrbitThemes.list().firstOrNull { it.id==theme.id } ?: theme
             val updated=latest.withSystemArtworkVisible(system.id,screen,visible)
+            UserDataStore.saveNativeTheme(activity,updated.id,updated.json())
+            OrbitThemes.refresh(activity)
+            updated
+        }
+    }
+    /** Hides a hero or logo for this system, including the bundled default, or brings it back. */
+    fun setSystemArtworkRemoved(activity:MainActivity,system:SystemSpec,entry:String,removed:Boolean,changed:()->Unit) {
+        val theme=OrbitThemes.current()
+        update(activity,theme,changed) {
+            val latest=OrbitThemes.list().firstOrNull { it.id==theme.id } ?: theme
+            val updated=latest.withSystemArtworkRemoved(system.id,entry,removed)
+            UserDataStore.saveNativeTheme(activity,updated.id,updated.json())
+            OrbitThemes.refresh(activity)
+            updated
+        }
+    }
+    /** One artwork type ("hero", "system" or "logo") removed from, or restored to, every system in one save. */
+    fun setArtworkRemovedForAll(activity:MainActivity,systems:List<SystemSpec>,kind:String,screen:String,removed:Boolean,changed:()->Unit) {
+        require(kind in setOf("hero","system","logo") && screen in setOf("top","bottom"))
+        val theme=OrbitThemes.current()
+        update(activity,theme,changed) {
+            val latest=OrbitThemes.list().firstOrNull { it.id==theme.id } ?: theme
+            val updated=systems.fold(latest) { next,system -> when(kind) {
+                "hero" -> next.withSystemArtworkRemoved(system.id,"hero/$screen",removed)
+                "logo" -> next.withSystemArtworkRemoved(system.id,"logo",removed)
+                else -> next.withSystemArtworkVisible(system.id,screen,!removed)
+            } }
             UserDataStore.saveNativeTheme(activity,updated.id,updated.json())
             OrbitThemes.refresh(activity)
             updated

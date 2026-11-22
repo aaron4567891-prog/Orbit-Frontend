@@ -101,7 +101,7 @@ class ThemeGalleryPanel(private val activity:Activity,private val columns:Int=3,
                 canvas.clipPath(Path().apply { addRoundRect(RectF(0f,0f,960f,540f),32f,32f,Path.Direction.CW) })
             }
             OrbitThemeArtwork.background(activity,theme,if(split)"bottom" else OrbitThemeArtwork.screen(activity)).apply { setBounds(0,0,960,540);draw(canvas) }
-            paint.color=theme.muted;paint.textSize=15f;canvas.drawText(if(games)"PLAYSTATION / GAMES" else "ORBIT / COLLECTION",38f,45f,paint)
+            paint.color=theme.muted;paint.textSize=15f;if(games)canvas.drawText("PLAYSTATION / GAMES",38f,45f,paint)
             if(split) {
                 drawSplitTiles(canvas)
             } else if(games) {

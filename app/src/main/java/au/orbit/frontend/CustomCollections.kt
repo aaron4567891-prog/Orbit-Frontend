@@ -21,16 +21,22 @@ internal object CustomCollections {
 
     fun list(context: Context): List<Collection> {
         val saved = UserDataStore.string(context, SECTION, KEY) ?: return emptyList()
-        return decode(JSONArray(saved))
+        // A damaged or hand-edited file must not crash Settings.
+        return runCatching { decode(JSONArray(saved)) }.getOrDefault(emptyList())
     }
 
-    internal fun decode(data: JSONArray): List<Collection> = (0 until data.length()).map { index ->
-        val row = data.getJSONObject(index)
-        val games = row.getJSONArray("games")
-        Collection(row.getString("id"), row.getString("name"), (0 until games.length()).map { position ->
-            val game = games.getJSONObject(position)
-            Entry(game.getString("system"), game.getString("uri"), game.getString("title"))
-        })
+    /** Skips any collection or game entry that is malformed, keeping the rest. */
+    internal fun decode(data: JSONArray): List<Collection> = (0 until data.length()).mapNotNull { index ->
+        runCatching {
+            val row = data.getJSONObject(index)
+            val games = row.optJSONArray("games") ?: JSONArray()
+            Collection(row.getString("id"), row.getString("name"), (0 until games.length()).mapNotNull { position ->
+                runCatching {
+                    val game = games.getJSONObject(position)
+                    Entry(game.getString("system"), game.getString("uri"), game.getString("title"))
+                }.getOrNull()
+            })
+        }.getOrNull()
     }
 
     internal fun encode(collections: List<Collection>): JSONArray = JSONArray().apply {

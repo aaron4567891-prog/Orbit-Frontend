@@ -68,4 +68,15 @@ class CollectionAndAchievementsTest {
         assertEquals(setOf("covers", "physicalmedia", "videos", "3dboxes"),
             GameCustomArtwork.legacySharedRemovals(listOf(originalRoles)))
     }
+
+    @Test fun damagedCollectionEntriesAreSkippedInsteadOfCrashing() {
+        val data = org.json.JSONArray("""[
+            {"id":"a","name":"Favourites","games":[{"system":"psx","uri":"content://1","title":"Crash"},{"system":"psx"}]},
+            {"id":"b"},
+            "not a collection"
+        ]""")
+        val collections = CustomCollections.decode(data)
+        assertEquals(1, collections.size)
+        assertEquals(listOf("Crash"), collections.single().games.map { it.title })
+    }
 }

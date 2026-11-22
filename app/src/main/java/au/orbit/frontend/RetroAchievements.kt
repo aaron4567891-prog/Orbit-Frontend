@@ -97,7 +97,7 @@ internal object RetroAchievements {
         "intellivision" to 45, "vectrex" to 46, "pc88" to 47, "pc98" to 48, "pcfx" to 49,
         "atari5200" to 50, "atari7800" to 51, "x68000" to 52, "wonderswan" to 53, "wonderswancolor" to 53,
         "scv" to 55, "neogeocd" to 56, "neogeocdjp" to 56, "channelf" to 57,
-        "fmtowns" to 58, "zxspectrum" to 59, "gameandwatch" to 60, "ngage" to 61, "n3ds" to 62,
+        "fmtowns" to 58, "zxspectrum" to 59, "gameandwatch" to 60, "ngage" to 61, "n3ds" to 62, "3ds" to 62,
         "supervision" to 63, "x1" to 64, "tic80" to 65, "to8" to 66, "megaduck" to 69,
         "arduboy" to 71, "wasm4" to 72, "arcadia" to 73, "pcenginecd" to 76, "tg-cd" to 76,
         "atarijaguarcd" to 77, "uzebox" to 80, "fds" to 81, "ps3" to 82
@@ -203,7 +203,11 @@ internal object RetroAchievements {
             })
             val data = JSONTokener(response.body.string()).nextValue()
             if (data is JSONObject && (data.has("error") || data.has("Error"))) {
-                throw AuthenticationError()
+                // Only account problems are login errors; anything else (a bad game ID, say) shows its own message.
+                val message = data.optString("error").ifBlank { data.optString("Error") }.trim()
+                if (Regex("key|user|auth|credential|permission", RegexOption.IGNORE_CASE).containsMatchIn(message))
+                    throw AuthenticationError()
+                throw RequestError(if (message.isBlank()) "RetroAchievements could not complete the request." else "RetroAchievements: $message")
             }
             return data
         }

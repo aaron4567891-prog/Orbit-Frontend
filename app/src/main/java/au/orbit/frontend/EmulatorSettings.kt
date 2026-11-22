@@ -466,23 +466,45 @@ object EmulatorSettings {
         val rows=Rows(activity, window.isTabbed, smoothSelection = window.smoothSelection || game != null,
             onSelection = window::selectCompanionOption)
         val offset=if(game==null)0 else 1
+        val entries=EmulatorGroups.group(profiles)
+        // A RetroArch build opens to show its cores; the build holding the current choice starts open.
+        val expanded=entries.filterIsInstance<EmulatorGroups.Entry.Build>()
+            .filter { build -> build.cores.any { it.id==selected } }.map { it.key }.toMutableSet()
+        fun listRows()=EmulatorGroups.rows(entries,expanded)
+        fun profileAt(index:Int)=(listRows().getOrNull(index-offset) as? EmulatorGroups.Row.Choose)?.profile
         fun refresh() { showPlayers(window,system,changed,back,game,showHidden) }
         fun toggleHidden(index:Int) {
-            val profile=profiles.getOrNull(index-offset) ?: return
+            val profile=profileAt(index) ?: return
             runCatching { InstalledEmulators.hide(activity,profile,!InstalledEmulators.hidden(activity,profile)) }
                 .onSuccess { refresh() }.onFailure { Toast.makeText(activity,"Could not save visibility",Toast.LENGTH_SHORT).show() }
         }
+        fun profileLabel(profile:EmulatorProfile,core:Boolean)=
+            "${if(core) "        " else ""}${if(profile.id==selected) "✓  " else ""}${if(core) EmulatorGroups.coreLabel(profile) else profile.name}" +
+            "${if(!installed.getValue(profile)) " · Not installed" else ""}${if(InstalledEmulators.hidden(activity,profile)) " · Hidden" else ""}"
         fun labels()=(if(game==null)emptyList() else listOf("${if(selected==null) "✓  " else ""}Use system default")) +
-            profiles.map { "${if(it.id==selected) "✓  " else ""}${it.name}${if(!installed.getValue(it)) " · Not installed" else ""}${if(InstalledEmulators.hidden(activity,it)) " · Hidden" else ""}" } +
+            listRows().map { row -> when(row) {
+                is EmulatorGroups.Row.Choose -> profileLabel(row.profile,row.core)
+                is EmulatorGroups.Row.Toggle -> {
+                    val chosen=row.build.cores.firstOrNull { it.id==selected }
+                    "${if(chosen!=null) "✓  " else ""}${row.build.label}${chosen?.let { " · ${EmulatorGroups.coreLabel(it)}" } ?: ""}" +
+                        if(row.build.key in expanded) "  ▾" else "  ▸"
+                }
+            } } +
             listOf(if(showHidden) "Hide hidden entries" else "Show hidden entries")
-        rows.populate(labels()) { index ->
-            if(index==profiles.size+offset) {
+        lateinit var choose:(Int)->Unit
+        fun repopulate(focus:Int) { rows.populate(labels(),choose); rows.focus(focus) }
+        choose = choose@{ index ->
+            val row=listRows().getOrNull(index-offset)
+            if(index==listRows().size+offset) {
                 showPlayers(window,system,changed,back,game,!showHidden)
+            } else if(row is EmulatorGroups.Row.Toggle) {
+                if(!expanded.remove(row.build.key))expanded.add(row.build.key)
+                repopulate(index)
             } else {
-                val profile=profiles.getOrNull(index-offset)
+                val profile=(row as? EmulatorGroups.Row.Choose)?.profile
                 if(profile!=null && !profile.installed(activity)) {
                     Toast.makeText(activity,"Install ${profile.name} first",Toast.LENGTH_SHORT).show()
-                    return@populate
+                    return@choose
                 }
                 runCatching {
                     if(game==null)repository.select(system,profile) else repository.selectForGame(system,game,profile)
@@ -491,6 +513,7 @@ object EmulatorSettings {
                 }.onFailure { Toast.makeText(activity,"Unable to save emulator: ${it.message}",Toast.LENGTH_LONG).show() }
             }
         }
+        rows.populate(labels(),choose)
         rows.onLongPress=::toggleHidden
         val panel=LinearLayout(activity).apply { orientation=LinearLayout.VERTICAL }
         panel.addView(TextView(activity).apply {
@@ -505,6 +528,6 @@ object EmulatorSettings {
                 true
             } else rows.handle(key,event)
         }
-        rows.view.post { rows.focus((profiles.indexOfFirst { it.id==selected }+offset).coerceAtLeast(0)) }
+        rows.view.post { rows.focus((listRows().indexOfFirst { (it as? EmulatorGroups.Row.Choose)?.profile?.id==selected }+offset).coerceAtLeast(0)) }
     }
 }
